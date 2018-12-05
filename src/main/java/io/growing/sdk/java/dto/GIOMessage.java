@@ -1,10 +1,6 @@
 package io.growing.sdk.java.dto;
 
-import io.growing.sdk.java.process.serialize.SerializeTool;
-import javafx.beans.property.adapter.ReadOnlyJavaBeanBooleanProperty;
-
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
 
 /**

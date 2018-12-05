@@ -17,14 +17,28 @@ public class GrowingAPI {
 
     private final static RunMode runMode = RunMode.getByValue(ConfigUtils.getStringValue("run.mode", "test"));
 
-    private static boolean netHealthyOk;
+    private static boolean validDefaultConfig;
 
     static {
-        netHealthyOk = FixThreadPoolSender.getNetProvider().isConnectedToGrowingAPIHost();
+        validDefaultConfig = validDefaultConfig();
+    }
+
+    private static boolean validDefaultConfig(){
+        String projectId = FixThreadPoolSender.getProjectId();
+
+        if (projectId == null || projectId.length() == 0 || projectId.equals("填写您项目的AccountID")) {
+            GioLogger.error("please set up your project accountID to gio.properties for key [project.id]");
+            return false;
+        }
+
+        boolean netHealthyOk = FixThreadPoolSender.getNetProvider().isConnectedToGrowingAPIHost();
 
         if (!netHealthyOk) {
             GioLogger.error("cant connect to " + APIConstants.getApihost());
+            return false;
         }
+
+        return true;
     }
 
     /**
@@ -33,7 +47,7 @@ public class GrowingAPI {
      */
     public static void send(GIOMessage msg){
         try{
-            if (netHealthyOk) {
+            if (validDefaultConfig) {
                 StoreStrategyClient.getStoreInstance().push(msg);
             }
         } catch (Exception e) {

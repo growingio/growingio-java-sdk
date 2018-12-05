@@ -10,17 +10,13 @@ import io.growing.sdk.java.utils.ConfigUtils;
  * @since : 2018-11-24 17:38
  */
 public class GioLogger {
-    private static GioLoggerInterface logger = null;
-    private static String loggerLevel = null;
+    private static GioLoggerInterface logger;
+    private static String loggerLevel;
 
     static {
         String loggerImplName = ConfigUtils.getStringValue("logger.implemention", "io.growing.sdk.java.logger.GioLoggerImpl");
 
-        if (GrowingAPI.isProductionMode()) {
-            loggerLevel = "error";
-        } else {
-            loggerLevel = ConfigUtils.getStringValue("logger.level", "error");
-        }
+        loggerLevel = ConfigUtils.getStringValue("logger.level", "error");
 
         try {
             final Class<?> loggerImplClass = Class.forName(loggerImplName);

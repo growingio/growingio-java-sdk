@@ -23,8 +23,6 @@ public class GrowingAPITest {
 
     @Test
     public void apiSendEventTest() {
-        String logPath = this.getClass().getClassLoader().getResource("logging.properties").getFile();
-        System.setProperty("java.util.logging.config.file", logPath);
         for (int i = 0; i < 500; i++) {
             GIOEventMessage msg = new GIOEventMessage.Builder()
                     .eventKey(""+i)

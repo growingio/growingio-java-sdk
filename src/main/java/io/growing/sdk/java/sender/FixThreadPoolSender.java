@@ -21,10 +21,9 @@ import java.util.concurrent.Executors;
 public class FixThreadPoolSender implements MessageSender {
     private static ExecutorService sendThread = Executors.newFixedThreadPool(ConfigUtils.getIntValue("send.msg.thread", 3), new GioThreadNamedFactory("gio-sender"));
 
-    private String projectId = ConfigUtils.getStringValue("project.id", "");
-    private String uploadEventApi = APIConstants.buildUploadEventAPI(projectId);
-
+    private final static String projectId = ConfigUtils.getStringValue("project.id", "");
     private final static NetProviderAbstract netProvider = new HttpUrlProvider();
+    private String uploadEventApi = APIConstants.buildUploadEventAPI(projectId);
 
     @Override
     public void sendMsg(final List<GIOMessage> msg) {
@@ -48,5 +47,9 @@ public class FixThreadPoolSender implements MessageSender {
                 }
             });
         }
+    }
+
+    public static String getProjectId(){
+        return projectId;
     }
 }

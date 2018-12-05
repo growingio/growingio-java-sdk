@@ -39,24 +39,28 @@ mvn
 gio.properties
 
 	#项目采集端地址
-	api.host=http://cnso3:9000/v3
-	#项目ID
-	project.id=0a1b4118dd954ec3bcc69da5138bdb96
-	#消息发送频率,单位ms
-	send.msg.interval=1
-	# 数据压缩 0:不压缩, 2:Snappy压缩
+	api.host=https://api.growingio.com
+	#项目的AccountID
+	project.id=填写您项目的AccountID
+	#消息发送间隔时间,单位ms（默认 100）
+	send.msg.interval=100
+	#消息发送线程数量 （默认 3）
+	send.msg.thread=3
+	#消息队列大小 （默认 500）
+	msg.store.queue.size=500
+	#压缩方式(0 不压缩 2 Snappy压缩, 默认 2)
 	compress=2
-	# 日志输出级别
-	logger.level=debug
-	# 自定义日志输出实现类
+	#日志级别 (error, debug 默认是 error)
+	logger.level=error
+	#自定义日志实现类
 	logger.implemention=io.growing.sdk.java.logger.GioLoggerImpl
-	# 运行模式，test：仅输出消息体，不发送消息，production：发送消息
+	#运行模式（test or production）
 	run.mode=test
 
+## 事件消息
 
-## 事件消息存储模型
-
-	默认采用阻塞队列，限制队列消息大小为500. 如果队列满了，新的消息会等待插入
+	默认采用阻塞队列，队列大小为500.
+	如果队列满了，新的消息会被丢弃（可通过 [msg.store.queue.size] 和 [send.msg.interval] 调节队列大小和消息发送间隔时间，避免丢消息）
 
 
 
