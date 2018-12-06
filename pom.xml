@@ -169,7 +169,8 @@
                                     <goal>shade</goal>
                                 </goals>
                                 <configuration>
-                                    <shadedArtifactAttached>false</shadedArtifactAttached>
+                                    <shadedArtifactAttached>true</shadedArtifactAttached>
+                                    <shadedClassifierName>standlone</shadedClassifierName>
                                     <minimizeJar>true</minimizeJar>
                                     <relocations>
                                         <relocation>
