@@ -24,23 +24,23 @@ public abstract class NetProviderAbstract {
     protected final static Map<String, String> httpHeaders = new HashMap<String, String>();
 
     private final static String COMPRESS_HEADER = "X-Compress-Codec";
+    private final static Boolean compressConfig = ConfigUtils.getBooleanValue("compress", Boolean.TRUE);
 
     static {
-        String compressConfig = ConfigUtils.getStringValue("compress", "2");
-
-        if (!"0".equals(compressConfig) && !"2".equals(compressConfig)) {
-            GioLogger.error("compress config must be [0 or 2] 0:no compress, 2:snappy compress, default is 2");
+        String compressCode = "0";
+        if (compressConfig) {
+            compressCode = "2";
         }
 
-        httpHeaders.put(COMPRESS_HEADER, ConfigUtils.getStringValue("compress", compressConfig));//0 不压缩 2 Snappy压缩
+        httpHeaders.put(COMPRESS_HEADER, ConfigUtils.getStringValue("compress", compressCode));//0 不压缩 2 Snappy压缩
     }
 
     public static boolean needCompress() {
-        return !httpHeaders.get(COMPRESS_HEADER).equals("0");
+        return compressConfig;
     }
 
     public void toSend(String url, byte[] data) {
-        if (GrowingAPI.isProductionMode()) {
+        if (GrowingAPI.isProductionMode()) {                                                                            
             sendPost(url, data);
         } else {
             GioLogger.debug("apiHost: " + url + " data size: " + data.length);

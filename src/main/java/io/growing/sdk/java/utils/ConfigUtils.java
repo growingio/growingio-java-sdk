@@ -54,4 +54,14 @@ public class ConfigUtils {
             return defaultValue;
         }
     }
+
+    public static Boolean getBooleanValue(String key, Boolean defaultValue) {
+        String obj = prop.getProperty(key, defaultValue.toString());
+
+        try {
+            return Boolean.valueOf(obj);
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
 }
