@@ -169,7 +169,7 @@
                                     <goal>shade</goal>
                                 </goals>
                                 <configuration>
-                                    <shadedArtifactAttached>true</shadedArtifactAttached>
+                                    <shadedArtifactAttached>false</shadedArtifactAttached>
                                     <minimizeJar>true</minimizeJar>
                                     <relocations>
                                         <relocation>
