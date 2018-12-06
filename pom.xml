@@ -35,6 +35,7 @@
     </developers>
 
     <scm>
+        <url>https://github.com/growingio/AndroidDemo</url>
         <developerConnection>scm:git:origin</developerConnection>
     </scm>
     
