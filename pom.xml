@@ -9,6 +9,31 @@
     <packaging>jar</packaging>
     <version>${gio-java-sdk-version-profile}</version>
 
+    <name>gio-java-sdk</name>
+    <url>https://docs.growingio.com/docs/</url>
+    <description>growingio java client data collector</description>
+
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>wangtong</name>
+            <id>wangtong</id>
+            <email>wangtong@growingio.com</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
+    </developers>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.6</jdk.version>
