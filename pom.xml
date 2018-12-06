@@ -169,7 +169,7 @@
                                     <goal>shade</goal>
                                 </goals>
                                 <configuration>
-                                    <outputFile>target/shaded/${project.artifactId}-${gio-java-sdk-version}.jar</outputFile>
+                                    <shadedArtifactAttached>true</shadedArtifactAttached>
                                     <minimizeJar>true</minimizeJar>
                                     <relocations>
                                         <relocation>
