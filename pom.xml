@@ -38,48 +38,81 @@
 
     </dependencies>
 
+    <distributionManagement>
+        <snapshotRepository>
+            <id>snapshot</id>
+            <name>Maven Central Snapshot</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <uniqueVersion>true</uniqueVersion>
+            <layout>default</layout>
+        </snapshotRepository>
+        <repository>
+            <id>release</id>
+            <name>Maven Central Release</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <source>${jdk.version}</source>
+                    <target>${jdk.version}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+            <!-- Source -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Javadoc -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    
     <profiles>
         <profile>
             <id>default</id>
             <properties>
-                <gio-java-sdk-version-profile>${gio-java-sdk-version}</gio-java-sdk-version-profile>
+                <gio-java-sdk-version-profile>${gio-java-sdk-version}-SNAPSHOT</gio-java-sdk-version-profile>
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <version>3.3</version>
-                        <configuration>
-                            <source>${jdk.version}</source>
-                            <target>${jdk.version}</target>
-                            <encoding>${project.build.sourceEncoding}</encoding>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
         </profile>
         <profile>
-            <id>fatjar</id>
+            <id>release-fatjar</id>
             <properties>
                 <gio-java-sdk-version-profile>${gio-java-sdk-version}-standlone</gio-java-sdk-version-profile>
             </properties>
             <build>
                 <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <version>3.3</version>
-                        <configuration>
-                            <source>${jdk.version}</source>
-                            <target>${jdk.version}</target>
-                            <encoding>${project.build.sourceEncoding}</encoding>
-                        </configuration>
-                    </plugin>
-
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-shade-plugin</artifactId>
@@ -110,6 +143,11 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>release</id>
+            <properties>
+                <gio-java-sdk-version-profile>${gio-java-sdk-version}</gio-java-sdk-version-profile>
+            </properties>
+        </profile>
     </profiles>
-
 </project>
