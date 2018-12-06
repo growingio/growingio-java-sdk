@@ -14,6 +14,7 @@
         <jdk.version>1.6</jdk.version>
         <downloadSources>true</downloadSources>
         <gio-java-sdk-version>1.0.0</gio-java-sdk-version>
+        <gpg.keyname>425119A44F2EAE0E586C331EF742ABF183274DC2</gpg.keyname>
     </properties>
 
     <dependencies>
