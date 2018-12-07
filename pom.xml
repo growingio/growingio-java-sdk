@@ -164,7 +164,7 @@
                                 <configuration>
                                     <createDependencyReducedPom>false</createDependencyReducedPom>
                                     <shadedArtifactAttached>true</shadedArtifactAttached>
-                                    <shadedClassifierName>standlone</shadedClassifierName>
+                                    <shadedClassifierName>standalone</shadedClassifierName>
                                     <minimizeJar>true</minimizeJar>
                                     <relocations>
                                         <relocation>

@@ -10,14 +10,26 @@ GrowingIO提供在Server端部署的SDK，从而可以方便的进行事件上�
     java 6, 7, 8
 
 ## 依赖
-mvn
+我们推荐使用 Maven 管理Java 项目，请在 pom.xml 文件中，添加一下依赖信息，Maven将自动获取 Java SDK 并更新项目配置
+
+pom.xml
+
+    <dependencies>
+        <dependency>
+            <groupId>io.growing.sdk.java</groupId>
+            <artifactId>gio-java-sdk</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
+
+若出现依赖冲突的问题（例如运行时找不到类），可以选择使用 standalone     
 
     <dependency>
         <groupId>io.growing.sdk.java</groupId>
         <artifactId>gio-java-sdk</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </dependency>
-
+        <version>1.0.0</version>
+        <classifier>standalone</classifier>
+    </dependency>    
 
 ## 示例程序
 	//事件行为消息体
