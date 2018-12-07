@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.growing.sdk.java</groupId>
-    <artifactId>gio-java-sdk</artifactId>
+    <artifactId>growingio-java-sdk</artifactId>
     <packaging>jar</packaging>
     <version>${gio-java-sdk-version-profile}</version>
 
