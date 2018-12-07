@@ -149,6 +149,13 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
+        </profile>
+        
+        <profile>
+            <id>release</id>
+            <properties>
+                <gio-java-sdk-version-profile>${gio-java-sdk-version}</gio-java-sdk-version-profile>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -182,52 +189,6 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile>
-        
-        <profile>
-            <id>release</id>
-            <properties>
-                <gio-java-sdk-version-profile>${gio-java-sdk-version}</gio-java-sdk-version-profile>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-shade-plugin</artifactId>
-                        <version>3.0.0</version>
-                        <executions>
-                            <execution>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>shade</goal>
-                                </goals>
-                                <configuration>
-                                    <createDependencyReducedPom>false</createDependencyReducedPom>
-                                    <shadedArtifactAttached>true</shadedArtifactAttached>
-                                    <shadedClassifierName>standlone</shadedClassifierName>
-                                    <minimizeJar>true</minimizeJar>
-                                    <relocations>
-                                        <relocation>
-                                            <pattern>org.json</pattern>
-                                            <shadedPattern>io.growing.sdk.java.org.json</shadedPattern>
-                                        </relocation>
-                                        <relocation>
-                                            <pattern>org.xerial.snappy</pattern>
-                                            <shadedPattern>io.growing.sdk.java.org.xerial.snappy</shadedPattern>
-                                        </relocation>
-                                    </relocations>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>release-test</id>
-            <properties>
-                <gio-java-sdk-version-profile>${gio-java-sdk-version}</gio-java-sdk-version-profile>
-            </properties>
         </profile>
     </profiles>
 </project>
