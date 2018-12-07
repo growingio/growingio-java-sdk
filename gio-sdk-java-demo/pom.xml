@@ -9,14 +9,14 @@
     <artifactId>gio-sdk-java-demo</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <name>gio-sdk-java</name>
+    <name>growingio-java-sdk-demo</name>
     <url>http://www.growingio.com</url>
 
     <dependencies>
         <dependency>
             <groupId>io.growing.sdk.java</groupId>
-            <artifactId>gio-java-sdk</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <artifactId>growingio-java-sdk</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 

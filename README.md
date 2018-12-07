@@ -17,7 +17,7 @@ pom.xml
     <dependencies>
         <dependency>
             <groupId>io.growing.sdk.java</groupId>
-            <artifactId>gio-java-sdk</artifactId>
+            <artifactId>growingio-java-sdk</artifactId>
             <version>1.0.0</version>
         </dependency>
     </dependencies>
@@ -26,7 +26,7 @@ pom.xml
 
     <dependency>
         <groupId>io.growing.sdk.java</groupId>
-        <artifactId>gio-java-sdk</artifactId>
+        <artifactId>growingio-java-sdk</artifactId>
         <version>1.0.0</version>
         <classifier>standalone</classifier>
     </dependency>    
