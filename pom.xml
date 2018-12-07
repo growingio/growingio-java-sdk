@@ -9,7 +9,7 @@
     <packaging>jar</packaging>
     <version>${gio-java-sdk-version-profile}</version>
 
-    <name>gio-java-sdk</name>
+    <name>growingio-java-sdk</name>
     <url>https://docs.growingio.com/docs/</url>
     <description>growingio java client data collector</description>
 
