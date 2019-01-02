@@ -32,7 +32,7 @@ public abstract class NetProviderAbstract {
             compressCode = "2";
         }
 
-        httpHeaders.put(COMPRESS_HEADER, ConfigUtils.getStringValue("compress", compressCode));//0 不压缩 2 Snappy压缩
+        httpHeaders.put(COMPRESS_HEADER, compressCode);//0 不压缩 2 Snappy压缩
     }
 
     public static boolean needCompress() {

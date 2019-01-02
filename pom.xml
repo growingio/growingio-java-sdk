@@ -43,7 +43,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.6</jdk.version>
         <downloadSources>true</downloadSources>
-        <gio-java-sdk-version>1.0.0</gio-java-sdk-version>
+        <gio-java-sdk-version>1.0.1</gio-java-sdk-version>
     </properties>
 
     <dependencies>
