@@ -7,6 +7,7 @@ import io.growing.sdk.java.logger.GioLogger;
 import io.growing.sdk.java.sender.FixThreadPoolSender;
 import io.growing.sdk.java.store.StoreStrategyClient;
 import io.growing.sdk.java.utils.ConfigUtils;
+import io.growing.sdk.java.utils.VersionInfo;
 
 /**
  * @author : tong.wang
@@ -24,8 +25,8 @@ public class GrowingAPI {
     }
 
     private static boolean validDefaultConfig(){
+        GioLogger.debug("growingio-java-sdk version is " + VersionInfo.getVersion());
         String projectId = FixThreadPoolSender.getProjectId();
-
         if (projectId == null || projectId.length() == 0 || projectId.equals("填写您项目的AccountID")) {
             GioLogger.error("please set up your project accountID to gio.properties for key [project.id]");
             return false;
@@ -43,7 +44,7 @@ public class GrowingAPI {
 
     /**
      * 添加埋点事件
-     * @param msg
+     * @param msg the event msg to upload
      */
     public static void send(GIOMessage msg){
         try{

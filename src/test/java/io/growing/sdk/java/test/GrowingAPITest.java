@@ -5,6 +5,7 @@ import io.growing.sdk.java.dto.GIOEventMessage;
 import io.growing.sdk.java.dto.GIOMessage;
 import io.growing.sdk.java.sender.FixThreadPoolSender;
 import io.growing.sdk.java.sender.MessageSender;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -20,6 +21,11 @@ import java.util.concurrent.TimeUnit;
  */
 @RunWith(JUnit4.class)
 public class GrowingAPITest {
+
+    @BeforeClass
+    public static void before() {
+        System.setProperty("java.util.logging.config.file","src/test/resources/logging.properties");
+    }
 
     @Test
     public void apiSendEventTest() {
@@ -65,6 +71,26 @@ public class GrowingAPITest {
             sender.sendMsg(list);
         }
         TimeUnit.SECONDS.sleep(10);
+    }
+
+    @Test
+    public void sendWithProxy() throws InterruptedException {
+        MessageSender sender = new FixThreadPoolSender();
+
+        GIOMessage msg = new GIOEventMessage.Builder()
+                .eventKey("3")
+                .eventNumValue(3)
+                .addEventVariable("product_name", "苹果")
+                .addEventVariable("product_classify", "水果")
+                .addEventVariable("product_price", 14)
+                .build();
+
+        List list = new ArrayList();
+        list.add(msg);
+
+        sender.sendMsg(list);
+
+        TimeUnit.SECONDS.sleep(15);
     }
 
 }

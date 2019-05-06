@@ -22,8 +22,8 @@ public class MsgValidate {
     /**
      * validate return msg
      * invalidate return null
-     * @param msg
-     * @return
+     * @param msg the event to validate
+     * @return if event is valid return event else return null
      */
     public static GIOMessage validate(GIOMessage msg) {
         if (msg instanceof GIOEventMessage) {

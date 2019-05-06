@@ -2,16 +2,18 @@ package io.growing.sdk.java.sender.net;
 
 import io.growing.sdk.java.GrowingAPI;
 import io.growing.sdk.java.constants.APIConstants;
-import io.growing.sdk.java.constants.RunMode;
 import io.growing.sdk.java.logger.GioLogger;
-import io.growing.sdk.java.process.ProcessClient;
-import io.growing.sdk.java.process.serialize.JsonSerialize;
 import io.growing.sdk.java.utils.ConfigUtils;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
+import java.net.Authenticator;
+import java.net.InetSocketAddress;
+import java.net.PasswordAuthentication;
+import java.net.Proxy;
 import java.util.HashMap;
 import java.util.Map;
+
+import static java.net.Proxy.Type.HTTP;
 
 /**
  * @author : tong.wang
@@ -40,7 +42,7 @@ public abstract class NetProviderAbstract {
     }
 
     public void toSend(String url, byte[] data) {
-        if (GrowingAPI.isProductionMode()) {                                                                            
+        if (GrowingAPI.isProductionMode()) {
             sendPost(url, data);
         } else {
             GioLogger.debug("apiHost: " + url + " data size: " + data.length);
@@ -51,6 +53,43 @@ public abstract class NetProviderAbstract {
     protected abstract void sendPost(String url, byte[] data);
 
     protected abstract void sendGet(String url) throws IOException;
+
+    protected static class ProxyInfo {
+        private static Proxy proxy;
+
+        static {
+            proxy = setProxy();
+            setAuthenticator();
+        }
+
+        private static Proxy setProxy() {
+            String proxyHost = ConfigUtils.getStringValue("proxy.host", null);
+            Integer proxyPort = ConfigUtils.getIntValue("proxy.port", 80);
+
+            if (proxyHost == null || proxyHost.isEmpty()) {
+                return null;
+            }
+
+            return new Proxy(HTTP, new InetSocketAddress(proxyHost, proxyPort));
+        }
+
+        private static void setAuthenticator() {
+            final String proxyUser = ConfigUtils.getStringValue("proxy.user", null);
+            final String proxyPassword = ConfigUtils.getStringValue("proxy.password", null);
+
+            if (proxyUser != null && proxyPassword != null) {
+                Authenticator.setDefault(new Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(proxyUser, proxyPassword.toCharArray());
+                    }
+                });
+            }
+        }
+
+        public static Proxy getProxy() {
+            return proxy;
+        }
+    }
 
     public abstract boolean isConnectedToGrowingAPIHost();
 }

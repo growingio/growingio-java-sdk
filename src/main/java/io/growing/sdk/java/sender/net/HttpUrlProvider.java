@@ -1,18 +1,15 @@
 package io.growing.sdk.java.sender.net;
 
-import io.growing.sdk.java.dto.GIOMessage;
 import io.growing.sdk.java.exception.GIOMessageException;
 import io.growing.sdk.java.logger.GioLogger;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.net.URL;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -37,12 +34,12 @@ public class HttpUrlProvider extends NetProviderAbstract {
 
     @Override
     protected void sendGet(String url) throws IOException {
-        HttpURLConnection httpConn = (HttpURLConnection) new URL(url).openConnection();
+        HttpURLConnection httpConn = getConnection(url);
         setHeaders(httpConn);
         httpConn.setRequestMethod("GET");
         httpConn.setConnectTimeout(1000);
         httpConn.setConnectTimeout(1000);
-        httpConn.setRequestProperty("Connection", "Keep-Alive");
+
 
         httpConn.connect();
 
@@ -72,13 +69,12 @@ public class HttpUrlProvider extends NetProviderAbstract {
     }
 
     private void doSend(String url, byte[] data) throws Exception {
-        HttpURLConnection httpConn = (HttpURLConnection) new URL(url).openConnection();
+        HttpURLConnection httpConn = getConnection(url);
         setHeaders(httpConn);
         httpConn.setUseCaches(false);
         httpConn.setRequestMethod("POST");
         httpConn.setConnectTimeout(2000);
         httpConn.setConnectTimeout(2000);
-        httpConn.setRequestProperty("Connection", "Keep-Alive");
         httpConn.setRequestProperty("Content-Length", String.valueOf(data.length));
         httpConn.setDoOutput(true);
 
@@ -122,5 +118,18 @@ public class HttpUrlProvider extends NetProviderAbstract {
 
             }
         }
+    }
+
+    private HttpURLConnection getConnection(String url) throws IOException {
+        Proxy proxy = ProxyInfo.getProxy();
+
+        HttpURLConnection httpConn;
+        if (proxy == null) {
+            httpConn = (HttpURLConnection) new URL(url).openConnection();
+        } else {
+            httpConn = (HttpURLConnection) new URL(url).openConnection(proxy);
+        }
+
+        return httpConn;
     }
 }
