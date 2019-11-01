@@ -25,6 +25,9 @@ public abstract class NetProviderAbstract {
 
     protected final static Map<String, String> httpHeaders = new HashMap<String, String>();
 
+    protected final static int connectionTimeout = ConfigUtils.getIntValue("connection.timeout", 2000);
+    protected final static int readTimeout = ConfigUtils.getIntValue("read.timeout", 2000);
+
     private final static String COMPRESS_HEADER = "X-Compress-Codec";
     private final static Boolean compressConfig = ConfigUtils.getBooleanValue("compress", Boolean.TRUE);
 

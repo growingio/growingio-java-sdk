@@ -32,14 +32,7 @@ public class GrowingAPI {
             return false;
         }
 
-        boolean netHealthyOk = FixThreadPoolSender.getNetProvider().isConnectedToGrowingAPIHost();
-
-        if (!netHealthyOk) {
-            GioLogger.error("cant connect to " + APIConstants.getApihost());
-            return false;
-        }
-
-        return true;
+        return FixThreadPoolSender.getNetProvider().isConnectedToGrowingAPIHost();
     }
 
     /**

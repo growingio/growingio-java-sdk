@@ -93,6 +93,10 @@ proxy.port=3128
 # 设置代理认证用户密码, 如果不设置，默认为不使用用户验证 [认证加密方式为 Basic base64]
 proxy.user=demo
 proxy.password=demo
+#http 连接超时时间,默认2秒
+#connection.timeout=2000
+#http 连接读取时间,默认2秒
+#read.timeout=2000
 ```
 
 ## 事件消息

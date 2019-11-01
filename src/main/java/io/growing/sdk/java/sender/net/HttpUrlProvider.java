@@ -37,14 +37,12 @@ public class HttpUrlProvider extends NetProviderAbstract {
         HttpURLConnection httpConn = getConnection(url);
         setHeaders(httpConn);
         httpConn.setRequestMethod("GET");
-        httpConn.setConnectTimeout(1000);
-        httpConn.setConnectTimeout(1000);
-
-
-        httpConn.connect();
+        httpConn.setConnectTimeout(connectionTimeout);
+        httpConn.setReadTimeout(readTimeout);
 
         InputStream inputStream = null;
         try {
+            httpConn.connect();
             int responseCode = httpConn.getResponseCode();
             inputStream = httpConn.getInputStream();
             if (responseCode != 200) {
@@ -73,16 +71,15 @@ public class HttpUrlProvider extends NetProviderAbstract {
         setHeaders(httpConn);
         httpConn.setUseCaches(false);
         httpConn.setRequestMethod("POST");
-        httpConn.setConnectTimeout(2000);
-        httpConn.setConnectTimeout(2000);
+        httpConn.setConnectTimeout(connectionTimeout);
+        httpConn.setReadTimeout(readTimeout);
         httpConn.setRequestProperty("Content-Length", String.valueOf(data.length));
         httpConn.setDoOutput(true);
-
-        httpConn.connect();
 
         DataOutputStream outputStream = null;
         InputStream inputStream = null;
         try {
+            httpConn.connect();
             outputStream = new DataOutputStream(httpConn.getOutputStream());
             outputStream.write(data);
             outputStream.flush();
