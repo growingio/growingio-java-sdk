@@ -34,16 +34,11 @@
         </developer>
     </developers>
 
-    <scm>
-        <url>https://github.com/growingio/AndroidDemo</url>
-        <developerConnection>scm:git:origin</developerConnection>
-    </scm>
-    
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.6</jdk.version>
         <downloadSources>true</downloadSources>
-        <gio-java-sdk-version>1.0.3</gio-java-sdk-version>
+        <gio-java-sdk-version>1.0.4</gio-java-sdk-version>
     </properties>
 
     <dependencies>
