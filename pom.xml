@@ -34,6 +34,11 @@
         </developer>
     </developers>
 
+    <scm>
+        <url>https://github.com/growingio/AndroidDemo</url>
+        <developerConnection>scm:git:origin</developerConnection>
+    </scm>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.6</jdk.version>
