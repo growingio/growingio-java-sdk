@@ -1,16 +1,12 @@
 package io.growing.sdk.java.test;
 
-import io.growing.collector.tunnel.protocol.EventDto;
-import io.growing.collector.tunnel.protocol.EventList;
+import com.googlecode.protobuf.format.JsonFormat;
 import io.growing.sdk.java.GrowingAPI;
 import io.growing.sdk.java.dto.GIOEventMessage;
 import io.growing.sdk.java.dto.GIOMessage;
 import io.growing.sdk.java.dto.GioCdpEventMessage;
 import io.growing.sdk.java.dto.GioCdpUserMessage;
-import io.growing.sdk.java.sender.FixThreadPoolSender;
-import io.growing.sdk.java.sender.MessageSender;
 import io.growing.sdk.java.utils.VersionInfo;
-import org.json.JSONObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -88,6 +84,16 @@ public class GrowingAPITest {
         }
 
         sendMsg(list);
+    }
+
+    @Test
+    public void json() {
+        GioCdpUserMessage msg = new GioCdpUserMessage.Builder()
+                .setLoginUserId("a")
+                .addAttribute("user", "a")
+                .build();
+
+        System.out.println(new JsonFormat().printToString(msg.getUser()));
     }
 
     private <T extends GIOMessage> void sendMsg(List<T> msgList) {

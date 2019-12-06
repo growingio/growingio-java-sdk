@@ -1,6 +1,5 @@
 package io.growing.sdk.java;
 
-import io.growing.sdk.java.constants.APIConstants;
 import io.growing.sdk.java.constants.RunMode;
 import io.growing.sdk.java.dto.GIOMessage;
 import io.growing.sdk.java.logger.GioLogger;
@@ -25,7 +24,7 @@ public class GrowingAPI {
     }
 
     private static boolean validDefaultConfig(){
-        GioLogger.debug("growingio-java-sdk version is " + VersionInfo.getVersion());
+        GioLogger.debug("growingio-java-sdk version is " + VersionInfo.getVersion() + ", running in mode: " + runMode);
 
         String projectId = FixThreadPoolSender.getProjectId();
         if (projectId == null || projectId.isEmpty() || projectId.equals("填写您项目的AccountID")) {
@@ -33,7 +32,7 @@ public class GrowingAPI {
             return false;
         }
 
-        return FixThreadPoolSender.getNetProvider().connectedToGrowingAPIHost();
+        return isTestMode() || FixThreadPoolSender.getNetProvider().connectedToGrowingAPIHost();
     }
 
     /**

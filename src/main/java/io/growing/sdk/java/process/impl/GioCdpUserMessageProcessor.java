@@ -1,16 +1,11 @@
 package io.growing.sdk.java.process.impl;
 
-import io.growing.collector.tunnel.protocol.EventDto;
-import io.growing.collector.tunnel.protocol.EventList;
-import io.growing.collector.tunnel.protocol.UserDto;
 import io.growing.collector.tunnel.protocol.UserList;
 import io.growing.sdk.java.dto.GIOMessage;
-import io.growing.sdk.java.dto.GioCdpEventMessage;
 import io.growing.sdk.java.dto.GioCdpUserMessage;
 import io.growing.sdk.java.process.MessageProcessor;
 import io.growing.sdk.java.sender.net.ContentTypeEnum;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +14,7 @@ import java.util.Map;
  * @version : 1.0.0
  * @since : 12/6/19 11:36 AM
  */
-public class GioCdpUserMessageProcessor extends AbstractMessageProcessor implements MessageProcessor {
+public class GioCdpUserMessageProcessor extends ProtobufMessage implements MessageProcessor {
 
     @Override
     public String apiHost(String ai) {
@@ -44,40 +39,22 @@ public class GioCdpUserMessageProcessor extends AbstractMessageProcessor impleme
 
     @Override
     protected byte[] doProcess(List<GIOMessage> msgList) {
-        UserList.Builder listBuilder = UserList.newBuilder();
-        listBuilder.addAllValues(getUsers(msgList));
-        return listBuilder.build().toByteArray();
+        return getUsers(msgList).toByteArray();
     }
 
-    private List<UserDto> getUsers(List<GIOMessage> msgList) {
-        List<UserDto> users = new ArrayList<UserDto>(msgList.size());
-
+    private UserList getUsers(List<GIOMessage> msgList) {
+        UserList.Builder listBuilder = UserList.newBuilder();
         for (GIOMessage msg : msgList) {
             GioCdpUserMessage cdp = (GioCdpUserMessage) msg;
-            users.add(cdp.getUser());
+            listBuilder.addValues(cdp.getUser());
         }
 
-        return users;
+        return listBuilder.build();
     }
 
     @Override
     protected String debugMessage(List<GIOMessage> msgList) {
-        List<UserDto> users = getUsers(msgList);
-
-        StringBuilder message = new StringBuilder();
-        message.append("[");
-        int size = users.size();
-        for (int i = 0; i < size; i++) {
-            UserDto user = users.get(i);
-            if (i == size - 1) {
-                message.append(user.toString());
-            } else {
-                message.append(user.toString()).append(",");
-            }
-        }
-        message.append("]");
-
-        return message.toString();
+        return toJson(getUsers(msgList));
     }
 
 }
