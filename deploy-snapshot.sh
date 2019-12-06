@@ -5,4 +5,4 @@
 # 用户名 dev-growing
 # 密码 联系 wangtong@growingio.com, aiyanbo@growingio.com
 
-mvn -s ~/.m2/settings-gio-sdk.xml clean install deploy -Dmaven.test.skip=true -Dgpg.skip=true
+mvn -s ~/.m2/settings-gio-sdk.xml clean install deploy -Pcdp -Dmaven.test.skip=true -Dgpg.skip=true
