@@ -8,6 +8,7 @@ import io.growing.sdk.java.dto.GIOMessage;
  * @since : 11/20/18 7:22 PM
  */
 public interface StoreStrategy {
+
     void push(GIOMessage msgList);
 
 }

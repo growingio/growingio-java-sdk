@@ -43,7 +43,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.6</jdk.version>
         <downloadSources>true</downloadSources>
-        <gio-java-sdk-version>1.0.4</gio-java-sdk-version>
+        <gio-java-sdk-version>1.0.5</gio-java-sdk-version>
     </properties>
 
     <dependencies>
@@ -51,6 +51,12 @@
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20140107</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>3.9.0</version>
         </dependency>
 
         <dependency>
@@ -84,7 +90,48 @@
     </distributionManagement>
 
     <build>
+        <extensions>
+            <extension>
+                <groupId>kr.motd.maven</groupId>
+                <artifactId>os-maven-plugin</artifactId>
+                <version>1.6.1</version>
+            </extension>
+        </extensions>
         <plugins>
+            <plugin>
+                <groupId>net.revelc.code.formatter</groupId>
+                <artifactId>formatter-maven-plugin</artifactId>
+                <version>2.11.0</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <compilerSource>${jdk.version}</compilerSource>
+                    <compilerCompliance>${jdk.version}</compilerCompliance>
+                    <compilerTargetPlatform>${jdk.version}</compilerTargetPlatform>
+                    <directories>
+                        <directory>${project.build.sourceDirectory}</directory>
+                        <directory>${project.build.directory}/generated-sources</directory>
+                    </directories>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.xolstice.maven.plugins</groupId>
+                <artifactId>protobuf-maven-plugin</artifactId>
+                <version>0.5.0</version>
+                <configuration>
+                    <protoSourceRoot>${project.basedir}/src/main/protobuf</protoSourceRoot>
+                    <protocArtifact>com.google.protobuf:protoc:3.7.1:exe:${os.detected.classifier}</protocArtifact>
+                    <pluginId>grpc-java</pluginId>
+                    <pluginArtifact>io.grpc:protoc-gen-grpc-java:1.17.1:exe:${os.detected.classifier}</pluginArtifact>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>compile-custom</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -122,6 +169,10 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <additionalparam>-Xdoclint:none</additionalparam>
+                    <additionalJOption>-Xdoclint:none</additionalJOption>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -192,6 +243,13 @@
             <id>release</id>
             <properties>
                 <gio-java-sdk-version-profile>${gio-java-sdk-version}</gio-java-sdk-version-profile>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>cdp</id>
+            <properties>
+                <gio-java-sdk-version-profile>${gio-java-sdk-version}-cdp</gio-java-sdk-version-profile>
             </properties>
         </profile>
     </profiles>

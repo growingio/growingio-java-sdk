@@ -8,17 +8,9 @@ import io.growing.sdk.java.utils.ConfigUtils;
  * @since : 11/21/18 3:17 PM
  */
 public class APIConstants {
-    private final static String apihost = ConfigUtils.getStringValue("api.host", "");
-    private final static String UPLOAD_EVENT_API_VERSION = "v3";
 
-    public static String buildUploadEventAPI(String projectId) {
-        if (apihost.endsWith("/"))
-            return apihost + UPLOAD_EVENT_API_VERSION + "/" + projectId + "/s2s/cstm";
-        else
-            return apihost + "/" + UPLOAD_EVENT_API_VERSION + "/" + projectId + "/s2s/cstm";
-    }
+    public static final  String API_HOST = ConfigUtils.getStringValue("api.host", "");
 
-    public static String getApihost() {
-        return apihost;
-    }
+    public static final String COMPRESS_HEADER = "X-Compress-Codec";
+
 }

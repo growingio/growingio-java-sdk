@@ -2,12 +2,14 @@ package io.growing.sdk.java.sender.net;
 
 import io.growing.sdk.java.exception.GIOMessageException;
 import io.growing.sdk.java.logger.GioLogger;
+import io.growing.sdk.java.sender.RequestDto;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -20,12 +22,12 @@ import java.util.concurrent.TimeUnit;
 public class HttpUrlProvider extends NetProviderAbstract {
 
     @Override
-    protected void sendPost(String url, byte[] data) {
+    protected void sendPost(RequestDto requestDto) {
         try {
-            doSend(url, data);
+            doSend(requestDto);
         } catch (Exception e) {
             if (e instanceof IOException) {
-                retry(url, data);
+                retry(requestDto);
             } else {
                 GioLogger.error("failed to send growingio data" + e.toString());
             }
@@ -33,47 +35,43 @@ public class HttpUrlProvider extends NetProviderAbstract {
     }
 
     @Override
-    protected void sendGet(String url) throws IOException {
-        HttpURLConnection httpConn = getConnection(url);
-        setHeaders(httpConn);
-        httpConn.setRequestMethod("GET");
-        httpConn.setConnectTimeout(connectionTimeout);
-        httpConn.setReadTimeout(readTimeout);
-
+    public boolean connectedToGrowingAPIHost() {
         InputStream inputStream = null;
         try {
+            HttpURLConnection httpConn = getConnection(CHECK_NET_HEALTH_URL);
+            httpConn.setRequestMethod("GET");
+            httpConn.setConnectTimeout(connectionTimeout);
+            httpConn.setReadTimeout(readTimeout);
+
             httpConn.connect();
-            int responseCode = httpConn.getResponseCode();
-            inputStream = httpConn.getInputStream();
-            if (responseCode != 200) {
-                throw new GIOMessageException("growingio server return error " + responseCode);
-            }
+            httpConn.getResponseCode();
+
+            return true;
+        } catch (SocketTimeoutException e) {
+            GioLogger.error("failed to connect " + CHECK_NET_HEALTH_URL + ", cause " + e.getLocalizedMessage());
+            return false;
+        } catch (IOException e) {
+            GioLogger.error("failed to connect " + CHECK_NET_HEALTH_URL + ", cause " + e.getLocalizedMessage());
+            return false;
         } finally {
             if (inputStream != null) {
-                inputStream.close();
+                try {
+                    inputStream.close();
+                } catch (IOException ignore) {
+                }
             }
         }
     }
 
-    @Override
-    public boolean isConnectedToGrowingAPIHost() {
-        try {
-            sendGet(CHECK_NET_HEALTH_URL);
-            return true;
-        } catch (IOException e) {
-            GioLogger.error("failed to connect " + CHECK_NET_HEALTH_URL + ", cause " + e.toString());
-            return false;
-        }
-    }
-
-    private void doSend(String url, byte[] data) throws Exception {
-        HttpURLConnection httpConn = getConnection(url);
-        setHeaders(httpConn);
+    private void doSend(RequestDto requestDto) throws Exception {
+        HttpURLConnection httpConn = getConnection(requestDto.getUrl());
+        setHttpConnHeaders(httpConn, requestDto.getHeaders());
+        httpConn.setRequestProperty("Content-Type", requestDto.getContentType().toString());
         httpConn.setUseCaches(false);
         httpConn.setRequestMethod("POST");
         httpConn.setConnectTimeout(connectionTimeout);
         httpConn.setReadTimeout(readTimeout);
-        httpConn.setRequestProperty("Content-Length", String.valueOf(data.length));
+        httpConn.setRequestProperty("Content-Length", String.valueOf(requestDto.getBytes().length));
         httpConn.setDoOutput(true);
 
         DataOutputStream outputStream = null;
@@ -81,14 +79,12 @@ public class HttpUrlProvider extends NetProviderAbstract {
         try {
             httpConn.connect();
             outputStream = new DataOutputStream(httpConn.getOutputStream());
-            outputStream.write(data);
+            outputStream.write(requestDto.getBytes());
             outputStream.flush();
             int responseCode = httpConn.getResponseCode();
-
             inputStream = httpConn.getInputStream();
-            if (responseCode != 200) {
-                GioLogger.error("growingio server return error " + responseCode);
-            }
+
+            responseOk(responseCode);
         } finally {
             if (outputStream != null) {
                 outputStream.close();
@@ -99,17 +95,24 @@ public class HttpUrlProvider extends NetProviderAbstract {
         }
     }
 
-    private void setHeaders(HttpURLConnection httpConn) {
-        for (Map.Entry<String, String> entry : httpHeaders.entrySet())
+    private void setHttpConnHeaders(HttpURLConnection httpConn, Map<String, String> headers) {
+        for (Map.Entry<String, String> entry : headers.entrySet()) {
             httpConn.setRequestProperty(entry.getKey(), entry.getValue());
+        }
     }
 
-    private void retry(String url, byte[] data) {
+    private void responseOk(int responseCode) {
+        if (responseCode < 200 || responseCode > 300) {
+            GioLogger.error("growingio server return error " + responseCode);
+        }
+    }
+
+    private void retry(RequestDto requestDto) {
         int retryTimes = 3;
         for (int i = 0; i < retryTimes; i++) {
             try {
                 TimeUnit.SECONDS.sleep(1);
-                doSend(url, data);
+                doSend(requestDto);
                 break;
             } catch (Exception ignore) {
 

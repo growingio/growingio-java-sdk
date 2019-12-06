@@ -26,13 +26,14 @@ public class GrowingAPI {
 
     private static boolean validDefaultConfig(){
         GioLogger.debug("growingio-java-sdk version is " + VersionInfo.getVersion());
+
         String projectId = FixThreadPoolSender.getProjectId();
-        if (projectId == null || projectId.length() == 0 || projectId.equals("填写您项目的AccountID")) {
+        if (projectId == null || projectId.isEmpty() || projectId.equals("填写您项目的AccountID")) {
             GioLogger.error("please set up your project accountID to gio.properties for key [project.id]");
             return false;
         }
 
-        return FixThreadPoolSender.getNetProvider().isConnectedToGrowingAPIHost();
+        return FixThreadPoolSender.getNetProvider().connectedToGrowingAPIHost();
     }
 
     /**

@@ -130,7 +130,6 @@ public class GIOEventMessage extends GIOMessage implements Serializable {
         }
     }
 
-    @Override
     public Map<String, Object> getMapResult() {
         return this.mapResult;
     }

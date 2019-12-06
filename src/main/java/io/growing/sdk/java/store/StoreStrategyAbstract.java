@@ -1,13 +1,12 @@
 package io.growing.sdk.java.store;
 
 import io.growing.sdk.java.dto.GIOMessage;
-import io.growing.sdk.java.logger.GioLogger;
+import io.growing.sdk.java.process.EventProcessorClient;
+import io.growing.sdk.java.process.MessageProcessor;
 import io.growing.sdk.java.thread.GioThreadNamedFactory;
-import io.growing.sdk.java.utils.ConfigUtils;
-import io.growing.sdk.java.validate.MsgValidate;
 
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author : tong.wang
@@ -23,9 +22,9 @@ public abstract class StoreStrategyAbstract implements StoreStrategy {
         pushMsgThreadPool.execute(new Runnable() {
             @Override
             public void run() {
-                GIOMessage validated = MsgValidate.validate(msg);
-                if (validated != null) {
-                    doPush(validated);
+                MessageProcessor processor = EventProcessorClient.getApiInstance(msg);
+                if (processor.skipIllegalMessage(msg) != null) {
+                    doPush(msg);
                 }
             }
         });

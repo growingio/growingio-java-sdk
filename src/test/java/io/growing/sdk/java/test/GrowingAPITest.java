@@ -1,10 +1,16 @@
 package io.growing.sdk.java.test;
 
+import io.growing.collector.tunnel.protocol.EventDto;
+import io.growing.collector.tunnel.protocol.EventList;
 import io.growing.sdk.java.GrowingAPI;
 import io.growing.sdk.java.dto.GIOEventMessage;
 import io.growing.sdk.java.dto.GIOMessage;
+import io.growing.sdk.java.dto.GioCdpEventMessage;
+import io.growing.sdk.java.dto.GioCdpUserMessage;
 import io.growing.sdk.java.sender.FixThreadPoolSender;
 import io.growing.sdk.java.sender.MessageSender;
+import io.growing.sdk.java.utils.VersionInfo;
+import org.json.JSONObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,23 +34,65 @@ public class GrowingAPITest {
     }
 
     @Test
-    public void apiSendEventTest() {
+    public void sendCdpEventMsg() {
+        List<GioCdpEventMessage> list = new ArrayList<GioCdpEventMessage>(500);
+        for (int i = 0; i < 500; i++) {
+            GioCdpEventMessage msg = new GioCdpEventMessage.Builder()
+                    .eventKey(""+i)
+                    .eventNumValue(i)
+                    .loginUserId(i+"")
+                    .addEventVariable("product_name", "cdp苹果")
+                    .addEventVariable("product_classify", "cdp水果")
+                    .addEventVariable("product_classify", "cdp水果")
+                    .addEventVariable("product_price", 14)
+                    .build();
+
+            list.add(msg);
+        }
+
+        sendMsg(list);
+    }
+
+    @Test
+    public void sendEventMsg() {
+        List<GIOEventMessage> list = new ArrayList<GIOEventMessage>(500);
         for (int i = 0; i < 500; i++) {
             GIOEventMessage msg = new GIOEventMessage.Builder()
                     .eventKey(""+i)
                     .eventNumValue(i)
                     .loginUserId(i+"")
-                    .addEventVariable("product_name", "苹果")
-                    .addEventVariable("product_classify", "水果")
-                    .addEventVariable("product_classify", "水果")
+                    .addEventVariable("product_name", "cdp苹果")
+                    .addEventVariable("product_classify", "cdp水果")
+                    .addEventVariable("product_classify", "cdp水果")
                     .addEventVariable("product_price", 14)
+                    .addEventVariable("version", VersionInfo.getVersion())
                     .build();
-            GrowingAPI.send(msg);
-            try {
-                TimeUnit.MILLISECONDS.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
+            list.add(msg);
+        }
+
+        sendMsg(list);
+    }
+
+    @Test
+    public void sendCdpUserMsg() {
+        List<GioCdpUserMessage> list = new ArrayList<GioCdpUserMessage>(500);
+        for (int i = 0; i < 500; i++) {
+            GioCdpUserMessage msg = new GioCdpUserMessage.Builder()
+                    .setLoginUserId(String.valueOf(i))
+                    .addAttribute("user", i)
+                    .build();
+
+
+            list.add(msg);
+        }
+
+        sendMsg(list);
+    }
+
+    private <T extends GIOMessage> void sendMsg(List<T> msgList) {
+        for (T t : msgList) {
+            GrowingAPI.send(t);
         }
 
         try {
@@ -52,45 +100,6 @@ public class GrowingAPITest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
-
-    @Test
-    public void senderTest() throws InterruptedException {
-        MessageSender sender = new FixThreadPoolSender();
-        for (int i = 0; i < 200; i++){
-            List<GIOMessage> list = new ArrayList<GIOMessage>();
-            GIOMessage msg = new GIOEventMessage.Builder()
-                    .eventKey("3")
-                    .eventNumValue(3)
-                    .addEventVariable("product_name", "苹果")
-                    .addEventVariable("product_classify", "水果")
-                    .addEventVariable("product_price", 14)
-                    .build();
-
-            list.add(msg);
-            sender.sendMsg(list);
-        }
-        TimeUnit.SECONDS.sleep(10);
-    }
-
-    @Test
-    public void sendWithProxy() throws InterruptedException {
-        MessageSender sender = new FixThreadPoolSender();
-
-        GIOMessage msg = new GIOEventMessage.Builder()
-                .eventKey("3")
-                .eventNumValue(3)
-                .addEventVariable("product_name", "苹果")
-                .addEventVariable("product_classify", "水果")
-                .addEventVariable("product_price", 14)
-                .build();
-
-        List list = new ArrayList();
-        list.add(msg);
-
-        sender.sendMsg(list);
-
-        TimeUnit.SECONDS.sleep(15);
     }
 
 }

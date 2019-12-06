@@ -9,8 +9,5 @@ import java.util.Map;
  * @since : 11/21/18 5:20 PM
  */
 public abstract class GIOMessage implements Serializable {
-
     private static final long serialVersionUID = -5789315589035420840L;
-
-    public abstract Map<String, Object> getMapResult();
 }

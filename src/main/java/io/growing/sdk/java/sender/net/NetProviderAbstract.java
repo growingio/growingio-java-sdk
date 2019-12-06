@@ -3,6 +3,7 @@ package io.growing.sdk.java.sender.net;
 import io.growing.sdk.java.GrowingAPI;
 import io.growing.sdk.java.constants.APIConstants;
 import io.growing.sdk.java.logger.GioLogger;
+import io.growing.sdk.java.sender.RequestDto;
 import io.growing.sdk.java.utils.ConfigUtils;
 
 import java.io.IOException;
@@ -13,6 +14,7 @@ import java.net.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
+import static io.growing.sdk.java.constants.APIConstants.COMPRESS_HEADER;
 import static java.net.Proxy.Type.HTTP;
 
 /**
@@ -21,41 +23,22 @@ import static java.net.Proxy.Type.HTTP;
  * @since : 2018-11-22 13:36
  */
 public abstract class NetProviderAbstract {
-    protected final static String CHECK_NET_HEALTH_URL = APIConstants.getApihost();
+    protected final static String CHECK_NET_HEALTH_URL = APIConstants.API_HOST;
 
     protected final static Map<String, String> httpHeaders = new HashMap<String, String>();
 
     protected final static int connectionTimeout = ConfigUtils.getIntValue("connection.timeout", 2000);
     protected final static int readTimeout = ConfigUtils.getIntValue("read.timeout", 2000);
 
-    private final static String COMPRESS_HEADER = "X-Compress-Codec";
-    private final static Boolean compressConfig = ConfigUtils.getBooleanValue("compress", Boolean.TRUE);
-
-    static {
-        String compressCode = "0";
-        if (compressConfig) {
-            compressCode = "2";
-        }
-
-        httpHeaders.put(COMPRESS_HEADER, compressCode);//0 不压缩 2 Snappy压缩
-    }
-
-    public static boolean needCompress() {
-        return compressConfig;
-    }
-
-    public void toSend(String url, byte[] data) {
+    public void toSend(RequestDto requestDto) {
         if (GrowingAPI.isProductionMode()) {
-            sendPost(url, data);
+            sendPost(requestDto);
         } else {
-            GioLogger.debug("apiHost: " + url + " data size: " + data.length);
+            GioLogger.debug(requestDto.toString());
         }
-
     }
 
-    protected abstract void sendPost(String url, byte[] data);
-
-    protected abstract void sendGet(String url) throws IOException;
+    protected abstract void sendPost(RequestDto requestDto);
 
     protected static class ProxyInfo {
         private static Proxy proxy;
@@ -94,5 +77,5 @@ public abstract class NetProviderAbstract {
         }
     }
 
-    public abstract boolean isConnectedToGrowingAPIHost();
+    public abstract boolean connectedToGrowingAPIHost();
 }

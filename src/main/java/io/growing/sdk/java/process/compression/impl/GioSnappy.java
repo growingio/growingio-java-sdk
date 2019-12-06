@@ -1,6 +1,7 @@
-package io.growing.sdk.java.process.compression;
+package io.growing.sdk.java.process.compression.impl;
 
 import io.growing.sdk.java.exception.GIOMessageException;
+import io.growing.sdk.java.process.compression.CompressionTool;
 import org.xerial.snappy.Snappy;
 
 import java.io.IOException;
@@ -10,7 +11,7 @@ import java.io.IOException;
  * @version : 1.0.0
  * @since : 2018-11-22 18:52
  */
-public class GioSnappy implements CompressionTool{
+public class GioSnappy implements CompressionTool {
 
     public byte[] compress(byte[] message)  {
         try {
@@ -20,7 +21,7 @@ public class GioSnappy implements CompressionTool{
         }
     }
 
-    public byte[] uncompress(byte[] message)  {
+    public byte[] decompress(byte[] message)  {
         try {
             return org.xerial.snappy.Snappy.uncompress(message);
         } catch (IOException e) {

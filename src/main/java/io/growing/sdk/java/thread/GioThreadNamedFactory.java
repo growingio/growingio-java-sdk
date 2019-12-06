@@ -15,7 +15,7 @@ public class GioThreadNamedFactory implements ThreadFactory {
 
     private final String mPrefix;
 
-    private final boolean mDaemo;
+    private final boolean mDaemon;
 
     private final ThreadGroup mGroup;
 
@@ -27,9 +27,9 @@ public class GioThreadNamedFactory implements ThreadFactory {
         this(prefix, false);
     }
 
-    public GioThreadNamedFactory(String prefix, boolean daemo) {
+    public GioThreadNamedFactory(String prefix, boolean daemon) {
         mPrefix = prefix + "-thread-";
-        mDaemo = daemo;
+        mDaemon = daemon;
         SecurityManager s = System.getSecurityManager();
         mGroup = (s == null) ? Thread.currentThread().getThreadGroup() : s.getThreadGroup();
     }
@@ -38,7 +38,7 @@ public class GioThreadNamedFactory implements ThreadFactory {
     public Thread newThread(Runnable runnable) {
         String name = mPrefix + mThreadNum.getAndIncrement();
         Thread ret = new Thread(mGroup, runnable, name, 0);
-        ret.setDaemon(mDaemo);
+        ret.setDaemon(mDaemon);
         return ret;
     }
 

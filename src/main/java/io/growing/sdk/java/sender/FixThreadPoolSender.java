@@ -1,9 +1,8 @@
 package io.growing.sdk.java.sender;
 
-import io.growing.sdk.java.constants.APIConstants;
 import io.growing.sdk.java.dto.GIOMessage;
-import io.growing.sdk.java.process.ProcessClient;
-import io.growing.sdk.java.sender.MessageSender;
+import io.growing.sdk.java.process.MessageProcessor;
+import io.growing.sdk.java.process.EventProcessorClient;
 import io.growing.sdk.java.sender.net.HttpUrlProvider;
 import io.growing.sdk.java.sender.net.NetProviderAbstract;
 import io.growing.sdk.java.thread.GioThreadNamedFactory;
@@ -23,27 +22,32 @@ public class FixThreadPoolSender implements MessageSender {
 
     private final static String projectId = ConfigUtils.getStringValue("project.id", "");
     private final static NetProviderAbstract netProvider = new HttpUrlProvider();
-    private String uploadEventApi = APIConstants.buildUploadEventAPI(projectId);
 
     @Override
     public void sendMsg(final List<GIOMessage> msg) {
         doSend(msg);
     }
 
-    private String addStmQueryParams(String url) {
-        return url + "?stm=" + System.currentTimeMillis();
-    }
-
     public static NetProviderAbstract getNetProvider() {
         return netProvider;
     }
 
-    public void doSend(final List<GIOMessage> msg) {
-        if (null != msg) {
+    public void doSend(final List<GIOMessage> msgList) {
+        if (null != msgList && !msgList.isEmpty()) {
             sendThread.execute(new Runnable() {
                 @Override
                 public void run() {
-                    getNetProvider().toSend(addStmQueryParams(uploadEventApi), ProcessClient.process(msg));
+                    MessageProcessor processor = EventProcessorClient.getApiInstance(msgList.get(0));
+
+                    RequestDto requestDto = new RequestDto.Builder()
+                            .setUrl(processor.apiHost(projectId))
+                            .setContentType(processor.contentType())
+                            .setBytes(processor.process(msgList))
+                            .setHeaders(processor.headers())
+                            .build();
+
+                    getNetProvider().toSend(requestDto);
+
                 }
             });
         }

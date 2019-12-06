@@ -18,7 +18,7 @@ public class StoreStrategyClient {
         String strategy = ConfigUtils.getStringValue("msg.store.strategy", "default");
 
         if (!"default".equals(strategy)) {
-            // TODO 暂仅支持 defaultStoregy
+            // TODO 暂仅支持 defaultStrategy
             return StoreInstance.defaultStoreStrategy;
         }
 

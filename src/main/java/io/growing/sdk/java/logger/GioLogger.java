@@ -14,7 +14,7 @@ public class GioLogger {
     private static String loggerLevel;
 
     static {
-        String loggerImplName = ConfigUtils.getStringValue("logger.implemention", "io.growing.sdk.java.logger.GioLoggerImpl");
+        String loggerImplName = ConfigUtils.getStringValue("logger.implementation", "io.growing.sdk.java.logger.GioLoggerImpl");
 
         loggerLevel = ConfigUtils.getStringValue("logger.level", "error");
 
@@ -23,13 +23,13 @@ public class GioLogger {
             logger = (GioLoggerInterface) loggerImplClass.newInstance();
         } catch (ClassNotFoundException e) {
             logger = getDefaultLogger();
-            logger.error("use gio logger, cause failed to find logger implemention class " + loggerImplName);
+            logger.error("use gio logger, cause failed to find logger implementation class " + loggerImplName);
         } catch (IllegalAccessException e) {
             logger = getDefaultLogger();
-            logger.error("use gio logger, cause failed to construct logger implemention class " + loggerImplName);
+            logger.error("use gio logger, cause failed to construct logger implementation class " + loggerImplName);
         } catch (InstantiationException e) {
             logger = getDefaultLogger();
-            logger.error("use gio logger, cause failed to instantiate logger implemention class " + loggerImplName);
+            logger.error("use gio logger, cause failed to instantiate logger implementation class " + loggerImplName);
         }
     }
 
