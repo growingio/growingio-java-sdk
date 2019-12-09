@@ -39,17 +39,25 @@ public class GioCdpEventMessageProcessor extends ProtobufMessage implements Mess
 
     @Override
     protected byte[] doProcess(List<GIOMessage> msgList) {
-        return getEvents(msgList).toByteArray();
+        EventList list = getEvents(msgList);
+
+        return list == null ? null : list.toByteArray();
     }
 
     private EventList getEvents(List<GIOMessage> msgList) {
         EventList.Builder listBuilder = EventList.newBuilder();
         for (GIOMessage msg : msgList) {
-            GioCdpEventMessage cdp = (GioCdpEventMessage) msg;
-            listBuilder.addValues(cdp.getEvent());
+            if (msg instanceof GioCdpEventMessage) {
+                GioCdpEventMessage cdp = (GioCdpEventMessage) msg;
+                listBuilder.addValues(cdp.getEvent());
+            }
         }
 
-        return listBuilder.build();
+        if (listBuilder.getValuesCount() > 0) {
+            return listBuilder.build();
+        } else {
+            return listBuilder.build();
+        }
     }
 
     @Override

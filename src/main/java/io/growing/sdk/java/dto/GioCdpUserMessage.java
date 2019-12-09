@@ -1,9 +1,9 @@
 package io.growing.sdk.java.dto;
 
-import io.growing.collector.tunnel.protocol.EventDto;
 import io.growing.collector.tunnel.protocol.UserDto;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * @author : tong.wang
@@ -31,19 +31,51 @@ public class GioCdpUserMessage extends GIOMessage implements Serializable {
             return new GioCdpUserMessage(builder);
         }
 
-        public Builder setLoginUserId(String loginUserId) {
+        public Builder loginUserId(String loginUserId) {
             builder.setUserId(loginUserId);
             builder.setGioId(loginUserId);
             return this;
         }
 
-        public Builder addAttribute(String key, String value) {
-            builder.putAttributes(key, value);
+        public Builder addUserVariable(String key, String value) {
+            this.addVariableObject(key, value);
             return this;
         }
 
-        public Builder addAttribute(String key, int value) {
-            builder.putAttributes(key, String.valueOf(value));
+        public Builder addUserVariable(String key, int value) {
+            this.addVariableObject(key, value);
+            return this;
+        }
+
+        public Builder addUserVariable(String key, double value) {
+            this.addVariableObject(key, value);
+            return this;
+        }
+
+        private Builder addVariableObject(String key, Object value) {
+            if (key != null && value != null) {
+                key = key.trim();
+
+                if (value instanceof String) {
+                    String val = value.toString();
+                    if (val.length() > 255) {
+                        builder.putAttributes(key, val.substring(0, 255));
+                    } else {
+                        builder.putAttributes(key, String.valueOf(value));
+                    }
+                } else {
+                    builder.putAttributes(key, String.valueOf(value));
+                }
+            }
+            return this;
+        }
+
+        public Builder addUserVariables(Map<String, Object> variables) {
+            if (variables != null && !variables.isEmpty()) {
+                for (Map.Entry<String, Object> entry: variables.entrySet()) {
+                    this.addVariableObject(entry.getKey(), entry.getValue());
+                }
+            }
             return this;
         }
     }

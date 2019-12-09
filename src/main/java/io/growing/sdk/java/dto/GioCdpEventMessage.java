@@ -1,10 +1,8 @@
 package io.growing.sdk.java.dto;
 
 import io.growing.collector.tunnel.protocol.EventDto;
-import io.growing.collector.tunnel.protocol.EventDtoOrBuilder;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -60,22 +58,31 @@ public class GioCdpEventMessage extends GIOMessage implements Serializable {
         }
 
         public Builder addEventVariable(String key, Integer value) {
-            addEventVariableObject(key, value);
+            addVariableObject(key, value);
             return this;
         }
 
         public Builder addEventVariable(String key, Double value) {
-            addEventVariableObject(key, value);
+            addVariableObject(key, value);
             return this;
         }
 
         public Builder addEventVariable(String key, String value) {
-            addEventVariableObject(key, value);
+            addVariableObject(key, value);
             return this;
         }
 
-        private Builder addEventVariableObject(String key, Object value) {
-            if (key != null) {
+        public Builder addEventVariables(Map<String, Object> variables) {
+            if (variables != null && !variables.isEmpty()){
+                for (Map.Entry<String, Object> entry : variables.entrySet()) {
+                    addVariableObject(entry.getKey(), entry.getValue());
+                }
+            }
+            return this;
+        }
+
+        private Builder addVariableObject(String key, Object value) {
+            if (key != null && value != null) {
                 key = key.trim();
 
                 if (value instanceof String) {

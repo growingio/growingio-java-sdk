@@ -1,8 +1,8 @@
 package io.growing.sdk.java.sender;
 
 import io.growing.sdk.java.dto.GIOMessage;
-import io.growing.sdk.java.process.MessageProcessor;
 import io.growing.sdk.java.process.EventProcessorClient;
+import io.growing.sdk.java.process.MessageProcessor;
 import io.growing.sdk.java.sender.net.HttpUrlProvider;
 import io.growing.sdk.java.sender.net.NetProviderAbstract;
 import io.growing.sdk.java.thread.GioThreadNamedFactory;
@@ -37,17 +37,21 @@ public class FixThreadPoolSender implements MessageSender {
             sendThread.execute(new Runnable() {
                 @Override
                 public void run() {
-                    MessageProcessor processor = EventProcessorClient.getApiInstance(msgList.get(0));
+                    for (MessageProcessor processor : EventProcessorClient.getProcessors()) {
+                        byte[] processed = processor.process(msgList);
 
-                    RequestDto requestDto = new RequestDto.Builder()
-                            .setUrl(processor.apiHost(projectId))
-                            .setContentType(processor.contentType())
-                            .setBytes(processor.process(msgList))
-                            .setHeaders(processor.headers())
-                            .build();
+                        if (processed != null && processed.length > 0) {
+                            RequestDto requestDto = new RequestDto.Builder()
+                                    .setUrl(processor.apiHost(projectId))
+                                    .setContentType(processor.contentType())
+                                    .setBytes(processed)
+                                    .setHeaders(processor.headers())
+                                    .build();
 
-                    getNetProvider().toSend(requestDto);
+                            getNetProvider().toSend(requestDto);
+                        }
 
+                    }
                 }
             });
         }

@@ -8,6 +8,10 @@ import io.growing.sdk.java.process.impl.GioCdpEventMessageProcessor;
 import io.growing.sdk.java.process.impl.GioCdpUserMessageProcessor;
 import io.growing.sdk.java.process.impl.GioEventMessageProcessor;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author : tong.wang
  * @version : 1.0.0
@@ -21,17 +25,20 @@ public class EventProcessorClient {
         private static final GioEventMessageProcessor EVENT_MESSAGE_PROCESSOR = new GioEventMessageProcessor();
     }
 
-    public static MessageProcessor getApiInstance(GIOMessage msg) {
-        if (msg instanceof GioCdpEventMessage) {
-            return SingletonInstances.CDP_EVENT_MESSAGE_PROCESSOR;
-        } else if (msg instanceof GIOEventMessage) {
-            return SingletonInstances.EVENT_MESSAGE_PROCESSOR;
-        } else if (msg instanceof GioCdpUserMessage){
-            return SingletonInstances.CDP_USER_MESSAGE_PROCESSOR;
-        } else {
-            return null;
-        }
+    private static final Map<Class<?>, MessageProcessor> processors = new HashMap<Class<?>, MessageProcessor>();
 
+    static {
+        processors.put(GioCdpEventMessage.class, new GioCdpEventMessageProcessor());
+        processors.put(GIOEventMessage.class, new GioEventMessageProcessor());
+        processors.put(GioCdpUserMessage.class, new GioCdpUserMessageProcessor());
+    }
+
+    public static Collection<MessageProcessor> getProcessors(){
+        return processors.values();
+    }
+
+    public static MessageProcessor getApiInstance(GIOMessage msg) {
+        return processors.get(msg.getClass());
     }
 
 }

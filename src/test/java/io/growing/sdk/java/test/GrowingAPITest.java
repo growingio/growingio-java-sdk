@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -26,21 +27,21 @@ public class GrowingAPITest {
 
     @BeforeClass
     public static void before() {
-        System.setProperty("java.util.logging.config.file","src/test/resources/logging.properties");
+        System.setProperty("java.util.logging.config.file", "src/test/resources/logging.properties");
     }
 
     @Test
     public void sendCdpEventMsg() {
         List<GioCdpEventMessage> list = new ArrayList<GioCdpEventMessage>(500);
         for (int i = 0; i < 500; i++) {
+            HashMap<String, Object> map = new HashMap();
+            map.put("a"+i, i);
             GioCdpEventMessage msg = new GioCdpEventMessage.Builder()
-                    .eventKey(""+i)
+                    .eventKey("" + i)
                     .eventNumValue(i)
-                    .loginUserId(i+"")
+                    .loginUserId(i + "")
                     .addEventVariable("product_name", "cdp苹果")
-                    .addEventVariable("product_classify", "cdp水果")
-                    .addEventVariable("product_classify", "cdp水果")
-                    .addEventVariable("product_price", 14)
+                    .addEventVariables(map)
                     .build();
 
             list.add(msg);
@@ -54,9 +55,9 @@ public class GrowingAPITest {
         List<GIOEventMessage> list = new ArrayList<GIOEventMessage>(500);
         for (int i = 0; i < 500; i++) {
             GIOEventMessage msg = new GIOEventMessage.Builder()
-                    .eventKey(""+i)
+                    .eventKey("" + i)
                     .eventNumValue(i)
-                    .loginUserId(i+"")
+                    .loginUserId(i + "")
                     .addEventVariable("product_name", "cdp苹果")
                     .addEventVariable("product_classify", "cdp水果")
                     .addEventVariable("product_classify", "cdp水果")
@@ -75,8 +76,8 @@ public class GrowingAPITest {
         List<GioCdpUserMessage> list = new ArrayList<GioCdpUserMessage>(500);
         for (int i = 0; i < 500; i++) {
             GioCdpUserMessage msg = new GioCdpUserMessage.Builder()
-                    .setLoginUserId(String.valueOf(i))
-                    .addAttribute("user", i)
+                    .loginUserId(String.valueOf(i))
+                    .addUserVariable("user", i)
                     .build();
 
 
@@ -87,10 +88,36 @@ public class GrowingAPITest {
     }
 
     @Test
+    public void sendMultipleMsg() {
+        List<GIOMessage> list = new ArrayList<GIOMessage>(500);
+        for (int i = 0; i < 500; i++) {
+            if (i % 2 == 0) {
+                GioCdpUserMessage msg = new GioCdpUserMessage.Builder()
+                        .loginUserId(String.valueOf(i))
+                        .addUserVariable("user", i)
+                        .build();
+
+                list.add(msg);
+            } else {
+                GioCdpEventMessage msg = new GioCdpEventMessage.Builder()
+                        .eventKey("" + i)
+                        .eventNumValue(i)
+                        .loginUserId(i + "")
+                        .addEventVariable("product_name", "cdp苹果")
+                        .build();
+
+                list.add(msg);
+            }
+        }
+
+        sendMsg(list);
+    }
+
+    @Test
     public void json() {
         GioCdpUserMessage msg = new GioCdpUserMessage.Builder()
-                .setLoginUserId("a")
-                .addAttribute("user", "a")
+                .loginUserId("a")
+                .addUserVariable("user", "a")
                 .build();
 
         System.out.println(new JsonFormat().printToString(msg.getUser()));

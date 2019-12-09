@@ -30,7 +30,10 @@ public abstract class AbstractMessageProcessor implements MessageProcessor {
     @Override
     public byte[] process(List<GIOMessage> msgList) {
         if (GrowingAPI.isTestMode()) {
-            GioLogger.debug("gio message is " + debugMessage(msgList));
+            String debugMessage = debugMessage(msgList);
+            if (debugMessage != null) {
+                GioLogger.debug("gio message is " + debugMessage(msgList));
+            }
         }
         
         return doProcess(msgList);

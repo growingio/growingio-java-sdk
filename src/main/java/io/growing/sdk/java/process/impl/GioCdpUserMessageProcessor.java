@@ -39,17 +39,24 @@ public class GioCdpUserMessageProcessor extends ProtobufMessage implements Messa
 
     @Override
     protected byte[] doProcess(List<GIOMessage> msgList) {
-        return getUsers(msgList).toByteArray();
+        UserList list = getUsers(msgList);
+        return list == null ? null : list.toByteArray();
     }
 
     private UserList getUsers(List<GIOMessage> msgList) {
         UserList.Builder listBuilder = UserList.newBuilder();
         for (GIOMessage msg : msgList) {
-            GioCdpUserMessage cdp = (GioCdpUserMessage) msg;
-            listBuilder.addValues(cdp.getUser());
+            if (msg instanceof GioCdpUserMessage) {
+                GioCdpUserMessage cdp = (GioCdpUserMessage) msg;
+                listBuilder.addValues(cdp.getUser());
+            }
         }
 
-        return listBuilder.build();
+        if (listBuilder.getValuesCount() > 0) {
+            return listBuilder.build();
+        } else {
+            return null;
+        }
     }
 
     @Override

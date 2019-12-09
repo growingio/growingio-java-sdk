@@ -82,11 +82,16 @@ public class GioEventMessageProcessor extends AbstractMessageProcessor implement
     @Override
     protected byte[] doProcess(List<GIOMessage> msgList) {
         String json = toJson(msgList);
-        byte[] bytes = json.getBytes();
-        if (compressConfig) {
-            return compress.compress(bytes);
+
+        if (json != null) {
+            byte[] bytes = json.getBytes();
+            if (compressConfig) {
+                return compress.compress(bytes);
+            } else {
+                return bytes;
+            }
         } else {
-            return bytes;
+            return null;
         }
 
     }
@@ -94,10 +99,17 @@ public class GioEventMessageProcessor extends AbstractMessageProcessor implement
     private String toJson(List<GIOMessage> msgList) {
         JSONArray jsonArray = new JSONArray();
         for (GIOMessage msg : msgList) {
-            GIOEventMessage event = (GIOEventMessage) msg;
-            jsonArray.put(new JSONObject(event.getMapResult()));
+            if (msg instanceof GIOEventMessage) {
+                GIOEventMessage event = (GIOEventMessage) msg;
+                jsonArray.put(new JSONObject(event.getMapResult()));
+            }
         }
-        return jsonArray.toString();
+
+        if (jsonArray.length() > 0) {
+            return jsonArray.toString();
+        } else {
+            return null;
+        }
     }
 
     @Override

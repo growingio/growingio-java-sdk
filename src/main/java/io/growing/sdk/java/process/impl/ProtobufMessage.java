@@ -12,7 +12,11 @@ public abstract class ProtobufMessage extends AbstractMessageProcessor {
     private static JsonFormat jsonFormat = new JsonFormat();
 
     protected String toJson(Message msg) {
-        return jsonFormat.printToString(msg);
+        if (msg == null) {
+            return null;
+        } else {
+            return jsonFormat.printToString(msg);
+        }
     }
 
  }
