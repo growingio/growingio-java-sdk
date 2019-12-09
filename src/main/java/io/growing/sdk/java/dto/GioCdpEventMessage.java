@@ -46,6 +46,7 @@ public class GioCdpEventMessage extends GIOMessage implements Serializable {
             return this;
         }
 
+        @Deprecated
         public Builder eventNumValue(Number numValue) {
             if (numValue != null) {
                 double value = numValue.doubleValue();

@@ -38,7 +38,6 @@ public class GrowingAPITest {
             map.put("a"+i, i);
             GioCdpEventMessage msg = new GioCdpEventMessage.Builder()
                     .eventKey("" + i)
-                    .eventNumValue(i)
                     .loginUserId(i + "")
                     .addEventVariable("product_name", "cdp苹果")
                     .addEventVariables(map)
@@ -101,7 +100,6 @@ public class GrowingAPITest {
             } else {
                 GioCdpEventMessage msg = new GioCdpEventMessage.Builder()
                         .eventKey("" + i)
-                        .eventNumValue(i)
                         .loginUserId(i + "")
                         .addEventVariable("product_name", "cdp苹果")
                         .build();
