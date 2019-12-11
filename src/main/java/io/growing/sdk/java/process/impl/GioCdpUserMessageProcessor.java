@@ -48,7 +48,7 @@ public class GioCdpUserMessageProcessor extends ProtobufMessage implements Messa
         for (GIOMessage msg : msgList) {
             if (msg instanceof GioCdpUserMessage) {
                 GioCdpUserMessage cdp = (GioCdpUserMessage) msg;
-                listBuilder.addValues(cdp.getUser());
+                listBuilder.addValues(cdp.getMessage());
             }
         }
 

@@ -1,7 +1,7 @@
 package io.growing.sdk.java.process.impl;
 
-import io.growing.sdk.java.GrowingAPI;
 import io.growing.sdk.java.constants.APIConstants;
+import io.growing.sdk.java.constants.RunMode;
 import io.growing.sdk.java.dto.GIOMessage;
 import io.growing.sdk.java.logger.GioLogger;
 import io.growing.sdk.java.process.MessageProcessor;
@@ -29,7 +29,7 @@ public abstract class AbstractMessageProcessor implements MessageProcessor {
 
     @Override
     public byte[] process(List<GIOMessage> msgList) {
-        if (GrowingAPI.isTestMode()) {
+        if (RunMode.isTestMode()) {
             String debugMessage = debugMessage(msgList);
             if (debugMessage != null) {
                 GioLogger.debug("gio message is " + debugMessage(msgList));

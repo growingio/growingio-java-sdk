@@ -1,5 +1,7 @@
 package io.growing.sdk.java.constants;
 
+import io.growing.sdk.java.utils.ConfigUtils;
+
 /**
  * @author : tong.wang
  * @version : 1.0.0
@@ -10,6 +12,7 @@ public enum RunMode {
     PRODUCTION("production");
 
     private String value;
+    private static RunMode currentMode;
 
     RunMode(String value) {
         this.value = value;
@@ -22,5 +25,20 @@ public enum RunMode {
             }
         }
         return TEST;
+    }
+
+    public static RunMode getCurrentMode() {
+        if (currentMode == null) {
+            currentMode = RunMode.getByValue(ConfigUtils.getStringValue("run.mode", "test"));
+        }
+        return currentMode;
+    }
+
+    public static Boolean isTestMode() {
+        return currentMode == TEST;
+    }
+
+    public static Boolean isProductionMode() {
+        return currentMode == PRODUCTION;
     }
 }

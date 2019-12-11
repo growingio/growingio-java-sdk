@@ -1,12 +1,11 @@
 package io.growing.sdk.java.sender.net;
 
-import io.growing.sdk.java.GrowingAPI;
 import io.growing.sdk.java.constants.APIConstants;
+import io.growing.sdk.java.constants.RunMode;
 import io.growing.sdk.java.logger.GioLogger;
 import io.growing.sdk.java.sender.RequestDto;
 import io.growing.sdk.java.utils.ConfigUtils;
 
-import java.io.IOException;
 import java.net.Authenticator;
 import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
@@ -14,7 +13,6 @@ import java.net.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
-import static io.growing.sdk.java.constants.APIConstants.COMPRESS_HEADER;
 import static java.net.Proxy.Type.HTTP;
 
 /**
@@ -31,7 +29,7 @@ public abstract class NetProviderAbstract {
     protected final static int readTimeout = ConfigUtils.getIntValue("read.timeout", 2000);
 
     public void toSend(RequestDto requestDto) {
-        if (GrowingAPI.isProductionMode()) {
+        if (RunMode.isProductionMode()) {
             sendPost(requestDto);
         } else {
             GioLogger.debug(requestDto.toString());

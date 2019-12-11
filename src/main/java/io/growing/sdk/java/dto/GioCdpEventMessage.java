@@ -10,18 +10,29 @@ import java.util.Map;
  * @version : 1.0.0
  * @since : 11/20/18 12:33 PM
  */
-public class GioCdpEventMessage extends GIOMessage implements Serializable {
+public class GioCdpEventMessage extends GioCDPMessage<EventDto> implements Serializable {
 
     private static final long serialVersionUID = -5228910337644290100L;
 
     private EventDto event;
 
     private GioCdpEventMessage(EventDto.Builder builder) {
-        event = builder.setType(EventDto.EventType.CUSTOM_EVENT).build();
+        event = builder.setTimestamp(getTimeStampOrDefault(builder.getTimestamp())).setType(EventDto.EventType.CUSTOM_EVENT).build();
     }
 
-    public EventDto getEvent() {
-        return event;
+    @Override
+    public void setDataSourceId(String dataSourceId) {
+        this.dataSourceId = dataSourceId;
+    }
+
+    @Override
+    public EventDto getMessage() {
+        return event.toBuilder().setProjectKey(projectKey).setDataSourceId(dataSourceId).build();
+    }
+
+    @Override
+    public void setProjectKey(String projectKey) {
+        this.projectKey = projectKey;
     }
 
     public static final class Builder {
@@ -31,7 +42,7 @@ public class GioCdpEventMessage extends GIOMessage implements Serializable {
             return new GioCdpEventMessage(builder);
         }
 
-        public Builder eventTime(Long eventTime) {
+        public Builder eventTime(long eventTime) {
             builder.setTimestamp(eventTime);
             return this;
         }

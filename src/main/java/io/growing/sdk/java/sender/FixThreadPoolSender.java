@@ -20,19 +20,18 @@ import java.util.concurrent.Executors;
 public class FixThreadPoolSender implements MessageSender {
     private static ExecutorService sendThread = Executors.newFixedThreadPool(ConfigUtils.getIntValue("send.msg.thread", 3), new GioThreadNamedFactory("gio-sender"));
 
-    private final static String projectId = ConfigUtils.getStringValue("project.id", "");
     private final static NetProviderAbstract netProvider = new HttpUrlProvider();
 
     @Override
-    public void sendMsg(final List<GIOMessage> msg) {
-        doSend(msg);
+    public void sendMsg(final String projectKey, final List<GIOMessage> msg) {
+        doSend(projectKey, msg);
     }
 
     public static NetProviderAbstract getNetProvider() {
         return netProvider;
     }
 
-    public void doSend(final List<GIOMessage> msgList) {
+    public void doSend(final String projectKey, final List<GIOMessage> msgList) {
         if (null != msgList && !msgList.isEmpty()) {
             sendThread.execute(new Runnable() {
                 @Override
@@ -42,7 +41,7 @@ public class FixThreadPoolSender implements MessageSender {
 
                         if (processed != null && processed.length > 0) {
                             RequestDto requestDto = new RequestDto.Builder()
-                                    .setUrl(processor.apiHost(projectId))
+                                    .setUrl(processor.apiHost(projectKey))
                                     .setContentType(processor.contentType())
                                     .setBytes(processed)
                                     .setHeaders(processor.headers())
@@ -57,7 +56,4 @@ public class FixThreadPoolSender implements MessageSender {
         }
     }
 
-    public static String getProjectId(){
-        return projectId;
-    }
 }

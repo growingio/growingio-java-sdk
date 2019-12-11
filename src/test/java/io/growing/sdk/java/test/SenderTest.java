@@ -41,7 +41,7 @@ public class SenderTest {
         List list = new ArrayList();
         list.add(msg);
 
-        sender.sendMsg(list);
+        sender.sendMsg("test-debug", list);
 
         TimeUnit.SECONDS.sleep(15);
     }
@@ -60,7 +60,7 @@ public class SenderTest {
                     .build();
 
             list.add(msg);
-            sender.sendMsg(list);
+            sender.sendMsg("test-debug", list);
         }
         TimeUnit.SECONDS.sleep(10);
     }

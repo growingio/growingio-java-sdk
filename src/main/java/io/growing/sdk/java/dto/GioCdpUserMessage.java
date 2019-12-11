@@ -10,18 +10,29 @@ import java.util.Map;
  * @version : 1.0.0
  * @since : 11/20/18 12:33 PM
  */
-public class GioCdpUserMessage extends GIOMessage implements Serializable {
+public class GioCdpUserMessage extends GioCDPMessage<UserDto> implements Serializable {
 
     private static final long serialVersionUID = -5228910337644290100L;
 
     private UserDto user;
 
     private GioCdpUserMessage(UserDto.Builder builder) {
-        user = builder.build();
+        user = builder.setTimestamp(getTimeStampOrDefault(builder.getTimestamp())).build();
     }
 
-    public UserDto getUser() {
-        return user;
+    @Override
+    public void setProjectKey(String projectKey) {
+       this.projectKey = projectKey;
+    }
+
+    @Override
+    public void setDataSourceId(String dataSourceId) {
+        this.dataSourceId = dataSourceId;
+    }
+
+    @Override
+    public UserDto getMessage() {
+        return user.toBuilder().setProjectKey(projectKey).setDataSourceId(dataSourceId).build();
     }
 
     public static final class Builder {
@@ -29,6 +40,11 @@ public class GioCdpUserMessage extends GIOMessage implements Serializable {
 
         public GioCdpUserMessage build() {
             return new GioCdpUserMessage(builder);
+        }
+
+        public Builder time(long timestamp) {
+            builder.setTimestamp(timestamp);
+            return this;
         }
 
         public Builder loginUserId(String loginUserId) {

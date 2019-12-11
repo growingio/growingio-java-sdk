@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-import "context.proto";
+import "v1/dto/context.proto";
 
 package io.growing.tunnel.protocol;
 option java_package = "io.growing.collector.tunnel.protocol";
@@ -32,6 +32,7 @@ message EventDto {
     VISIT = 0;
     CUSTOM_EVENT = 1;
   }
+  string data_source_id = 16;
 }
 
 message EventList {

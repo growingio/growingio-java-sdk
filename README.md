@@ -70,8 +70,6 @@ gio.properties
 ```properties
 #项目采集端地址
 api.host=https://api.growingio.com
-#项目的AccountID
-project.id=填写您项目的AccountID
 #消息发送间隔时间,单位ms（默认 100）
 send.msg.interval=100
 #消息发送线程数量 （默认 3）

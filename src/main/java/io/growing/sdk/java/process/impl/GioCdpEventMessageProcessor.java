@@ -49,7 +49,7 @@ public class GioCdpEventMessageProcessor extends ProtobufMessage implements Mess
         for (GIOMessage msg : msgList) {
             if (msg instanceof GioCdpEventMessage) {
                 GioCdpEventMessage cdp = (GioCdpEventMessage) msg;
-                listBuilder.addValues(cdp.getEvent());
+                listBuilder.addValues(cdp.getMessage());
             }
         }
 

@@ -39,6 +39,11 @@ public class GIOEventMessage extends GIOMessage implements Serializable {
         return new Builder();
     }
 
+    @Override
+    public void setProjectKey(String projectKey) {
+        this.projectKey = projectKey;
+    }
+
     public static final class Builder {
         private Map<String, Object> eventVar = new HashMap<String, Object>();
         private Map<String, Object> builderMap = new HashMap<String, Object>();
@@ -47,7 +52,7 @@ public class GIOEventMessage extends GIOMessage implements Serializable {
             return new GIOEventMessage(this);
         }
 
-        public Builder eventTime(Long eventTime) {
+        public Builder eventTime(long eventTime) {
             this.builderMap.put(tm, eventTime);
             return this;
         }
