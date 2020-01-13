@@ -17,14 +17,15 @@ import java.util.Map;
  */
 public abstract class AbstractMessageProcessor implements MessageProcessor {
 
-    protected final static Map<String, String> headers = new HashMap<String, String>();
+    protected static final Map<String, String> HEADERS = new HashMap<String, String>();
 
     protected String apiDomain() {
         String apiHost = APIConstants.API_HOST;
-        if (apiHost.endsWith("/"))
-            return apiHost.substring(0, apiHost.length()-1);
-        else
+        if (apiHost.endsWith("/")) {
+            return apiHost.substring(0, apiHost.length() - 1);
+        } else {
             return apiHost;
+        }
     }
 
     @Override
@@ -35,7 +36,7 @@ public abstract class AbstractMessageProcessor implements MessageProcessor {
                 GioLogger.debug("gio message is " + debugMessage(msgList));
             }
         }
-        
+
         return doProcess(msgList);
     }
 

@@ -2,7 +2,6 @@ package io.growing.sdk.java.process.compression.impl;
 
 import io.growing.sdk.java.exception.GIOMessageException;
 import io.growing.sdk.java.process.compression.CompressionTool;
-import org.xerial.snappy.Snappy;
 
 import java.io.IOException;
 

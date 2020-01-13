@@ -25,9 +25,9 @@ public class GioEventMessageProcessor extends AbstractMessageProcessor implement
 
     private static final List<String> INVALID_CS1_VALUE = Arrays.asList("0", "1", "-1");
     private static final int STRING_VALUE_LENGTH_LIMIT = 255;
-    private final static CompressionTool compress = new GioSnappy();
+    private static final CompressionTool compress = new GioSnappy();
 
-    private final static Boolean compressConfig = ConfigUtils.getBooleanValue("compress", Boolean.TRUE);
+    private static final Boolean compressConfig = ConfigUtils.getBooleanValue("compress", Boolean.TRUE);
 
     @Override
     public String apiHost(String ai) {
@@ -42,12 +42,12 @@ public class GioEventMessageProcessor extends AbstractMessageProcessor implement
     @Override
     public Map<String, String> headers() {
         if (compressConfig) {
-            headers.put(APIConstants.COMPRESS_HEADER, "2");
+            HEADERS.put(APIConstants.COMPRESS_HEADER, "2");
         } else {
-            headers.put(APIConstants.COMPRESS_HEADER, "0");
+            HEADERS.put(APIConstants.COMPRESS_HEADER, "0");
         }
 
-        return headers;
+        return HEADERS;
     }
 
     @Override

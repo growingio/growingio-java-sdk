@@ -23,7 +23,7 @@ public class SenderTest {
 
     @BeforeClass
     public static void before() {
-        System.setProperty("java.util.logging.config.file","src/test/resources/logging.properties");
+        System.setProperty("java.util.logging.config.file", "src/test/resources/logging.properties");
     }
 
     @Test

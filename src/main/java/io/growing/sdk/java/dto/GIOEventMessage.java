@@ -112,7 +112,6 @@ public class GIOEventMessage extends GIOMessage implements Serializable {
                 this.builderMap.put(var, this.eventVar);
             }
 
-
             return this;
         }
 

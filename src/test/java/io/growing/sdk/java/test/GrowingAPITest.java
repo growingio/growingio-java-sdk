@@ -40,7 +40,7 @@ public class GrowingAPITest {
         List<GioCdpEventMessage> list = new ArrayList<GioCdpEventMessage>(msgSize);
         for (int i = 0; i < msgSize; i++) {
             HashMap<String, Object> map = new HashMap();
-            map.put("a"+i, i);
+            map.put("a" + i, i);
             GioCdpEventMessage msg = new GioCdpEventMessage.Builder()
                     .eventKey("" + i)
                     .loginUserId(i + "")
@@ -117,7 +117,8 @@ public class GrowingAPITest {
     }
 
     private <T extends GIOMessage> void sendMsg(List<T> msgList) {
-        for (int i = 0, size = msgList.size(); i < size; i ++) {
+
+        for (int i = 0, size = msgList.size(); i < size; i++) {
             if (i % 3 == 0) {
                 testDebug2.send(msgList.get(i));
             } else {

@@ -2,8 +2,6 @@ package io.growing.sdk.java.utils;
 
 import io.growing.sdk.java.exception.GIOMessageException;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -14,13 +12,11 @@ import java.util.Properties;
  */
 public class ConfigUtils {
     private static Properties prop = new Properties();
-    
     static {
         try {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             InputStream gioProps = classLoader.getResourceAsStream("gio_default.properties");
             prop.load(gioProps);
-            
             InputStream customProps = classLoader.getResourceAsStream("gio.properties");
             if (customProps != null) {
                 prop.load(customProps);
