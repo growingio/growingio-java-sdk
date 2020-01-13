@@ -269,5 +269,12 @@
                 <gio-java-sdk-version-profile>${gio-java-sdk-version}-cdp-SNAPSHOT</gio-java-sdk-version-profile>
             </properties>
         </profile>
+
+        <profile>
+            <id>cdp-release</id>
+            <properties>
+                <gio-java-sdk-version-profile>${gio-java-sdk-version}-cdp</gio-java-sdk-version-profile>
+            </properties>
+        </profile>
     </profiles>
 </project>
