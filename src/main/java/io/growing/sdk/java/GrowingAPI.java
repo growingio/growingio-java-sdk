@@ -36,7 +36,7 @@ public class GrowingAPI {
     }
 
     /**
-     * 添加埋点事件
+     * 添加埋点事件.
      * @param msg the event message to upload
      */
     public void send(GIOMessage msg) {

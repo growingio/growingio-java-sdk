@@ -28,7 +28,7 @@ public class GioCdpEventMessageProcessor extends ProtobufMessage implements Mess
 
     @Override
     public Map<String, String> headers() {
-        return headers;
+        return HEADERS;
     }
 
     @Override

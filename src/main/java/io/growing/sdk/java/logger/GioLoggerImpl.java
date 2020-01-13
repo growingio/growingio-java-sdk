@@ -13,13 +13,15 @@ public class GioLoggerImpl implements GioLoggerInterface {
 
     @Override
     public void debug(String msg) {
-        if (msg != null)
+        if (msg != null) {
             System.out.println(logTemplate(msg));
+        }
     }
 
     @Override
     public void error(String msg) {
-        if (msg != null)
+        if (msg != null) {
             System.err.println(logTemplate(msg));
+        }
     }
 }

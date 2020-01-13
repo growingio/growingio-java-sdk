@@ -43,7 +43,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.6</jdk.version>
         <downloadSources>true</downloadSources>
-        <gio-java-sdk-version>1.0.5</gio-java-sdk-version>
+        <gio-java-sdk-version>1.0.6</gio-java-sdk-version>
     </properties>
 
     <dependencies>
@@ -236,13 +236,16 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.1</version>
+                <version>2.3.1</version>
                 <configuration>
                     <archive>
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
                     </archive>
+                    <excludes>
+                        <exclude>v1/dto/**</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
             <plugin>
@@ -264,6 +267,18 @@
                                 <relocation>
                                     <pattern>org.json</pattern>
                                     <shadedPattern>io.growing.sdk.java.org.json</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.google.protobuf</pattern>
+                                    <shadedPattern>io.growing.sdk.java.com.google.protobuf</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.googlecode.protobuf.format</pattern>
+                                    <shadedPattern>io.growing.sdk.java.com.googlecode.protobuf.format</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>google.protobuf</pattern>
+                                    <shadedPattern>io.growing.sdk.java.google.protobuf</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>

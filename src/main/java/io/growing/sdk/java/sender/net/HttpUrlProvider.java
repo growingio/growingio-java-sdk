@@ -1,6 +1,5 @@
 package io.growing.sdk.java.sender.net;
 
-import io.growing.sdk.java.exception.GIOMessageException;
 import io.growing.sdk.java.logger.GioLogger;
 import io.growing.sdk.java.sender.RequestDto;
 
@@ -40,8 +39,8 @@ public class HttpUrlProvider extends NetProviderAbstract {
         try {
             HttpURLConnection httpConn = getConnection(CHECK_NET_HEALTH_URL);
             httpConn.setRequestMethod("GET");
-            httpConn.setConnectTimeout(connectionTimeout);
-            httpConn.setReadTimeout(readTimeout);
+            httpConn.setConnectTimeout(CONNECTION_TIMEOUT);
+            httpConn.setReadTimeout(READ_TIMEOUT);
 
             httpConn.connect();
             httpConn.getResponseCode();
@@ -69,8 +68,8 @@ public class HttpUrlProvider extends NetProviderAbstract {
         httpConn.setRequestProperty("Content-Type", requestDto.getContentType().toString());
         httpConn.setUseCaches(false);
         httpConn.setRequestMethod("POST");
-        httpConn.setConnectTimeout(connectionTimeout);
-        httpConn.setReadTimeout(readTimeout);
+        httpConn.setConnectTimeout(CONNECTION_TIMEOUT);
+        httpConn.setReadTimeout(READ_TIMEOUT);
         httpConn.setRequestProperty("Content-Length", String.valueOf(requestDto.getBytes().length));
         httpConn.setDoOutput(true);
 
