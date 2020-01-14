@@ -23,10 +23,6 @@
         <property name="severity" value="error"/>
     </module>
 
-    <module name="SuppressionFilter">
-        <property name="file" value="${checkstyle.suppressions.file}" default="suppressions.xml"/>
-    </module>
-
     <module name="FileLength">
         <property name="max" value="3000"/>
     </module>

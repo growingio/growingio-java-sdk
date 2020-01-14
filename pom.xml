@@ -58,7 +58,7 @@
             <artifactId>protobuf-java</artifactId>
             <version>3.11.1</version>
         </dependency>
-        
+
         <dependency>
             <groupId>com.googlecode.protobuf-java-format</groupId>
             <artifactId>protobuf-java-format</artifactId>
@@ -84,7 +84,7 @@
             <version>1.20</version>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-generator-annprocess</artifactId>
@@ -139,7 +139,6 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <suppressionsLocation>suppressions.xml</suppressionsLocation>
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
                     <configLocation>checkstyle.xml</configLocation>
                     <logViolationsToConsole>true</logViolationsToConsole>
@@ -259,8 +258,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <shadedArtifactAttached>false</shadedArtifactAttached>
                             <shadedClassifierName>standalone</shadedClassifierName>
                             <minimizeJar>true</minimizeJar>
                             <relocations>
@@ -287,7 +285,7 @@
             </plugin>
         </plugins>
     </build>
-    
+
     <profiles>
         <profile>
             <id>default</id>
@@ -298,7 +296,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
         </profile>
-        
+
         <profile>
             <id>release</id>
             <properties>
