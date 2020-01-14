@@ -27,6 +27,14 @@
                     <groupId>org.json</groupId>
                     <artifactId>json</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.google.protobuf</groupId>
+                    <artifactId>protobuf-java</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.googlecode.protobuf-java-format</groupId>
+                    <artifactId>protobuf-java-format</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
     </dependencies>

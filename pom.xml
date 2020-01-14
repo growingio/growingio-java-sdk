@@ -84,6 +84,7 @@
             <version>1.20</version>
             <scope>test</scope>
         </dependency>
+        
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-generator-annprocess</artifactId>
@@ -143,6 +144,9 @@
                     <configLocation>checkstyle.xml</configLocation>
                     <logViolationsToConsole>true</logViolationsToConsole>
                     <failOnViolation>true</failOnViolation>
+                    <excludes>
+                        io/growing/collector/tunnel/protocol/*
+                    </excludes>
                 </configuration>
             </plugin>
             <plugin>
