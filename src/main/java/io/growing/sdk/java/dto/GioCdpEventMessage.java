@@ -14,7 +14,7 @@ public class GioCdpEventMessage extends GioCDPMessage<EventDto> implements Seria
 
     private static final long serialVersionUID = -5228910337644290100L;
 
-    private EventDto event;
+    private final EventDto event;
 
     private GioCdpEventMessage(EventDto.Builder builder) {
         event = builder.setTimestamp(getTimeStampOrDefault(builder.getTimestamp())).setType(EventDto.EventType.CUSTOM_EVENT).build();
@@ -36,7 +36,7 @@ public class GioCdpEventMessage extends GioCDPMessage<EventDto> implements Seria
     }
 
     public static final class Builder {
-        private EventDto.Builder builder = EventDto.newBuilder();
+        private final EventDto.Builder builder = EventDto.newBuilder();
 
         public GioCdpEventMessage build() {
             return new GioCdpEventMessage(builder);

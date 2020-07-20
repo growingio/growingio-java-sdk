@@ -31,15 +31,14 @@ public abstract class NetProviderAbstract {
     public void toSend(RequestDto requestDto) {
         if (RunMode.isProductionMode()) {
             sendPost(requestDto);
-        } else {
-            GioLogger.debug(requestDto.toString());
         }
+        GioLogger.debug(System.currentTimeMillis() + " message sent. " + requestDto.toString());
     }
 
-    protected abstract void sendPost(RequestDto requestDto);
+    protected abstract int sendPost(RequestDto requestDto);
 
     protected static class ProxyInfo {
-        private static Proxy proxy;
+        private static final Proxy proxy;
 
         static {
             proxy = setProxy();

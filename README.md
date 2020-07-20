@@ -53,7 +53,7 @@ GIOEventMessage eventMessage = new GIOEventMessage.Builder()
     .eventTime(System.currentTimeMillis())            // 默认为系统当前时间,选填
     .eventKey("3")                                    // 事件标识 (必填)
     .eventNumValue(1.0)                               // 打点事件数值 (选填)
-    .loginUserId("417abcabcabcbac")                   // 带用登陆用户ID的 (选填)
+    .loginUserId("417abcabcabcbac")                   // 登陆用户ID (选填)
     .addEventVariable("product_name", "苹果")          // 事件级变量 (选填)
     .addEventVariable("product_classify", "水果")      // 事件级变量 (选填)
     .addEventVariable("product_price", 14)            // 事件级变量 (选填)
@@ -97,7 +97,38 @@ proxy.password=demo
 #read.timeout=2000
 ```
 
-## 事件消息
+### 事件消息
 
 * 默认采用阻塞队列，队列大小为500.
 * 如果队列满了，新的消息会被丢弃（可通过 `msg.store.queue.size` 和 `send.msg.interval` 调节队列大小和消息发送间隔时间，避免丢消息）
+
+### sdk log 输出级别
+通过以下配置可以控制 sdk 的日志输出界别
+```text
+# debug: 输出 debug 信息，建议连调阶段开启，可输出消息的发送报文
+# error: 仅输出 错误日志，不会输出 debug 界别的信息
+logger.level=debug
+```
+
+### 自定义 sdk log 输出
+通过以下配置，可自定义日志输出实现类, **默认为 `io.growing.sdk.java.logger.GioLoggerImpl` 会将日志输出到 控制台**
+
+```text
+logger.implementation=io.growing.sdk.java.demo.DemoLogger
+```
+自定义日志输出实现类示例，DemoLogger 类需要客户自己实现，客户可根据自己的系统内部的日志工具将 sdk 的日志输出，并制定适合自己业务的日志保存策略
+
+```java
+public class DemoLogger implements GioLoggerInterface {
+	private final Logger logger = LoggerFactory.getLogger(DemoLogger.class);
+
+	public void debug(String msg) {
+		logger.debug(msg);
+	}
+
+	public void error(String msg) {
+		logger.error(msg);
+	}
+}
+```
+比如以上 demo 中，采用的就是 SLF4J 和 Log4j2 的组合, 客户可通过自己的日志工具定制 日志保留时间，及日志存储大小。

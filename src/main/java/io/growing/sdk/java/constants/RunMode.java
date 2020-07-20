@@ -11,7 +11,7 @@ public enum RunMode {
     TEST("test"),
     PRODUCTION("production");
 
-    private String value;
+    private final String value;
     private static RunMode currentMode;
 
     RunMode(String value) {

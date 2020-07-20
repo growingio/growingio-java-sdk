@@ -15,8 +15,8 @@ import java.util.Map;
  */
 public class Demo {
 
-    private static GrowingAPI projectA = new GrowingAPI.Builder().setProjectKey("test-debug-a").setDataSourceId("debug-a").build();
-    private static GrowingAPI projectB = new GrowingAPI.Builder().setProjectKey("test-debug-b").setDataSourceId("debug-b").build();
+    private static final GrowingAPI projectA = new GrowingAPI.Builder().setProjectKey("test-debug-a").setDataSourceId("debug-a").build();
+    private static final GrowingAPI projectB = new GrowingAPI.Builder().setProjectKey("test-debug-b").setDataSourceId("debug-b").build();
 
     /**
      * 配置文件内容参考 gio.properties

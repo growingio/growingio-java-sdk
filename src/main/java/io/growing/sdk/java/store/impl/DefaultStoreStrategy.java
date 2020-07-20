@@ -29,7 +29,7 @@ public class DefaultStoreStrategy extends StoreStrategyAbstract {
     private static final int sendInterval = ConfigUtils.getIntValue("send.msg.interval", 100);
     private static final MessageSender sender = new FixThreadPoolSender();
     private static final int sendMsgBatchSize = 100;
-    private static AtomicInteger offered = new AtomicInteger(0);
+    private static final AtomicInteger offered = new AtomicInteger(0);
 
     private static final Map<String, List<GIOMessage>> batchMsgMap = new HashMap<String, List<GIOMessage>>();
 
@@ -43,10 +43,10 @@ public class DefaultStoreStrategy extends StoreStrategyAbstract {
                         if (gioMessage != null) {
                             String projectKey = gioMessage.getProjectKey();
                             if (batchMsgMap.containsKey(projectKey)) {
-                                List list = batchMsgMap.get(projectKey);
+                                List<GIOMessage> list = batchMsgMap.get(projectKey);
                                 list.add(gioMessage);
                             } else {
-                                List list = new ArrayList<GIOMessage>();
+                                List<GIOMessage> list = new ArrayList<>();
                                 list.add(gioMessage);
                                 batchMsgMap.put(projectKey, list);
                             }

@@ -9,7 +9,7 @@ import io.growing.sdk.java.utils.ConfigUtils;
  */
 public class GioLogger {
     private static GioLoggerInterface logger;
-    private static String loggerLevel;
+    private static final String loggerLevel;
 
     static {
         String loggerImplName = ConfigUtils.getStringValue("logger.implementation", "io.growing.sdk.java.logger.GioLoggerImpl");
@@ -31,7 +31,7 @@ public class GioLogger {
         }
     }
 
-    public static GioLoggerInterface getDefaultLogger() {
+    private static GioLoggerInterface getDefaultLogger() {
         return new GioLoggerImpl();
     }
 
