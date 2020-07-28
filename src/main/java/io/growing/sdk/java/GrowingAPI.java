@@ -6,6 +6,7 @@ import io.growing.sdk.java.dto.GioCDPMessage;
 import io.growing.sdk.java.logger.GioLogger;
 import io.growing.sdk.java.sender.FixThreadPoolSender;
 import io.growing.sdk.java.store.StoreStrategyClient;
+import io.growing.sdk.java.utils.ConfigUtils;
 import io.growing.sdk.java.utils.StringUtils;
 import io.growing.sdk.java.utils.VersionInfo;
 
@@ -17,16 +18,12 @@ import io.growing.sdk.java.utils.VersionInfo;
 public class GrowingAPI {
 
     private static boolean validDefaultConfig;
-    private String projectKey;
-    private String dataSourceId;
+    private final String projectKey;
+    private final String dataSourceId;
 
     private GrowingAPI(Builder builder) {
         this.dataSourceId = builder.dataSourceId;
         this.projectKey = builder.projectKey;
-    }
-
-    static {
-        validDefaultConfig = validDefaultConfig();
     }
 
     private static boolean validDefaultConfig() {
@@ -59,7 +56,7 @@ public class GrowingAPI {
 
         if (msg instanceof GioCDPMessage) {
             if (StringUtils.nonBlank(this.dataSourceId)) {
-                ((GioCDPMessage) msg).setDataSourceId(this.dataSourceId);
+                ((GioCDPMessage<?>) msg).setDataSourceId(this.dataSourceId);
             } else {
                 GioLogger.error("cdp message datasourceId cant be null or empty string");
                 return false;
@@ -87,4 +84,14 @@ public class GrowingAPI {
         }
     }
 
+    /**
+     * 配置文件路径读取.
+     * 如果不需要指定配置文件路径，则默认加载 gio.properties
+     * 如果需要指定配置文件路径，则需要在 GrowingAPI 初始化之前调用 initConfig, 进行配置初始化
+     * @param configFilePath
+     */
+    public static void initConfig(String configFilePath) {
+        ConfigUtils.init(configFilePath);
+        validDefaultConfig = validDefaultConfig();
+    }
 }

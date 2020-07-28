@@ -11,10 +11,10 @@ import java.util.Map;
  * @since : 12/6/19 11:00 AM
  */
 public class RequestDto {
-    private String url;
-    private ContentTypeEnum contentType;
-    private Map<String, String> headers;
-    private byte[] bytes;
+    private final String url;
+    private final ContentTypeEnum contentType;
+    private final Map<String, String> headers;
+    private final byte[] bytes;
 
     private RequestDto(Builder builder) {
        this.url = builder.url;

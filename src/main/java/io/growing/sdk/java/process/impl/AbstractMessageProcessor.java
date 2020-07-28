@@ -1,10 +1,10 @@
 package io.growing.sdk.java.process.impl;
 
-import io.growing.sdk.java.constants.APIConstants;
 import io.growing.sdk.java.constants.RunMode;
 import io.growing.sdk.java.dto.GIOMessage;
 import io.growing.sdk.java.logger.GioLogger;
 import io.growing.sdk.java.process.MessageProcessor;
+import io.growing.sdk.java.utils.ConfigUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +20,7 @@ public abstract class AbstractMessageProcessor implements MessageProcessor {
     protected static final Map<String, String> HEADERS = new HashMap<String, String>();
 
     protected String apiDomain() {
-        String apiHost = APIConstants.API_HOST;
+        String apiHost = ConfigUtils.getStringValue("api.host", "");
         if (apiHost.endsWith("/")) {
             return apiHost.substring(0, apiHost.length() - 1);
         } else {

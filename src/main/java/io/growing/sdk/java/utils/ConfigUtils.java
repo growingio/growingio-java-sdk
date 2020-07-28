@@ -1,9 +1,14 @@
 package io.growing.sdk.java.utils;
 
 import io.growing.sdk.java.exception.GIOMessageException;
+import io.growing.sdk.java.logger.GioLogger;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author : tong.wang
@@ -11,53 +16,77 @@ import java.util.Properties;
  * @since : 11/20/18 7:00 PM
  */
 public class ConfigUtils {
-    private static Properties prop = new Properties();
-    static {
-        try {
-            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            InputStream gioProps = classLoader.getResourceAsStream("gio_default.properties");
-            prop.load(gioProps);
-            InputStream customProps = classLoader.getResourceAsStream("gio.properties");
-            if (customProps != null) {
-                prop.load(customProps);
-            }
+	private static final Properties prop = new Properties();
 
-        } catch (Exception e) {
-            throw new GIOMessageException("cant find gio.properties", e);
-        }
-    }
+	private static final AtomicBoolean inited = new AtomicBoolean(false);
 
-    public static String getStringValue(String key, String defaultValue) {
-        return prop.getProperty(key, defaultValue);
-    }
+	static {
+		try {
+			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+			InputStream gioDefaultProps = classLoader.getResourceAsStream("gio_default.properties");
+			prop.load(gioDefaultProps);
 
-    public static Long getLongValue(String key, Long defaultValue) {
-        String obj = prop.getProperty(key, defaultValue.toString());
+			InputStream gioProps = classLoader.getResourceAsStream("gio.properties");
+			if (gioProps != null) {
+				prop.load(gioProps);
+			}
+		} catch (Exception e) {
+			throw new GIOMessageException("cant find gio sdk config", e);
+		}
+	}
 
-        try {
-            return Long.valueOf(obj);
-        } catch (Exception e) {
-            return defaultValue;
-        }
-    }
+	public static void init(String configFilePath) {
+		if (inited.compareAndSet(false, true)) {
+			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
-    public static Integer getIntValue(String key, Integer defaultValue) {
-        String obj = prop.getProperty(key, defaultValue.toString());
+			try {
+				if (null != configFilePath && configFilePath.length() != 0) {
+					InputStream customProps = classLoader.getResourceAsStream(configFilePath);
+					if (customProps != null) {
+						prop.load(customProps);
+					} else {
+						InputStream runtimeConfigResource = new FileInputStream(new File(configFilePath));
+						prop.load(runtimeConfigResource);
+					}
+					GioLogger.debug("read gio config from " + configFilePath);
+				}
+			} catch (IOException e) {
+				throw new GIOMessageException("cant find gio sdk config", e);
+			}
+		}
+	}
 
-        try {
-            return Integer.valueOf(obj);
-        } catch (Exception e) {
-            return defaultValue;
-        }
-    }
+	public static String getStringValue(String key, String defaultValue) {
+		return prop.getProperty(key, defaultValue);
+	}
 
-    public static Boolean getBooleanValue(String key, Boolean defaultValue) {
-        String obj = prop.getProperty(key, defaultValue.toString());
+	public static Long getLongValue(String key, Long defaultValue) {
+		String obj = prop.getProperty(key, defaultValue.toString());
 
-        try {
-            return Boolean.valueOf(obj);
-        } catch (Exception e) {
-            return defaultValue;
-        }
-    }
+		try {
+			return Long.valueOf(obj);
+		} catch (Exception e) {
+			return defaultValue;
+		}
+	}
+
+	public static Integer getIntValue(String key, Integer defaultValue) {
+		String obj = prop.getProperty(key, defaultValue.toString());
+
+		try {
+			return Integer.valueOf(obj);
+		} catch (Exception e) {
+			return defaultValue;
+		}
+	}
+
+	public static Boolean getBooleanValue(String key, Boolean defaultValue) {
+		String obj = prop.getProperty(key, defaultValue.toString());
+
+		try {
+			return Boolean.valueOf(obj);
+		} catch (Exception e) {
+			return defaultValue;
+		}
+	}
 }

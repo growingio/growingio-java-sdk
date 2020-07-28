@@ -2,6 +2,7 @@ package io.growing.sdk.java.sender.net;
 
 import io.growing.sdk.java.logger.GioLogger;
 import io.growing.sdk.java.sender.RequestDto;
+import io.growing.sdk.java.utils.ConfigUtils;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -35,18 +36,19 @@ public class HttpUrlProvider extends NetProviderAbstract {
     @Override
     public boolean connectedToGrowingAPIHost() {
         InputStream inputStream = null;
+        String checkHealthyUrl = ConfigUtils.getStringValue("api.host", "");
         try {
-            HttpURLConnection httpConn = getConnection(CHECK_NET_HEALTH_URL);
+            HttpURLConnection httpConn = getConnection(checkHealthyUrl);
             httpConn.setRequestMethod("GET");
-            httpConn.setConnectTimeout(CONNECTION_TIMEOUT);
-            httpConn.setReadTimeout(READ_TIMEOUT);
+            httpConn.setConnectTimeout(getConnectionTimeout());
+            httpConn.setReadTimeout(getReadTimeout());
 
             httpConn.connect();
             httpConn.getResponseCode();
 
             return true;
         } catch (IOException e) {
-            GioLogger.error("failed to connect " + CHECK_NET_HEALTH_URL + ", cause " + e.getLocalizedMessage());
+            GioLogger.error("failed to connect " + checkHealthyUrl + ", cause " + e.getLocalizedMessage());
             return false;
         } finally {
             if (inputStream != null) {
@@ -64,8 +66,8 @@ public class HttpUrlProvider extends NetProviderAbstract {
         httpConn.setRequestProperty("Content-Type", requestDto.getContentType().toString());
         httpConn.setUseCaches(false);
         httpConn.setRequestMethod("POST");
-        httpConn.setConnectTimeout(CONNECTION_TIMEOUT);
-        httpConn.setReadTimeout(READ_TIMEOUT);
+        httpConn.setConnectTimeout(getConnectionTimeout());
+        httpConn.setReadTimeout(getReadTimeout());
         httpConn.setRequestProperty("Content-Length", String.valueOf(requestDto.getBytes().length));
         httpConn.setDoOutput(true);
 

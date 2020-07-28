@@ -19,7 +19,7 @@ pom.xml
     <dependency>
         <groupId>io.growing.sdk.java</groupId>
         <artifactId>growingio-java-sdk</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.7-cdp-SNAPSHOT</version>
     </dependency>
 </dependencies>
 ```
@@ -103,10 +103,10 @@ proxy.password=demo
 * 如果队列满了，新的消息会被丢弃（可通过 `msg.store.queue.size` 和 `send.msg.interval` 调节队列大小和消息发送间隔时间，避免丢消息）
 
 ### sdk log 输出级别
-通过以下配置可以控制 sdk 的日志输出界别
+通过以下配置可以控制 sdk 的日志输出级别
 ```text
 # debug: 输出 debug 信息，建议连调阶段开启，可输出消息的发送报文
-# error: 仅输出 错误日志，不会输出 debug 界别的信息
+# error: 仅输出 错误日志，不会输出 debug 级别的信息
 logger.level=debug
 ```
 
@@ -132,3 +132,10 @@ public class DemoLogger implements GioLoggerInterface {
 }
 ```
 比如以上 demo 中，采用的就是 SLF4J 和 Log4j2 的组合, 客户可通过自己的日志工具定制 日志保留时间，及日志存储大小。
+
+### 自定义配置文件路径
+
+程序运行时可以通过 GrowingAPI.initConfig 指定配置文件
+
+* 如果不需要指定配置文件路径，则默认加载 gio.properties
+* 如果需要指定配置文件路径，则需要在 GrowingAPI 初始化之前调用 initConfig, 进行配置初始化

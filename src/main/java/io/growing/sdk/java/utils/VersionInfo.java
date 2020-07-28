@@ -8,11 +8,11 @@ package io.growing.sdk.java.utils;
 public class VersionInfo {
     private static String version = null;
 
-    private static String defaultVersion = "1.0.5";
+    private static final String defaultVersion = "1.0.5";
 
     public static String getVersion() {
         if (version == null) {
-            Class cls = VersionInfo.class;
+            Class<?> cls = VersionInfo.class;
             version = cls.getPackage().getImplementationVersion();
             if (version == null || version.length() == 0) {
                 version = cls.getPackage().getSpecificationVersion();

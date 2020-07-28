@@ -1,6 +1,5 @@
 package io.growing.sdk.java.sender.net;
 
-import io.growing.sdk.java.constants.APIConstants;
 import io.growing.sdk.java.constants.RunMode;
 import io.growing.sdk.java.logger.GioLogger;
 import io.growing.sdk.java.sender.RequestDto;
@@ -21,12 +20,15 @@ import static java.net.Proxy.Type.HTTP;
  * @since : 2018-11-22 13:36
  */
 public abstract class NetProviderAbstract {
-    protected static final String CHECK_NET_HEALTH_URL = APIConstants.API_HOST;
-
     protected static final Map<String, String> HTTP_HEADERS = new HashMap<String, String>();
 
-    protected static final int CONNECTION_TIMEOUT = ConfigUtils.getIntValue("connection.timeout", 2000);
-    protected static final int READ_TIMEOUT = ConfigUtils.getIntValue("read.timeout", 2000);
+    protected static int getConnectionTimeout() {
+        return ConfigUtils.getIntValue("connection.timeout", 2000);
+    }
+
+    protected static int getReadTimeout() {
+        return ConfigUtils.getIntValue("read.timeout", 2000);
+    }
 
     public void toSend(RequestDto requestDto) {
         if (RunMode.isProductionMode()) {

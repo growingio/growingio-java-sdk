@@ -31,7 +31,7 @@
         <dependency>
             <groupId>io.growing.sdk.java</groupId>
             <artifactId>growingio-java-sdk</artifactId>
-            <version>1.0.6-cdp-SNAPSHOT</version>
+            <version>1.0.7-cdp-SNAPSHOT</version>
             <classifier>standalone</classifier>
         </dependency>
     </dependencies>
