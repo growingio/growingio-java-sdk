@@ -46,7 +46,7 @@ public class DefaultStoreStrategy extends StoreStrategyAbstract {
                                 List<GIOMessage> list = batchMsgMap.get(projectKey);
                                 list.add(gioMessage);
                             } else {
-                                List<GIOMessage> list = new ArrayList<>();
+                                List<GIOMessage> list = new ArrayList<GIOMessage>();
                                 list.add(gioMessage);
                                 batchMsgMap.put(projectKey, list);
                             }
