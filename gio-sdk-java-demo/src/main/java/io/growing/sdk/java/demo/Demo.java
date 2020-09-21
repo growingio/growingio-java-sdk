@@ -3,10 +3,13 @@ package io.growing.sdk.java.demo;
 import io.growing.sdk.java.GrowingAPI;
 import io.growing.sdk.java.dto.GIOEventMessage;
 import io.growing.sdk.java.dto.GioCdpEventMessage;
+import io.growing.sdk.java.dto.GioCdpItemMessage;
 import io.growing.sdk.java.dto.GioCdpUserMessage;
+import io.growing.sdk.java.utils.ConfigUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author : tong.wang
@@ -22,10 +25,26 @@ public class Demo {
      * 配置文件内容参考 gio.properties
      */
     public static void main(String[] args) {
+        sendCdpItem();
         sendCdpCustomEvent();
         sendCdpUser();
     }
 
+    /**
+     * send cdp item message
+     */
+    public static void sendCdpItem() {
+        //事件行为消息体
+        GioCdpItemMessage msg = new GioCdpItemMessage.Builder()
+                .id("item-test")                        // 物品模型id
+                .key("test")                            // 物品模型key
+                .addItemVariable("item_name", "cdp苹果") // 物品模型变量 (选填)
+                .build();
+
+        projectA.send(msg);
+
+    }
+    
     /**
      * send cdp custom event message
      */
@@ -38,6 +57,7 @@ public class Demo {
                 .loginUserId("test")                        // 带用登陆用户ID的 (必填)
                 .addEventVariable("product_name", "cdp苹果") // 事件级变量 (选填)
                 .addEventVariables(map)                     // 事件级变量集合 (选填)
+                .addItem("item_id", "item_key")             // 物品模型id, key (选填)
                 .build();
 
         projectA.send(msg);

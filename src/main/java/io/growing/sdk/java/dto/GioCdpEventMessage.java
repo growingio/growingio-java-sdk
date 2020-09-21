@@ -1,6 +1,7 @@
 package io.growing.sdk.java.dto;
 
 import io.growing.collector.tunnel.protocol.EventDto;
+import io.growing.collector.tunnel.protocol.ItemDto;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -91,6 +92,11 @@ public class GioCdpEventMessage extends GioCDPMessage<EventDto> implements Seria
                 }
             }
             return this;
+        }
+
+        public Builder addItem(String id, String key) {
+           builder.setItem(ItemDto.newBuilder().setId(id).setKey(key).build());
+           return this;
         }
 
         private Builder addVariableObject(String key, Object value) {
