@@ -5,7 +5,6 @@ import io.growing.sdk.java.dto.GIOEventMessage;
 import io.growing.sdk.java.dto.GIOMessage;
 import io.growing.sdk.java.dto.GioCdpEventMessage;
 import io.growing.sdk.java.dto.GioCdpUserMessage;
-import io.growing.sdk.java.utils.ConfigUtils;
 import io.growing.sdk.java.utils.VersionInfo;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -41,7 +40,7 @@ public class GrowingAPITest {
         GrowingAPI.initConfig("gio-test.properties");
         List<GioCdpEventMessage> list = new ArrayList<GioCdpEventMessage>(msgSize);
         for (int i = 0; i < msgSize; i++) {
-            HashMap<String, Object> map = new HashMap<>();
+            HashMap<String, Object> map = new HashMap<String, Object>();
             map.put("a" + i, i);
             GioCdpEventMessage msg = new GioCdpEventMessage.Builder()
                     .eventKey("" + i)
@@ -135,12 +134,4 @@ public class GrowingAPITest {
         }
     }
 
-    @Test
-    public void readConfig() {
-        assert (ConfigUtils.getStringValue("api.host", "").equals("http://cdp0:1598"));
-        GrowingAPI.initConfig("gio-test.properties");
-        assert (ConfigUtils.getStringValue("api.host", "").equals("http://gio-test:1598"));
-        GrowingAPI.initConfig("gio.properties");
-        assert (ConfigUtils.getStringValue("api.host", "").equals("http://gio-test:1598"));
-    }
 }

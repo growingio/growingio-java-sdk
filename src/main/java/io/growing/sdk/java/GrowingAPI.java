@@ -10,6 +10,8 @@ import io.growing.sdk.java.utils.ConfigUtils;
 import io.growing.sdk.java.utils.StringUtils;
 import io.growing.sdk.java.utils.VersionInfo;
 
+import java.util.Properties;
+
 /**
  * @author : tong.wang
  * @version : 1.0.0
@@ -17,9 +19,14 @@ import io.growing.sdk.java.utils.VersionInfo;
  */
 public class GrowingAPI {
 
-    private static boolean validDefaultConfig;
+    private static final boolean validDefaultConfig;
     private final String projectKey;
     private final String dataSourceId;
+
+    static {
+        ConfigUtils.initDefault();
+        validDefaultConfig = validDefaultConfig();
+    }
 
     private GrowingAPI(Builder builder) {
         this.dataSourceId = builder.dataSourceId;
@@ -92,6 +99,14 @@ public class GrowingAPI {
      */
     public static void initConfig(String configFilePath) {
         ConfigUtils.init(configFilePath);
-        validDefaultConfig = validDefaultConfig();
+    }
+
+    /**
+     * 如果需要自定义 Properties 进行配置初始化，则需要在 GrowingAPI 初始化之前调用 initConfig, 进行配置初始化.
+     * 自定义 properties key 参考 gio_default.properties 文件
+     * @param properties
+     */
+    public static void initConfig(Properties properties) {
+        ConfigUtils.init(properties);
     }
 }

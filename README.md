@@ -1,6 +1,6 @@
 # GrowingIO Java SDK
 
-GrowingIO提供在Server端部署的SDK，从而可以方便的进行事件上报等操作 <https://docs.growingio.com/docs/sdk-integration/java_sdk>
+GrowingIO提供在Server端部署的SDK，从而可以方便的进行事件上报等操作 <https://docs.growingio.com/op/developer-manual/sdkintegrated/cdp/java-sdk>
 
 ## Support Java Version
 
@@ -19,7 +19,7 @@ pom.xml
     <dependency>
         <groupId>io.growing.sdk.java</groupId>
         <artifactId>growingio-java-sdk</artifactId>
-        <version>1.0.7-cdp</version>
+        <version>1.0.8-cdp</version>
     </dependency>
 </dependencies>
 ```
@@ -57,6 +57,7 @@ GIOEventMessage eventMessage = new GIOEventMessage.Builder()
     .addEventVariable("product_name", "苹果")          // 事件级变量 (选填)
     .addEventVariable("product_classify", "水果")      // 事件级变量 (选填)
     .addEventVariable("product_price", 14)            // 事件级变量 (选填)
+    .addItem("item_id", "item_key")                   // 物品模型id, key (选填)
     .build();
 
 //上传事件行为消息到服务器
@@ -133,9 +134,12 @@ public class DemoLogger implements GioLoggerInterface {
 ```
 比如以上 demo 中，采用的就是 SLF4J 和 Log4j2 的组合, 客户可通过自己的日志工具定制 日志保留时间，及日志存储大小。
 
+程序运行时可以通过 GrowingAPI.initConfig 指定配置文件 (如果不需要指定配置文件路径，则默认加载 gio.properties)
+
 ### 自定义配置文件路径
+* 需要在 GrowingAPI 初始化之前调用 initConfig(String configFilePath), 进行配置初始化
 
-程序运行时可以通过 GrowingAPI.initConfig 指定配置文件
+#### 自定义配置
 
-* 如果不需要指定配置文件路径，则默认加载 gio.properties
-* 如果需要指定配置文件路径，则需要在 GrowingAPI 初始化之前调用 initConfig, 进行配置初始化
+* 如果需要自定义 Properties 进行配置初始化，则需要在 GrowingAPI 初始化之前调用 initConfig(Properties properties), 进行配置初始化.
+* 自定义 properties key 参考 gio_default.properties 文件
