@@ -44,7 +44,7 @@
         <jdk.version>1.6</jdk.version>
         <downloadSources>true</downloadSources>
         <!-- 低版本 release 之后，此 version 需要升级，避免 低版本 snapshot 重复 deploy -->
-        <gio-java-sdk-version>1.0.8</gio-java-sdk-version>
+        <gio-java-sdk-version>1.0.9</gio-java-sdk-version>
     </properties>
 
     <dependencies>
