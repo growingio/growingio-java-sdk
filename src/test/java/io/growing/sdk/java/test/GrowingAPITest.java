@@ -5,6 +5,7 @@ import io.growing.sdk.java.dto.GIOEventMessage;
 import io.growing.sdk.java.dto.GIOMessage;
 import io.growing.sdk.java.dto.GioCdpEventMessage;
 import io.growing.sdk.java.dto.GioCdpUserMessage;
+import io.growing.sdk.java.exception.GIOSendBeRejectedException;
 import io.growing.sdk.java.utils.ConfigUtils;
 import io.growing.sdk.java.utils.VersionInfo;
 import org.junit.BeforeClass;
@@ -15,6 +16,7 @@ import org.junit.runners.JUnit4;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -27,6 +29,7 @@ public class GrowingAPITest {
 
     private static GrowingAPI testDebug1;
     private static GrowingAPI testDebug2;
+    private static GrowingAPI testDebug3;
     private final int msgSize = 500;
 
     @BeforeClass
@@ -34,6 +37,7 @@ public class GrowingAPITest {
         System.setProperty("java.util.logging.config.file", "src/test/resources/logging.properties");
         testDebug1 = new GrowingAPI.Builder().setDataSourceId("test-debug-1-datasource").setProjectKey("test-debug-1").build();
         testDebug2 = new GrowingAPI.Builder().setDataSourceId("test-debug-2-datasource").setProjectKey("test-debug-2").build();
+        testDebug3 = new GrowingAPI.Builder().setDataSourceId("test-debug-3-datasource").setProjectKey("test-debug-3").build();
     }
 
     @Test
@@ -41,7 +45,7 @@ public class GrowingAPITest {
         GrowingAPI.initConfig("gio-test.properties");
         List<GioCdpEventMessage> list = new ArrayList<GioCdpEventMessage>(msgSize);
         for (int i = 0; i < msgSize; i++) {
-            HashMap<String, Object> map = new HashMap<>();
+            HashMap<String, Object> map = new HashMap<String, Object>();
             map.put("a" + i, i);
             GioCdpEventMessage msg = new GioCdpEventMessage.Builder()
                     .eventKey("" + i)
@@ -142,5 +146,74 @@ public class GrowingAPITest {
         assert (ConfigUtils.getStringValue("api.host", "").equals("http://gio-test:1598"));
         GrowingAPI.initConfig("gio.properties");
         assert (ConfigUtils.getStringValue("api.host", "").equals("http://gio-test:1598"));
+    }
+
+    @Test
+    public void sendRejectRetryWithAwait() throws InterruptedException {
+        GrowingAPI.initConfig("gio.properties");
+        //发送时等待100ms，1000个成功，并且最后等待3s
+        for (int i = 0; i < 1000; i++) {
+            GIOEventMessage msg = new GIOEventMessage.Builder()
+                    .eventKey("" + i)
+                    .eventNumValue(i)
+                    .loginUserId(i + "")
+                    .addEventVariable("product_name", "苹果")
+                    .addEventVariable("product_classify", "水果")
+                    .addEventVariable("product_classify", "水果")
+                    .addEventVariable("product_price", 14)
+                    .build();
+            try {
+                testDebug3.sendMaybeRejected(msg);
+            } catch (GIOSendBeRejectedException e) {
+                Thread.sleep(100);
+                //拒绝后等待1s重新发
+                System.out.println("重试！！！！！！！");
+                testDebug3.sendMaybeRejected(msg);
+            }
+        }
+    }
+
+    @Test
+    public void sendRejectRetryWithoutAwait() {
+        GrowingAPI.initConfig("gio-reject.properties");
+        Thread[] threads = new Thread[100];
+        for (int i = 0; i < 100; i++) {
+            threads[i] = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    for (int i = 0; i < 10000; i++) {
+                        GIOEventMessage msg = new GIOEventMessage.Builder()
+                                .eventKey("" + new Random().nextInt())
+                                .eventNumValue(new Random().nextInt())
+                                .loginUserId(new Random().nextInt() + "")
+                                .addEventVariable("product_name", "苹果")
+                                .addEventVariable("product_classify", "水果")
+                                .addEventVariable("product_classify", "水果")
+                                .addEventVariable("product_price", 14)
+                                .build();
+                        testDebug3.sendMaybeRejected(msg);
+                    }
+                }
+            });
+            threads[i].start();
+        }
+    }
+
+    @Test
+    public void sendReject() {
+        GrowingAPI.initConfig("gio.properties");
+        //发送时不用等待，3000个成功，并且最后等待3s
+        for (int i = 0; i < 3000; i++) {
+            GIOEventMessage msg = new GIOEventMessage.Builder()
+                    .eventKey("" + i)
+                    .eventNumValue(i)
+                    .loginUserId(i + "")
+                    .addEventVariable("product_name", "苹果")
+                    .addEventVariable("product_classify", "水果")
+                    .addEventVariable("product_classify", "水果")
+                    .addEventVariable("product_price", 14)
+                    .build();
+            testDebug3.sendMaybeRejected(msg);
+        }
     }
 }
