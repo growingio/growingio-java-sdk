@@ -20,7 +20,7 @@ public class ConfigUtils {
 
     private static final AtomicBoolean inited = new AtomicBoolean(false);
 
-    static {
+    public static void initDefault() {
         try {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             InputStream gioDefaultProps = classLoader.getResourceAsStream("gio_default.properties");
@@ -56,6 +56,17 @@ public class ConfigUtils {
         }
     }
 
+    public static void init(Properties properties) {
+        if (inited.compareAndSet(false, true)) {
+            if (properties != null) {
+                prop.putAll(properties);
+            } else {
+               GioLogger.debug("custom properties is null, use default config in gio.properties");
+            }
+
+        }
+    }
+
     public static String getStringValue(String key, String defaultValue) {
         return prop.getProperty(key, defaultValue);
     }
@@ -88,6 +99,10 @@ public class ConfigUtils {
         } catch (Exception e) {
             return defaultValue;
         }
+    }
+
+    public static Boolean isInited() {
+        return inited.get();
     }
 
     public static Double getDoubleValue(String key, Double defaultValue) {

@@ -6,7 +6,6 @@ import io.growing.sdk.java.dto.GIOMessage;
 import io.growing.sdk.java.dto.GioCdpEventMessage;
 import io.growing.sdk.java.dto.GioCdpUserMessage;
 import io.growing.sdk.java.exception.GIOSendBeRejectedException;
-import io.growing.sdk.java.utils.ConfigUtils;
 import io.growing.sdk.java.utils.VersionInfo;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -140,15 +139,6 @@ public class GrowingAPITest {
     }
 
     @Test
-    public void readConfig() {
-        assert (ConfigUtils.getStringValue("api.host", "").equals("http://cdp0:1598"));
-        GrowingAPI.initConfig("gio-test.properties");
-        assert (ConfigUtils.getStringValue("api.host", "").equals("http://gio-test:1598"));
-        GrowingAPI.initConfig("gio.properties");
-        assert (ConfigUtils.getStringValue("api.host", "").equals("http://gio-test:1598"));
-    }
-
-    @Test
     public void sendRejectRetryWithAwait() throws InterruptedException {
         GrowingAPI.initConfig("gio.properties");
         //发送时等待100ms，1000个成功，并且最后等待3s
@@ -216,4 +206,5 @@ public class GrowingAPITest {
             testDebug3.sendMaybeRejected(msg);
         }
     }
+
 }

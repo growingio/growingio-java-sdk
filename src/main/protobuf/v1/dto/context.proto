@@ -62,6 +62,7 @@ message PageDto {
 
 message ReferrerDto {
     string from = 1;
+    string page = 2;
 }
 
 message LocationDto {

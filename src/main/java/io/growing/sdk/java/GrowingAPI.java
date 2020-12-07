@@ -12,7 +12,7 @@ import io.growing.sdk.java.utils.ConfigUtils;
 import io.growing.sdk.java.utils.StringUtils;
 import io.growing.sdk.java.utils.VersionInfo;
 
-import static io.growing.sdk.java.constants.RunMode.isTestMode;
+import java.util.Properties;
 
 /**
  * @author : tong.wang
@@ -21,10 +21,15 @@ import static io.growing.sdk.java.constants.RunMode.isTestMode;
  */
 public class GrowingAPI {
 
-    private static boolean validDefaultConfig;
+    private static final boolean validDefaultConfig;
     private final String projectKey;
     private final String dataSourceId;
     private static final StoreStrategy strategy = StoreStrategyClient.getStoreInstance(StoreStrategyClient.CURRENT_STRATEGY);
+
+    static {
+        ConfigUtils.initDefault();
+        validDefaultConfig = validDefaultConfig();
+    }
 
     private GrowingAPI(Builder builder) {
         this.dataSourceId = builder.dataSourceId;
@@ -34,7 +39,21 @@ public class GrowingAPI {
     private static boolean validDefaultConfig() {
         GioLogger.debug("growingio-java-sdk version is " + VersionInfo.getVersion() + ", running in mode: " + RunMode.getCurrentMode());
 
-        return isTestMode() || FixThreadPoolSender.getNetProvider().connectedToGrowingAPIHost();
+        return RunMode.isTestMode() || FixThreadPoolSender.getNetProvider().connectedToGrowingAPIHost();
+    }
+
+    /**
+     * 添加埋点事件.
+     * @param msg the event message to upload
+     */
+    public void send(GIOMessage msg) {
+        try {
+            if (validDefaultConfig && businessVerification(msg)) {
+                strategy.push(msg);
+            }
+        } catch (Exception e) {
+            GioLogger.error("failed to send msg, " + e.toString());
+        }
     }
 
     /**
@@ -54,22 +73,7 @@ public class GrowingAPI {
         }
     }
 
-    /**
-     * 添加埋点事件.
-     *
-     * @param msg the event message to upload
-     */
-    public void send(GIOMessage msg) {
-        try {
-            if (validDefaultConfig && businessVerification(msg)) {
-                strategy.push(msg);
-            }
-        } catch (Exception e) {
-            GioLogger.error("failed to send msg, " + e.toString());
-        }
-    }
-
-    private boolean businessVerification(GIOMessage msg) {
+    private boolean businessVerification(GIOMessage msg){
         if (StringUtils.nonBlank(this.projectKey)) {
             msg.setProjectKey(this.projectKey);
         } else {
@@ -111,12 +115,18 @@ public class GrowingAPI {
      * 配置文件路径读取.
      * 如果不需要指定配置文件路径，则默认加载 gio.properties
      * 如果需要指定配置文件路径，则需要在 GrowingAPI 初始化之前调用 initConfig, 进行配置初始化
-     *
      * @param configFilePath
      */
     public static void initConfig(String configFilePath) {
         ConfigUtils.init(configFilePath);
-        validDefaultConfig = validDefaultConfig();
     }
 
+    /**
+     * 如果需要自定义 Properties 进行配置初始化，则需要在 GrowingAPI 初始化之前调用 initConfig, 进行配置初始化.
+     * 自定义 properties key 参考 gio_default.properties 文件
+     * @param properties
+     */
+    public static void initConfig(Properties properties) {
+        ConfigUtils.init(properties);
+    }
 }
