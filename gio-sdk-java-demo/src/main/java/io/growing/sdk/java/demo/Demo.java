@@ -5,6 +5,7 @@ import io.growing.sdk.java.dto.GIOEventMessage;
 import io.growing.sdk.java.dto.GioCdpEventMessage;
 import io.growing.sdk.java.dto.GioCdpItemMessage;
 import io.growing.sdk.java.dto.GioCdpUserMessage;
+import io.growing.sdk.java.exception.GIOSendBeRejectedException;
 import io.growing.sdk.java.utils.ConfigUtils;
 
 import java.util.HashMap;
@@ -28,6 +29,31 @@ public class Demo {
         sendCdpItem();
         sendCdpCustomEvent();
         sendCdpUser();
+    }
+
+    /**
+     * send cdp custom event message
+     */
+    public static void sendCdpCustomEventWithNewApi() {
+        Map<String, Object> map = new HashMap<String, Object>();
+        //事件行为消息体
+        GioCdpEventMessage msg = new GioCdpEventMessage.Builder()
+                .eventTime(System.currentTimeMillis())      // 默认为系统当前时间,选填
+                .eventKey("test")                           // 事件标识 (必填)
+                .loginUserId("test")                        // 带用登陆用户ID的 (必填)
+                .addEventVariable("product_name", "cdp苹果") // 事件级变量 (选填)
+                .addEventVariables(map)                     // 事件级变量集合 (选填)
+                .build();
+        try {
+            //该接口在队列满时显式抛出异常(经过测试，在延迟100ms，队列500的情况下，出现的可能性已经很小)，调用方可选择是否处理。该方法还会在队列到达负载值时加快队列消费
+            //过大的发送速度，即使消费队列的速度跟得上，也请确保api.host能抗的住。
+            projectA.sendMaybeRejected(msg);
+        } catch (GIOSendBeRejectedException e) {
+            System.out.println("消息发送被拒绝：" + e.getLocalizedMessage());
+            //retry
+            projectA.sendMaybeRejected(msg);
+        }
+
     }
 
     /**
