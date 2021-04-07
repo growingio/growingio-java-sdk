@@ -3,8 +3,10 @@ package io.growing.sdk.java;
 import io.growing.sdk.java.constants.RunMode;
 import io.growing.sdk.java.dto.GIOMessage;
 import io.growing.sdk.java.dto.GioCDPMessage;
+import io.growing.sdk.java.exception.GIOSendBeRejectedException;
 import io.growing.sdk.java.logger.GioLogger;
 import io.growing.sdk.java.sender.FixThreadPoolSender;
+import io.growing.sdk.java.store.StoreStrategy;
 import io.growing.sdk.java.store.StoreStrategyClient;
 import io.growing.sdk.java.utils.ConfigUtils;
 import io.growing.sdk.java.utils.StringUtils;
@@ -22,6 +24,7 @@ public class GrowingAPI {
     private static final boolean validDefaultConfig;
     private final String projectKey;
     private final String dataSourceId;
+    private static final StoreStrategy strategy = StoreStrategyClient.getStoreInstance(StoreStrategyClient.CURRENT_STRATEGY);
 
     static {
         ConfigUtils.initDefault();
@@ -46,8 +49,25 @@ public class GrowingAPI {
     public void send(GIOMessage msg) {
         try {
             if (validDefaultConfig && businessVerification(msg)) {
-                StoreStrategyClient.getStoreInstance().push(msg);
+                strategy.push(msg);
             }
+        } catch (Exception e) {
+            GioLogger.error("failed to send msg, " + e.toString());
+        }
+    }
+
+    /**
+     * 添加埋点事件，当队列满时，可以抛出拒绝异常.
+     *
+     * @param msg the event msg to upload
+     */
+    public void sendMaybeRejected(GIOMessage msg) throws GIOSendBeRejectedException {
+        try {
+            if (validDefaultConfig && businessVerification(msg)) {
+                strategy.push(msg);
+            }
+        } catch (GIOSendBeRejectedException e) {
+            throw e;
         } catch (Exception e) {
             GioLogger.error("failed to send msg, " + e.toString());
         }

@@ -13,7 +13,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author : tong.wang
@@ -21,25 +20,22 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @since : 11/20/18 7:24 PM
  */
 public class DefaultStoreStrategy extends StoreStrategyAbstract {
-    private static final int limit = ConfigUtils.getIntValue("msg.store.queue.size", 500);
-
-    private static final ArrayBlockingQueue<GIOMessage> queue = new ArrayBlockingQueue<GIOMessage>(limit);
 
     private static final ScheduledExecutorService sendMsgSchedule = Executors.newScheduledThreadPool(1, new GioThreadNamedFactory("gio-send-msg-schedule"));
     private static final int sendInterval = ConfigUtils.getIntValue("send.msg.interval", 100);
     private static final MessageSender sender = new FixThreadPoolSender();
     private static final int sendMsgBatchSize = 100;
-    private static final AtomicInteger offered = new AtomicInteger(0);
-
+    private static final int LIMIT = ConfigUtils.getIntValue("msg.store.queue.size", 500);
     private static final Map<String, List<GIOMessage>> batchMsgMap = new HashMap<String, List<GIOMessage>>();
 
     static {
+        messageBlockingQueue = new ArrayBlockingQueue<GIOMessage>(LIMIT);
         sendMsgSchedule.scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
-                while (!queue.isEmpty()) {
+                while (!messageBlockingQueue.isEmpty()) {
                     if (currentBatchMsgSize() < sendMsgBatchSize) {
-                        GIOMessage gioMessage = queue.poll();
+                        GIOMessage gioMessage = messageBlockingQueue.poll();
                         if (gioMessage != null) {
                             String projectKey = gioMessage.getProjectKey();
                             if (batchMsgMap.containsKey(projectKey)) {
@@ -57,9 +53,9 @@ public class DefaultStoreStrategy extends StoreStrategyAbstract {
                 }
 
                 for (Map.Entry<String, List<GIOMessage>> entry : batchMsgMap.entrySet()) {
-                   if (entry.getValue() != null && !entry.getValue().isEmpty()) {
-                       sender.sendMsg(entry.getKey(), entry.getValue());
-                   }
+                    if (entry.getValue() != null && !entry.getValue().isEmpty()) {
+                        sender.sendMsg(entry.getKey(), entry.getValue());
+                    }
                 }
 
                 batchMsgMap.clear();
@@ -71,17 +67,16 @@ public class DefaultStoreStrategy extends StoreStrategyAbstract {
     private static int currentBatchMsgSize() {
         int size = 0;
         Collection<List<GIOMessage>> values = batchMsgMap.values();
-        for (List<GIOMessage> msgList: values) {
-           size += msgList.size();
+        for (List<GIOMessage> msgList : values) {
+            size += msgList.size();
         }
         return size;
     }
 
     @Override
     public void doPush(GIOMessage msg) {
-        if (!queue.offer(msg)) {
+        if (!messageBlockingQueue.offer(msg)) {
             GioLogger.error("msg queue is full, suggest greater size for [msg.store.queue.size] or shorten the interval of [send.msg.interval]");
         }
     }
-
 }

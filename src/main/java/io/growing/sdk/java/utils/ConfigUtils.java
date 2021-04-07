@@ -104,4 +104,14 @@ public class ConfigUtils {
     public static Boolean isInited() {
         return inited.get();
     }
+
+    public static Double getDoubleValue(String key, Double defaultValue) {
+        String obj = prop.getProperty(key, String.valueOf(defaultValue));
+
+        try {
+            return Double.valueOf(obj);
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
 }
