@@ -1,6 +1,6 @@
 # GrowingIO Java SDK
 
-GrowingIO提供在Server端部署的SDK，从而可以方便的进行事件上报等操作 <https://docs.growingio.com/docs/sdk-integration/java_sdk>
+GrowingIO提供在Server端部署的SDK，从而可以方便的进行事件上报等操作。[帮助文档](https://docs.growingio.com/v3/developer-manual/sdkintegrated/server-sdk/java-sdk)
 
 ## Support Java Version
 
@@ -19,7 +19,7 @@ pom.xml
     <dependency>
         <groupId>io.growing.sdk.java</groupId>
         <artifactId>growingio-java-sdk</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.5</version>
     </dependency>
 </dependencies>
 ```
@@ -30,7 +30,7 @@ pom.xml
 <dependency>
     <groupId>io.growing.sdk.java</groupId>
     <artifactId>growingio-java-sdk</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.5</version>
     <classifier>standalone</classifier>
     <exclusions>
         <exclusion>
