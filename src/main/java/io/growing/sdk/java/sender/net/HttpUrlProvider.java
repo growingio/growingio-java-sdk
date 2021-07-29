@@ -1,5 +1,6 @@
 package io.growing.sdk.java.sender.net;
 
+import io.growing.sdk.java.constants.HttpHeaderConstants;
 import io.growing.sdk.java.exception.GIOMessageException;
 import io.growing.sdk.java.logger.GioLogger;
 
@@ -27,7 +28,7 @@ public class HttpUrlProvider extends NetProviderAbstract {
             if (e instanceof IOException) {
                 retry(url, data);
             } else {
-                GioLogger.error("failed to send growingio data" + e.toString());
+                GioLogger.error("failed to send growingio data" + e);
             }
         }
     }
@@ -61,7 +62,7 @@ public class HttpUrlProvider extends NetProviderAbstract {
             sendGet(CHECK_NET_HEALTH_URL);
             return true;
         } catch (IOException e) {
-            GioLogger.error("failed to connect " + CHECK_NET_HEALTH_URL + ", cause " + e.toString());
+            GioLogger.error("failed to connect " + CHECK_NET_HEALTH_URL + ", cause " + e);
             return false;
         }
     }
@@ -73,7 +74,8 @@ public class HttpUrlProvider extends NetProviderAbstract {
         httpConn.setRequestMethod("POST");
         httpConn.setConnectTimeout(connectionTimeout);
         httpConn.setReadTimeout(readTimeout);
-        httpConn.setRequestProperty("Content-Length", String.valueOf(data.length));
+        httpConn.setRequestProperty(HttpHeaderConstants.CONTENT_TYPE, HttpHeaderConstants.APPLICATION_JSON);
+        httpConn.setRequestProperty(HttpHeaderConstants.CONTENT_LENGTH, String.valueOf(data.length));
         httpConn.setDoOutput(true);
 
         DataOutputStream outputStream = null;
