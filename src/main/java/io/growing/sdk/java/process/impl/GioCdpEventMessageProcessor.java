@@ -56,7 +56,7 @@ public class GioCdpEventMessageProcessor extends ProtobufMessage implements Mess
         if (listBuilder.getValuesCount() > 0) {
             return listBuilder.build();
         } else {
-            return listBuilder.build();
+            return null;
         }
     }
 

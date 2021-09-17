@@ -1,10 +1,7 @@
 package io.growing.sdk.java.test;
 
 import io.growing.sdk.java.GrowingAPI;
-import io.growing.sdk.java.dto.GIOEventMessage;
-import io.growing.sdk.java.dto.GIOMessage;
-import io.growing.sdk.java.dto.GioCdpEventMessage;
-import io.growing.sdk.java.dto.GioCdpUserMessage;
+import io.growing.sdk.java.dto.*;
 import io.growing.sdk.java.exception.GIOSendBeRejectedException;
 import io.growing.sdk.java.utils.VersionInfo;
 import org.junit.BeforeClass;
@@ -12,10 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -47,8 +41,9 @@ public class GrowingAPITest {
             HashMap<String, Object> map = new HashMap<String, Object>();
             map.put("a" + i, i);
             GioCdpEventMessage msg = new GioCdpEventMessage.Builder()
-                    .eventKey("" + i)
-                    .loginUserId(i + "")
+                    .eventKey(String.valueOf(i))
+                    .loginUserId(String.valueOf(i))
+                    .anonymousId(String.valueOf(i))
                     .addEventVariable("product_name", "cdp苹果")
                     .addEventVariables(map)
                     .build();
@@ -86,6 +81,7 @@ public class GrowingAPITest {
         for (int i = 0; i < msgSize; i++) {
             GioCdpUserMessage msg = new GioCdpUserMessage.Builder()
                     .loginUserId(String.valueOf(i))
+                    .anonymousId(String.valueOf(i))
                     .addUserVariable("user", i)
                     .build();
 
@@ -93,6 +89,20 @@ public class GrowingAPITest {
             list.add(msg);
         }
 
+        sendMsg(list);
+    }
+
+    @Test
+    public void sendCdpUserMappingMsg() {
+        List<GioCdpUserMappingMessage> list = new ArrayList<GioCdpUserMappingMessage>(msgSize);
+        Map<String, String> identities = new HashMap<String, String>();
+        identities.put("email", "987654321@gmail.com");
+        identities.put("phone_number", "12345678901");
+        GioCdpUserMappingMessage msg = new GioCdpUserMappingMessage.Builder()
+                .addIdentities("userKey", "userValue")
+                .addIdentities(identities)
+                .build();
+        list.add(msg);
         sendMsg(list);
     }
 

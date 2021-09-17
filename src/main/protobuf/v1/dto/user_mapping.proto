@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package io.growing.tunnel.protocol;
+
+option java_package = "io.growing.collector.tunnel.protocol";
+option java_multiple_files = true;
+option java_outer_classname = "UserMappingProtocol";
+
+message UserMappingDto {
+    string project_key = 1;
+    int64 send_time = 2;
+    map<string, string> identifies = 3;
+    string data_source_id = 4;
+}
+
+message UserMappingDtoList {
+    repeated UserMappingDto values = 1;
+}
+
