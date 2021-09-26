@@ -7,7 +7,7 @@ import java.util.Map;
 
 /**
  * @author lijh
- * @version : 1.0.10
+ * @version : 1.0.9
  * @since : 2021-08-16 11:15 PM
  */
 public class GioCdpUserMappingMessage extends GioCDPMessage<UserMappingDto> implements Serializable {
