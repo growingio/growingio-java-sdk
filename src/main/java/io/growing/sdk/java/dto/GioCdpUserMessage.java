@@ -53,6 +53,11 @@ public class GioCdpUserMessage extends GioCDPMessage<UserDto> implements Seriali
             return this;
         }
 
+        public Builder anonymousId (String anonymousId) {
+            builder.setAnonymousId(anonymousId);
+            return this;
+        }
+
         public Builder addUserVariable(String key, String value) {
             this.addVariableObject(key, value);
             return this;

@@ -2,6 +2,7 @@ package io.growing.sdk.java.test;
 
 import io.growing.sdk.java.dto.GIOEventMessage;
 import io.growing.sdk.java.dto.GIOMessage;
+import io.growing.sdk.java.dto.GioCdpUserMappingMessage;
 import io.growing.sdk.java.sender.FixThreadPoolSender;
 import io.growing.sdk.java.sender.MessageSender;
 import org.junit.BeforeClass;
@@ -10,7 +11,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**

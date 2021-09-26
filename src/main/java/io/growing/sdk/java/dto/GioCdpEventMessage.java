@@ -58,6 +58,11 @@ public class GioCdpEventMessage extends GioCDPMessage<EventDto> implements Seria
             return this;
         }
 
+        public Builder anonymousId (String anonymousId) {
+            builder.setAnonymousId(anonymousId);
+            return this;
+        }
+
         @Deprecated
         public Builder eventNumValue(Number numValue) {
             if (numValue != null) {
@@ -86,7 +91,7 @@ public class GioCdpEventMessage extends GioCDPMessage<EventDto> implements Seria
         }
 
         public Builder addEventVariables(Map<String, Object> variables) {
-            if (variables != null && !variables.isEmpty()){
+            if (variables != null && !variables.isEmpty()) {
                 for (Map.Entry<String, Object> entry : variables.entrySet()) {
                     addVariableObject(entry.getKey(), entry.getValue());
                 }
@@ -95,8 +100,8 @@ public class GioCdpEventMessage extends GioCDPMessage<EventDto> implements Seria
         }
 
         public Builder addItem(String id, String key) {
-           builder.setItem(ItemDto.newBuilder().setId(id).setKey(key).build());
-           return this;
+            builder.setItem(ItemDto.newBuilder().setId(id).setKey(key).build());
+            return this;
         }
 
         private Builder addVariableObject(String key, Object value) {
