@@ -19,7 +19,7 @@ pom.xml
     <dependency>
         <groupId>io.growing.sdk.java</groupId>
         <artifactId>growingio-java-sdk</artifactId>
-        <version>1.0.5</version>
+        <version>1.0.6</version>
     </dependency>
 </dependencies>
 ```
