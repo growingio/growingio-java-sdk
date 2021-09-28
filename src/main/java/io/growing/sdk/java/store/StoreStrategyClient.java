@@ -14,17 +14,20 @@ public class StoreStrategyClient {
 
     public static final StoreStrategyEnum CURRENT_STRATEGY = StoreStrategyEnum.getByValue(ConfigUtils.getStringValue("msg.store.strategy", "default"));
 
-    private static class StoreInstance {
+    private static class DefaultStoreInstance {
         static StoreStrategy defaultStoreStrategy = new DefaultStoreStrategy();
+    }
+
+    private static class AbortPolicyStoreInstance {
         static StoreStrategy abortPolicyStoreStrategy = new AbortPolicyStoreStrategy();
     }
 
     public static StoreStrategy getStoreInstance(StoreStrategyEnum strategy) {
         StoreStrategy storeStrategy;
         if (strategy == StoreStrategyEnum.ABORT_POLICY) {
-            storeStrategy = StoreInstance.abortPolicyStoreStrategy;
+            storeStrategy = AbortPolicyStoreInstance.abortPolicyStoreStrategy;
         } else {
-            storeStrategy = StoreInstance.defaultStoreStrategy;
+            storeStrategy = DefaultStoreInstance.defaultStoreStrategy;
         }
         storeStrategy.shutdownAwait();
         return storeStrategy;
