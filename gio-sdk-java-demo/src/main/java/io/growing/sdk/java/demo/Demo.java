@@ -6,11 +6,9 @@ import io.growing.sdk.java.dto.GioCdpEventMessage;
 import io.growing.sdk.java.dto.GioCdpItemMessage;
 import io.growing.sdk.java.dto.GioCdpUserMessage;
 import io.growing.sdk.java.exception.GIOSendBeRejectedException;
-import io.growing.sdk.java.utils.ConfigUtils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author : tong.wang
