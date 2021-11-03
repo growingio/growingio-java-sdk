@@ -1,7 +1,9 @@
 package io.growing.sdk.java.dto;
 
-import io.growing.collector.tunnel.protocol.EventDto;
-import io.growing.collector.tunnel.protocol.ItemDto;
+import io.growing.collector.tunnel.protocol.EventType;
+import io.growing.collector.tunnel.protocol.EventV3Dto;
+import io.growing.collector.tunnel.protocol.ResourceItem;
+import io.growing.sdk.java.logger.GioLogger;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -11,14 +13,21 @@ import java.util.Map;
  * @version : 1.0.0
  * @since : 11/20/18 12:33 PM
  */
-public class GioCdpEventMessage extends GioCDPMessage<EventDto> implements Serializable {
+public class GioCdpEventMessage extends GioCDPMessage<EventV3Dto> implements Serializable {
 
-    private static final long serialVersionUID = -5228910337644290100L;
+    private static final long serialVersionUID = -2414503426226355459L;
 
-    private final EventDto event;
+    private final EventV3Dto event;
 
-    private GioCdpEventMessage(EventDto.Builder builder) {
-        event = builder.setTimestamp(getTimeStampOrDefault(builder.getTimestamp())).setType(EventDto.EventType.CUSTOM_EVENT).build();
+    private GioCdpEventMessage(EventV3Dto.Builder builder) {
+        event = builder.setTimestamp(getTimeStampOrDefault(builder.getTimestamp()))
+                        .setEventType(EventType.CUSTOM)
+                        .build();
+    }
+
+    @Override
+    public void setProjectKey(String projectKey) {
+        this.projectKey = projectKey;
     }
 
     @Override
@@ -27,17 +36,22 @@ public class GioCdpEventMessage extends GioCDPMessage<EventDto> implements Seria
     }
 
     @Override
-    public EventDto getMessage() {
+    public EventV3Dto getMessage() {
         return event.toBuilder().setProjectKey(projectKey).setDataSourceId(dataSourceId).build();
     }
 
     @Override
-    public void setProjectKey(String projectKey) {
-        this.projectKey = projectKey;
+    public boolean isIllegal() {
+        if (event.getEventName().isEmpty()) {
+            GioLogger.error("GioCdpEventMessage: eventName is empty");
+            return true;
+        }
+
+        return false;
     }
 
     public static final class Builder {
-        private final EventDto.Builder builder = EventDto.newBuilder();
+        private final EventV3Dto.Builder builder = EventV3Dto.newBuilder();
 
         public GioCdpEventMessage build() {
             return new GioCdpEventMessage(builder);
@@ -49,29 +63,37 @@ public class GioCdpEventMessage extends GioCDPMessage<EventDto> implements Seria
         }
 
         public Builder eventKey(String eventKey) {
-            builder.setEventKey(eventKey);
+            if (eventKey != null) {
+                builder.setEventName(eventKey);
+            }
             return this;
         }
 
         public Builder loginUserId(String loginUserId) {
-            builder.setUserId(loginUserId);
+            if (loginUserId != null) {
+                builder.setUserId(loginUserId);
+                builder.setGioId(loginUserId);
+            }
+            return this;
+        }
+
+        public Builder loginUserKey(String loginUserKey) {
+            if (loginUserKey != null) {
+                builder.setUserKey(loginUserKey);
+            }
             return this;
         }
 
         public Builder anonymousId (String anonymousId) {
-            builder.setAnonymousId(anonymousId);
+            if (anonymousId != null) {
+                builder.setDeviceId(anonymousId);
+            }
             return this;
         }
 
         @Deprecated
         public Builder eventNumValue(Number numValue) {
-            if (numValue != null) {
-                double value = numValue.doubleValue();
-                if (value >= 0) {
-                    builder.setEventNum(value);
-                }
-            }
-
+            // DO NOTHING
             return this;
         }
 
@@ -100,26 +122,28 @@ public class GioCdpEventMessage extends GioCDPMessage<EventDto> implements Seria
         }
 
         public Builder addItem(String id, String key) {
-            builder.setItem(ItemDto.newBuilder().setId(id).setKey(key).build());
+            addItem(id, key, null);
+            return this;
+        }
+
+        public Builder addItem(String id, String key, Map<String, String> variables) {
+            if (id != null && key != null) {
+                ResourceItem.Builder resourceItemBuilder = ResourceItem.newBuilder();
+                resourceItemBuilder.setId(id);
+                resourceItemBuilder.setKey(key);
+                if (variables != null) {
+                    resourceItemBuilder.putAllAttributes(variables);
+                }
+                builder.setResourceItem(resourceItemBuilder.build());
+            }
             return this;
         }
 
         private Builder addVariableObject(String key, Object value) {
             if (key != null && value != null) {
                 key = key.trim();
-
-                if (value instanceof String) {
-                    String val = value.toString();
-                    if (val.length() > 255) {
-                        builder.putAttributes(key, val.substring(0, 255));
-                    } else {
-                        builder.putAttributes(key, String.valueOf(value));
-                    }
-                } else {
-                    builder.putAttributes(key, String.valueOf(value));
-                }
+                builder.putAttributes(key, String.valueOf(value));
             }
-
 
             return this;
         }

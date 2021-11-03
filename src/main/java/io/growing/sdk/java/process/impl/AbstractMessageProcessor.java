@@ -40,6 +40,11 @@ public abstract class AbstractMessageProcessor implements MessageProcessor {
         return doProcess(msgList);
     }
 
+    @Override
+    public boolean skipIllegalMessage(GIOMessage gioMessage) {
+        return gioMessage.isIllegal();
+    }
+
     protected abstract byte[] doProcess(List<GIOMessage> msgList);
 
     protected abstract String debugMessage(List<GIOMessage> msgList);

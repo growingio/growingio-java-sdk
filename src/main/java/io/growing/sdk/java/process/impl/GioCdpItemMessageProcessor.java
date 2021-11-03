@@ -15,16 +15,26 @@ import java.util.Map;
  * @since : 9/21/20 11:47 AM
  */
 public class GioCdpItemMessageProcessor extends ProtobufMessage implements MessageProcessor {
+
+    @Override
+    public String apiHost(String ai) {
+        return apiDomain() + "/projects/" + ai + "/collect/item";
+    }
+
+    @Override
+    public ContentTypeEnum contentType() {
+        return ContentTypeEnum.PROTOBUF;
+    }
+
+    @Override
+    public Map<String, String> headers() {
+        return HEADERS;
+    }
+
     @Override
     protected byte[] doProcess(List<GIOMessage> msgList) {
         ItemDtoList list = getItems(msgList);
         return null == list ? null : list.toByteArray();
-    }
-
-    @Override
-    protected String debugMessage(List<GIOMessage> msgList) {
-        ItemDtoList list = getItems(msgList);
-        return toJson(getItems(msgList));
     }
 
     private ItemDtoList getItems(List<GIOMessage> msgList) {
@@ -45,22 +55,8 @@ public class GioCdpItemMessageProcessor extends ProtobufMessage implements Messa
     }
 
     @Override
-    public String apiHost(String ai) {
-        return apiDomain() + "/projects/" + ai + "/collect/item";
-    }
-
-    @Override
-    public ContentTypeEnum contentType() {
-        return ContentTypeEnum.PROTOBUF;
-    }
-
-    @Override
-    public Map<String, String> headers() {
-        return HEADERS;
-    }
-
-    @Override
-    public GIOMessage skipIllegalMessage(GIOMessage gioMessage) {
-        return gioMessage;
+    protected String debugMessage(List<GIOMessage> msgList) {
+        ItemDtoList list = getItems(msgList);
+        return toJson(getItems(msgList));
     }
 }

@@ -8,7 +8,8 @@ import java.io.Serializable;
  * @since : 11/21/18 5:20 PM
  */
 public abstract class GIOMessage implements Serializable {
-    private static final long serialVersionUID = -5789315589035420840L;
+
+    private static final long serialVersionUID = 6360367979496722188L;
 
     protected String projectKey;
 
@@ -17,4 +18,6 @@ public abstract class GIOMessage implements Serializable {
     public String getProjectKey() {
         return projectKey;
     }
+
+    public boolean isIllegal() { return false; }
 }

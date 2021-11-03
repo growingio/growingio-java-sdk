@@ -1,6 +1,8 @@
 package io.growing.sdk.java.dto;
 
-import io.growing.collector.tunnel.protocol.UserDto;
+import io.growing.collector.tunnel.protocol.EventType;
+import io.growing.collector.tunnel.protocol.EventV3Dto;
+import io.growing.sdk.java.logger.GioLogger;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -10,14 +12,16 @@ import java.util.Map;
  * @version : 1.0.0
  * @since : 11/20/18 12:33 PM
  */
-public class GioCdpUserMessage extends GioCDPMessage<UserDto> implements Serializable {
+public class GioCdpUserMessage extends GioCDPMessage<EventV3Dto> implements Serializable {
 
-    private static final long serialVersionUID = -5228910337644290100L;
+    private static final long serialVersionUID = -3409119784875248302L;
 
-    private UserDto user;
+    private EventV3Dto user;
 
-    private GioCdpUserMessage(UserDto.Builder builder) {
-        user = builder.setTimestamp(getTimeStampOrDefault(builder.getTimestamp())).build();
+    private GioCdpUserMessage(EventV3Dto.Builder builder) {
+        user = builder.setTimestamp(getTimeStampOrDefault(builder.getTimestamp()))
+                                .setEventType(EventType.LOGIN_USER_ATTRIBUTES)
+                                .build();
     }
 
     @Override
@@ -31,12 +35,22 @@ public class GioCdpUserMessage extends GioCDPMessage<UserDto> implements Seriali
     }
 
     @Override
-    public UserDto getMessage() {
+    public EventV3Dto getMessage() {
         return user.toBuilder().setProjectKey(projectKey).setDataSourceId(dataSourceId).build();
     }
 
+    @Override
+    public boolean isIllegal() {
+        if (user.getUserId().isEmpty()) {
+            GioLogger.error("GioCdpUserMessage: userId is empty");
+            return true;
+        }
+
+        return false;
+    }
+
     public static final class Builder {
-        private UserDto.Builder builder = UserDto.newBuilder();
+        private EventV3Dto.Builder builder = EventV3Dto.newBuilder();
 
         public GioCdpUserMessage build() {
             return new GioCdpUserMessage(builder);
@@ -48,13 +62,24 @@ public class GioCdpUserMessage extends GioCDPMessage<UserDto> implements Seriali
         }
 
         public Builder loginUserId(String loginUserId) {
-            builder.setUserId(loginUserId);
-            builder.setGioId(loginUserId);
+            if (loginUserId != null) {
+                builder.setUserId(loginUserId);
+                builder.setGioId(loginUserId);
+            }
+            return this;
+        }
+
+        public Builder loginUserKey(String loginUserKey) {
+            if (loginUserKey != null) {
+                builder.setUserKey(loginUserKey);
+            }
             return this;
         }
 
         public Builder anonymousId (String anonymousId) {
-            builder.setAnonymousId(anonymousId);
+            if (anonymousId != null) {
+                builder.setDeviceId(anonymousId);
+            }
             return this;
         }
 
@@ -76,17 +101,7 @@ public class GioCdpUserMessage extends GioCDPMessage<UserDto> implements Seriali
         private Builder addVariableObject(String key, Object value) {
             if (key != null && value != null) {
                 key = key.trim();
-
-                if (value instanceof String) {
-                    String val = value.toString();
-                    if (val.length() > 255) {
-                        builder.putAttributes(key, val.substring(0, 255));
-                    } else {
-                        builder.putAttributes(key, String.valueOf(value));
-                    }
-                } else {
-                    builder.putAttributes(key, String.valueOf(value));
-                }
+                builder.putAttributes(key, String.valueOf(value));
             }
             return this;
         }

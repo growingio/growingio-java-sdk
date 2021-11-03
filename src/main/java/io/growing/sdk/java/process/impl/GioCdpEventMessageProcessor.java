@@ -1,6 +1,6 @@
 package io.growing.sdk.java.process.impl;
 
-import io.growing.collector.tunnel.protocol.EventList;
+import io.growing.collector.tunnel.protocol.EventV3List;
 import io.growing.sdk.java.dto.GIOMessage;
 import io.growing.sdk.java.dto.GioCdpEventMessage;
 import io.growing.sdk.java.process.MessageProcessor;
@@ -18,7 +18,7 @@ public class GioCdpEventMessageProcessor extends ProtobufMessage implements Mess
 
     @Override
     public String apiHost(String ai) {
-        return apiDomain() + "/projects/" + ai + "/collect/cstm";
+        return apiDomain() + "/v3/projects/" + ai + "/collect";
     }
 
     @Override
@@ -32,20 +32,14 @@ public class GioCdpEventMessageProcessor extends ProtobufMessage implements Mess
     }
 
     @Override
-    public GIOMessage skipIllegalMessage(GIOMessage gioMessage) {
-        //todo validate
-        return gioMessage;
-    }
-
-    @Override
     protected byte[] doProcess(List<GIOMessage> msgList) {
-        EventList list = getEvents(msgList);
+        EventV3List list = getEvents(msgList);
 
         return list == null ? null : list.toByteArray();
     }
 
-    private EventList getEvents(List<GIOMessage> msgList) {
-        EventList.Builder listBuilder = EventList.newBuilder();
+    private EventV3List getEvents(List<GIOMessage> msgList) {
+        EventV3List.Builder listBuilder = EventV3List.newBuilder();
         for (GIOMessage msg : msgList) {
             if (msg instanceof GioCdpEventMessage) {
                 GioCdpEventMessage cdp = (GioCdpEventMessage) msg;

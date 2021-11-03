@@ -10,7 +10,8 @@ import java.io.Serializable;
  * @since : 11/21/18 5:20 PM
  */
 public abstract class GioCDPMessage<M extends Message> extends GIOMessage implements Serializable {
-    private static final long serialVersionUID = -5789315589035420840L;
+
+    private static final long serialVersionUID = 1431987789819408224L;
 
     protected String dataSourceId;
 

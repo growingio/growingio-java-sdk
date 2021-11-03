@@ -15,15 +15,26 @@ import java.util.Map;
  * @since : 2021-08-16 11:17 PM
  */
 public class GioCdpUserMappingMessageProcessor extends ProtobufMessage implements MessageProcessor {
+
+    @Override
+    public String apiHost(String ai) {
+        return apiDomain() + "/projects/" + ai + "/collect/user-mapping";
+    }
+
+    @Override
+    public ContentTypeEnum contentType() {
+        return ContentTypeEnum.PROTOBUF;
+    }
+
+    @Override
+    public Map<String, String> headers() {
+        return HEADERS;
+    }
+
     @Override
     protected byte[] doProcess(List<GIOMessage> msgList) {
         UserMappingDtoList list = getIdMapping(msgList);
         return null == list ? null : list.toByteArray();
-    }
-
-    @Override
-    protected String debugMessage(List<GIOMessage> msgList) {
-        return toJson(getIdMapping(msgList));
     }
 
     private UserMappingDtoList getIdMapping(List<GIOMessage> msgList) {
@@ -44,22 +55,7 @@ public class GioCdpUserMappingMessageProcessor extends ProtobufMessage implement
     }
 
     @Override
-    public String apiHost(String ai) {
-        return apiDomain() + "/projects/" + ai + "/collect/user-mapping";
-    }
-
-    @Override
-    public ContentTypeEnum contentType() {
-        return ContentTypeEnum.PROTOBUF;
-    }
-
-    @Override
-    public Map<String, String> headers() {
-        return HEADERS;
-    }
-
-    @Override
-    public GIOMessage skipIllegalMessage(GIOMessage gioMessage) {
-        return gioMessage;
+    protected String debugMessage(List<GIOMessage> msgList) {
+        return toJson(getIdMapping(msgList));
     }
 }

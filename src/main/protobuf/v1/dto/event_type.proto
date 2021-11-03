@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+
+package io.growing.tunnel.protocol;
+option java_package = "io.growing.collector.tunnel.protocol";
+option java_multiple_files = true;
+option java_outer_classname = "EventTypeOuter";
+
+enum EventType {
+    VISIT = 0;
+    CUSTOM = 1;
+    VISITOR_ATTRIBUTES = 2;
+    LOGIN_USER_ATTRIBUTES = 3;
+    CONVERSION_VARIABLES = 4;
+    APP_CLOSED = 5;
+    PAGE = 6;
+    PAGE_ATTRIBUTES = 7;
+    VIEW_CLICK = 8;
+    VIEW_CHANGE = 9;
+    FORM_SUBMIT = 10;
+}
+
