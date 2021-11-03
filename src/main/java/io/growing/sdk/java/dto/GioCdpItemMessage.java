@@ -1,6 +1,7 @@
 package io.growing.sdk.java.dto;
 
 import io.growing.collector.tunnel.protocol.ItemDto;
+import io.growing.sdk.java.logger.GioLogger;
 
 import java.io.Serializable;
 
@@ -11,12 +12,17 @@ import java.io.Serializable;
  */
 public class GioCdpItemMessage extends GioCDPMessage<ItemDto> implements Serializable {
 
-    private static final long serialVersionUID = -5228910337644290100L;
+    private static final long serialVersionUID = -2411957894363769098L;
 
     private final ItemDto event;
 
     private GioCdpItemMessage(ItemDto.Builder builder) {
         event = builder.build();
+    }
+
+    @Override
+    public void setProjectKey(String projectKey) {
+        this.projectKey = projectKey;
     }
 
     @Override
@@ -30,8 +36,13 @@ public class GioCdpItemMessage extends GioCDPMessage<ItemDto> implements Seriali
     }
 
     @Override
-    public void setProjectKey(String projectKey) {
-        this.projectKey = projectKey;
+    public boolean isIllegal() {
+        if (event.getId().isEmpty() || event.getKey().isEmpty()) {
+            GioLogger.error("GioCdpItemMessage: id or key is empty");
+            return true;
+        }
+
+        return false;
     }
 
     public static final class Builder {
@@ -42,17 +53,23 @@ public class GioCdpItemMessage extends GioCDPMessage<ItemDto> implements Seriali
         }
 
         public Builder id(String id) {
-            builder.setId(id);
+            if (id != null) {
+                builder.setId(id);
+            }
             return this;
         }
 
         public Builder key(String key) {
-            builder.setKey(key);
+            if (key != null) {
+                builder.setKey(key);
+            }
             return this;
         }
 
         public Builder addItemVariable(String key, String value) {
-            builder.putAttributes(key, value);
+            if (key != null && value != null) {
+                builder.putAttributes(key, value);
+            }
             return this;
         }
 

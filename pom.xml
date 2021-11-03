@@ -44,32 +44,14 @@
         <jdk.version>1.6</jdk.version>
         <downloadSources>true</downloadSources>
         <!-- 低版本 release 之后，此 version 需要升级，避免 低版本 snapshot 重复 deploy -->
-        <gio-java-sdk-version>1.0.9</gio-java-sdk-version>
+        <gio-java-sdk-version>1.0.10</gio-java-sdk-version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20140107</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
             <version>3.11.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.googlecode.protobuf-java-format</groupId>
-            <artifactId>protobuf-java-format</artifactId>
-            <version>1.4</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.xerial.snappy</groupId>
-            <artifactId>snappy-java</artifactId>
-            <version>1.1.2.1</version>
         </dependency>
 
         <dependency>
@@ -251,7 +233,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -264,16 +246,8 @@
                             <minimizeJar>true</minimizeJar>
                             <relocations>
                                 <relocation>
-                                    <pattern>org.json</pattern>
-                                    <shadedPattern>io.growing.sdk.java.org.json</shadedPattern>
-                                </relocation>
-                                <relocation>
                                     <pattern>com.google.protobuf</pattern>
                                     <shadedPattern>io.growing.sdk.java.com.google.protobuf</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>com.googlecode.protobuf.format</pattern>
-                                    <shadedPattern>io.growing.sdk.java.com.googlecode.protobuf.format</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>google.protobuf</pattern>
@@ -316,6 +290,13 @@
             <id>cdp-release</id>
             <properties>
                 <gio-java-sdk-version-profile>${gio-java-sdk-version}-cdp</gio-java-sdk-version-profile>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>apple-silicon</id>
+            <properties>
+                <os.detected.classifier>osx-x86_64</os.detected.classifier>
             </properties>
         </profile>
     </profiles>

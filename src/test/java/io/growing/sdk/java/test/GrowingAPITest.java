@@ -1,16 +1,17 @@
 package io.growing.sdk.java.test;
 
 import io.growing.sdk.java.GrowingAPI;
-import io.growing.sdk.java.dto.*;
-import io.growing.sdk.java.exception.GIOSendBeRejectedException;
-import io.growing.sdk.java.utils.VersionInfo;
+import io.growing.sdk.java.dto.GioCdpEventMessage;
+import io.growing.sdk.java.dto.GioCdpItemMessage;
+import io.growing.sdk.java.dto.GioCdpUserMappingMessage;
+import io.growing.sdk.java.dto.GioCdpUserMessage;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.util.*;
-import java.util.concurrent.TimeUnit;
+import java.util.HashMap;
+
 
 /**
  * @author : tong.wang
@@ -19,202 +20,96 @@ import java.util.concurrent.TimeUnit;
  */
 @RunWith(JUnit4.class)
 public class GrowingAPITest {
-
-    private static GrowingAPI testDebug1;
-    private static GrowingAPI testDebug2;
-    private static GrowingAPI testDebug3;
-    private final int msgSize = 500;
+    private static GrowingAPI sender;
 
     @BeforeClass
     public static void before() {
-        System.setProperty("java.util.logging.config.file", "src/test/resources/logging.properties");
-        testDebug1 = new GrowingAPI.Builder().setDataSourceId("test-debug-1-datasource").setProjectKey("test-debug-1").build();
-        testDebug2 = new GrowingAPI.Builder().setDataSourceId("test-debug-2-datasource").setProjectKey("test-debug-2").build();
-        testDebug3 = new GrowingAPI.Builder().setDataSourceId("test-debug-3-datasource").setProjectKey("test-debug-3").build();
+        sender = new GrowingAPI.Builder().setDataSourceId("a390a68c7b25638c").setProjectKey("91eaf9b283361032").build();
     }
 
     @Test
-    public void sendCdpEventMsg() {
-        GrowingAPI.initConfig("gio-test.properties");
-        List<GioCdpEventMessage> list = new ArrayList<GioCdpEventMessage>(msgSize);
-        for (int i = 0; i < msgSize; i++) {
-            HashMap<String, Object> map = new HashMap<String, Object>();
-            map.put("a" + i, i);
-            GioCdpEventMessage msg = new GioCdpEventMessage.Builder()
-                    .eventKey(String.valueOf(i))
-                    .loginUserId(String.valueOf(i))
-                    .anonymousId(String.valueOf(i))
-                    .addEventVariable("product_name", "cdp苹果")
-                    .addEventVariables(map)
-                    .build();
+    public void sendCustomEvent() {
+        HashMap<String, Object> attributes = new HashMap<String, Object>();
+        attributes.put("int_attribute_key", 1);
+        attributes.put("double_attribute_key", 1.0f);
+        attributes.put("string_attribute_key", "string_attribute_value");
 
-            list.add(msg);
-        }
+        HashMap<String, String> resourceAttributes = new HashMap<String, String>();
+        resourceAttributes.put("resource_attribute_key", "resource_attribute_value");
 
-        sendMsg(list);
+        sender.send(new GioCdpEventMessage.Builder()
+                        .eventTime(System.currentTimeMillis())
+                        .loginUserKey("login_user_key")
+                        .loginUserId("login_user_id")
+                        .anonymousId("anonymous_id")
+                        .eventKey("event_name")
+                        .addItem("resource_item_id", "resource_item_key", resourceAttributes)
+                        .addEventVariable("attribute_key", "attribute_value")
+                        .addEventVariables(attributes)
+                        .build());
     }
 
     @Test
-    public void sendEventMsg() {
-        List<GIOEventMessage> list = new ArrayList<GIOEventMessage>(msgSize);
-        for (int i = 0; i < msgSize; i++) {
-            GIOEventMessage msg = new GIOEventMessage.Builder()
-                    .eventKey("" + i)
-                    .eventNumValue(i)
-                    .loginUserId(i + "")
-                    .addEventVariable("product_name", "cdp苹果")
-                    .addEventVariable("product_classify", "cdp水果")
-                    .addEventVariable("product_classify", "cdp水果")
-                    .addEventVariable("product_price", 14)
-                    .addEventVariable("version", VersionInfo.getVersion())
-                    .build();
-
-            list.add(msg);
-        }
-
-        sendMsg(list);
+    public void sendIllegalCustomEvent() {
+        // eventName为必填字段
+        sender.send(new GioCdpEventMessage.Builder()
+                .build());
     }
 
     @Test
-    public void sendCdpUserMsg() {
-        List<GioCdpUserMessage> list = new ArrayList<GioCdpUserMessage>(msgSize);
-        for (int i = 0; i < msgSize; i++) {
-            GioCdpUserMessage msg = new GioCdpUserMessage.Builder()
-                    .loginUserId(String.valueOf(i))
-                    .anonymousId(String.valueOf(i))
-                    .addUserVariable("user", i)
-                    .build();
+    public void sendUserEvent() {
+        HashMap<String, Object> attributes = new HashMap<String, Object>();
+        attributes.put("int_attribute_key", 1);
+        attributes.put("double_attribute_key", 1.0f);
+        attributes.put("string_attribute_key", "string_attribute_value");
 
-
-            list.add(msg);
-        }
-
-        sendMsg(list);
+        sender.send(new GioCdpUserMessage.Builder()
+                .time(System.currentTimeMillis())
+                .loginUserKey("login_user_key")
+                .loginUserId("login_user_id")
+                .anonymousId("anonymous_id")
+                .addUserVariable("attribute_key", "attribute_value")
+                .addUserVariables(attributes)
+                .build());
     }
 
     @Test
-    public void sendCdpUserMappingMsg() {
-        List<GioCdpUserMappingMessage> list = new ArrayList<GioCdpUserMappingMessage>(msgSize);
-        Map<String, String> identities = new HashMap<String, String>();
-        identities.put("email", "987654321@gmail.com");
-        identities.put("phone_number", "12345678901");
-        GioCdpUserMappingMessage msg = new GioCdpUserMappingMessage.Builder()
-                .addIdentities("userKey", "userValue")
+    public void sendIllegalUserEvent() {
+        sender.send(new GioCdpUserMessage.Builder()
+                .build());
+    }
+
+    @Test
+    public void sendItemEvent() {
+        sender.send(new GioCdpItemMessage.Builder()
+                .id("resource_item_id")
+                .key("resource_item_key")
+                .addItemVariable("resource_attribute_key_1", "resource_attribute_value_1")
+                .addItemVariable("resource_attribute_key_2", "resource_attribute_value_2")
+                .build());
+    }
+
+    @Test
+    public void sendIllegalItemEvent() {
+        sender.send(new GioCdpItemMessage.Builder()
+                .build());
+    }
+
+    @Test
+    public void sendUserMappingEvent() {
+        HashMap<String, String> identities = new HashMap<String, String>();
+        identities.put("email", "unit-test@growingio.com");
+        identities.put("qq", "26******20");
+        sender.send(new GioCdpUserMappingMessage.Builder()
+                .addIdentities("phone", "1**********1")
+                .addIdentities("login_user_key", "login_user_id")
                 .addIdentities(identities)
-                .build();
-        list.add(msg);
-        sendMsg(list);
+                .build());
     }
 
     @Test
-    public void sendMultipleMsg() {
-        List<GIOMessage> list = new ArrayList<GIOMessage>(msgSize);
-        for (int i = 0; i < msgSize; i++) {
-            if (i % 2 == 0) {
-                GioCdpUserMessage msg = new GioCdpUserMessage.Builder()
-                        .loginUserId(String.valueOf(i))
-                        .addUserVariable("user", i)
-                        .build();
-
-                list.add(msg);
-            } else {
-                GioCdpEventMessage msg = new GioCdpEventMessage.Builder()
-                        .eventKey(String.valueOf(i))
-                        .loginUserId(String.valueOf(i))
-                        .addEventVariable("product_name", "cdp苹果")
-                        .build();
-
-                list.add(msg);
-            }
-        }
-
-        sendMsg(list);
+    public void sendIllegalUserMappingEvent() {
+        sender.send(new GioCdpUserMappingMessage.Builder()
+                .build());
     }
-
-    private <T extends GIOMessage> void sendMsg(List<T> msgList) {
-
-        for (int i = 0, size = msgList.size(); i < size; i++) {
-            if (i % 3 == 0) {
-                testDebug2.send(msgList.get(i));
-            } else {
-                testDebug1.send(msgList.get(i));
-            }
-        }
-
-        try {
-            TimeUnit.SECONDS.sleep(10);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void sendRejectRetryWithAwait() throws InterruptedException {
-        GrowingAPI.initConfig("gio.properties");
-        //发送时等待100ms，1000个成功，并且最后等待3s
-        for (int i = 0; i < 1000; i++) {
-            GIOEventMessage msg = new GIOEventMessage.Builder()
-                    .eventKey("" + i)
-                    .eventNumValue(i)
-                    .loginUserId(i + "")
-                    .addEventVariable("product_name", "苹果")
-                    .addEventVariable("product_classify", "水果")
-                    .addEventVariable("product_classify", "水果")
-                    .addEventVariable("product_price", 14)
-                    .build();
-            try {
-                testDebug3.sendMaybeRejected(msg);
-            } catch (GIOSendBeRejectedException e) {
-                Thread.sleep(100);
-                //拒绝后等待1s重新发
-                System.out.println("重试！！！！！！！");
-                testDebug3.sendMaybeRejected(msg);
-            }
-        }
-    }
-
-    @Test
-    public void sendRejectRetryWithoutAwait() {
-        GrowingAPI.initConfig("gio-reject.properties");
-        Thread[] threads = new Thread[100];
-        for (int i = 0; i < 100; i++) {
-            threads[i] = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    for (int i = 0; i < 10000; i++) {
-                        GIOEventMessage msg = new GIOEventMessage.Builder()
-                                .eventKey("" + new Random().nextInt())
-                                .eventNumValue(new Random().nextInt())
-                                .loginUserId(new Random().nextInt() + "")
-                                .addEventVariable("product_name", "苹果")
-                                .addEventVariable("product_classify", "水果")
-                                .addEventVariable("product_classify", "水果")
-                                .addEventVariable("product_price", 14)
-                                .build();
-                        testDebug3.sendMaybeRejected(msg);
-                    }
-                }
-            });
-            threads[i].start();
-        }
-    }
-
-    @Test
-    public void sendReject() {
-        GrowingAPI.initConfig("gio.properties");
-        //发送时不用等待，3000个成功，并且最后等待3s
-        for (int i = 0; i < 3000; i++) {
-            GIOEventMessage msg = new GIOEventMessage.Builder()
-                    .eventKey("" + i)
-                    .eventNumValue(i)
-                    .loginUserId(i + "")
-                    .addEventVariable("product_name", "苹果")
-                    .addEventVariable("product_classify", "水果")
-                    .addEventVariable("product_classify", "水果")
-                    .addEventVariable("product_price", 14)
-                    .build();
-            testDebug3.sendMaybeRejected(msg);
-        }
-    }
-
 }

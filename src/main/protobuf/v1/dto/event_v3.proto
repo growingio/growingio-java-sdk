@@ -1,0 +1,76 @@
+syntax = "proto3";
+
+import "v1/dto/event_type.proto";
+
+package io.growing.tunnel.protocol;
+option java_package = "io.growing.collector.tunnel.protocol";
+option java_multiple_files = true;
+option java_outer_classname = "EventV3Protocol";
+
+message EventV3Dto {
+    string device_id = 1;
+    string user_id = 2;
+    string gio_id = 3;
+    string session_id = 4;
+    string data_source_id = 5;
+    EventType event_type = 6;
+    string platform = 7;
+    int64 timestamp = 8;
+    string domain = 9;
+    string path = 10;
+    string query = 11;
+    string title = 12;
+    string referral_page = 13;
+    int64 global_sequence_id = 14;
+    int32 event_sequence_id = 15;
+    int32 screen_height = 16;
+    int32 screen_width = 17;
+    string language = 18;
+    string sdk_version = 19;
+    string app_version = 20;
+    map<string, string> extra_sdk = 21;
+    string event_name = 22;
+    int64 page_show_timestamp = 23;
+    map<string, string> attributes = 24;
+    ResourceItem resource_item = 25;
+    string protocol_type = 26;
+    string text_value = 27;
+    string xpath = 28;
+    int32 index = 29;
+    string hyperlink = 30;
+    string url_scheme = 31;
+    string app_state = 32;
+    string network_state = 33;
+    string app_channel = 34;
+    string page_name = 35;
+    string platform_version = 36;
+    string device_brand = 37;
+    string device_model = 38;
+    string device_type = 39;
+    string operating_system = 40;
+    // 下掉老数据 与 platformVersion 业务意义冲突
+    //  string operating_system_version = 41;
+    string app_name = 42;
+    double latitude = 44;
+    double longitude = 45;
+    string imei = 46;
+    string android_id = 47;
+    string oaid = 48;
+    string google_advertising_id = 49;
+    string idfa = 50;
+    string idfv = 51;
+    string orientation = 52;
+    string project_key = 53;
+    int64 send_time = 54;
+    string user_key = 55;
+}
+
+message ResourceItem {
+    string id = 1;
+    string key = 2;
+    map<string, string> attributes = 3;
+}
+
+message EventV3List {
+    repeated EventV3Dto values = 1;
+}

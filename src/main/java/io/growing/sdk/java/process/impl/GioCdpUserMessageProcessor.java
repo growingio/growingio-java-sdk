@@ -1,6 +1,6 @@
 package io.growing.sdk.java.process.impl;
 
-import io.growing.collector.tunnel.protocol.UserList;
+import io.growing.collector.tunnel.protocol.EventV3List;
 import io.growing.sdk.java.dto.GIOMessage;
 import io.growing.sdk.java.dto.GioCdpUserMessage;
 import io.growing.sdk.java.process.MessageProcessor;
@@ -18,7 +18,7 @@ public class GioCdpUserMessageProcessor extends ProtobufMessage implements Messa
 
     @Override
     public String apiHost(String ai) {
-        return apiDomain() + "/projects/" + ai + "/collect/user";
+        return apiDomain() + "/v3/projects/" + ai + "/collect";
     }
 
     @Override
@@ -32,19 +32,13 @@ public class GioCdpUserMessageProcessor extends ProtobufMessage implements Messa
     }
 
     @Override
-    public GIOMessage skipIllegalMessage(GIOMessage gioMessage) {
-        //todo validate
-        return gioMessage;
-    }
-
-    @Override
     protected byte[] doProcess(List<GIOMessage> msgList) {
-        UserList list = getUsers(msgList);
+        EventV3List list = getUsers(msgList);
         return list == null ? null : list.toByteArray();
     }
 
-    private UserList getUsers(List<GIOMessage> msgList) {
-        UserList.Builder listBuilder = UserList.newBuilder();
+    private EventV3List getUsers(List<GIOMessage> msgList) {
+        EventV3List.Builder listBuilder = EventV3List.newBuilder();
         for (GIOMessage msg : msgList) {
             if (msg instanceof GioCdpUserMessage) {
                 GioCdpUserMessage cdp = (GioCdpUserMessage) msg;

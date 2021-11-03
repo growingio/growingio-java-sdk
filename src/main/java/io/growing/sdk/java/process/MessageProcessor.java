@@ -21,5 +21,5 @@ public interface MessageProcessor {
 
     Map<String, String> headers();
 
-    GIOMessage skipIllegalMessage(GIOMessage gioMessage);
+    boolean skipIllegalMessage(GIOMessage gioMessage);
 }

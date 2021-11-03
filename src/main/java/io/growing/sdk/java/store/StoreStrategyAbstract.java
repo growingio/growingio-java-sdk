@@ -28,8 +28,10 @@ public abstract class StoreStrategyAbstract implements StoreStrategy {
             @Override
             public void run() {
                 MessageProcessor processor = EventProcessorClient.getApiInstance(msg);
-                if (processor.skipIllegalMessage(msg) != null) {
+                if (!processor.skipIllegalMessage(msg)) {
                     doPush(msg);
+                } else {
+                    GioLogger.error("skip illegal message");
                 }
             }
         });
