@@ -83,9 +83,6 @@ send.msg.interval=100
 send.msg.thread=3
 #消息队列大小 （默认 500）
 msg.store.queue.size=500
-#数据压缩 false:不压缩,true:压缩
-#不压缩可节省cpu，压缩可省带宽
-compress=true
 #日志级别输出 (debug | error)
 logger.level=debug
 #自定义日志输出实现类
@@ -160,22 +157,6 @@ GioCdpEventMessage msg = new GioCdpEventMessage.Builder()
                     .build();
 ```
 
-### 物品模型API
-
-|参数名称|类型|是否必填|说明|
-| --- | --- | --- | --- |
-|id|string|是|物品模型ID。|
-|key|string|是|物品模型KEY。|
-|addItemVariable|map<string,string>|否|物品模型变量。|
-
-```java
-GioCdpItemMessage msg = new GioCdpItemMessage.Builder()
-                .id("1001")                        // 物品模型ID (必填)
-                .key("product")                    // 物品模型KEY (必填)
-                .addItemVariable("color", "red")   // 物品模型变量 (选填)
-                .build();
-```
-
 ### 用户变量 API
 
 |参数名称|类型|是否必填|说明|
@@ -198,6 +179,22 @@ GioCdpUserMessage msg = new GioCdpUserMessage.Builder()
                 .loginUserId("loginUserId")            // 登录用户ID的 (必填)
                 .addUserVariable("gender", "man")      // 用户变量 (选填)
                 .addUserVariables(map)                 // 用户变量集合 (选填)
+                .build();
+```
+
+### 物品模型API
+
+|参数名称|类型|是否必填|说明|
+| --- | --- | --- | --- |
+|id|string|是|物品模型ID。|
+|key|string|是|物品模型KEY。|
+|addItemVariable|map<string,string>|否|物品模型变量。|
+
+```java
+GioCdpItemMessage msg = new GioCdpItemMessage.Builder()
+                .id("1001")                        // 物品模型ID (必填)
+                .key("product")                    // 物品模型KEY (必填)
+                .addItemVariable("color", "red")   // 物品模型变量 (选填)
                 .build();
 ```
 
