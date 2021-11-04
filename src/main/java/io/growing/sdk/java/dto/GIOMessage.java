@@ -19,5 +19,7 @@ public abstract class GIOMessage implements Serializable {
         return projectKey;
     }
 
-    public boolean isIllegal() { return false; }
+    public boolean isIllegal() {
+        return false;
+    }
 }
