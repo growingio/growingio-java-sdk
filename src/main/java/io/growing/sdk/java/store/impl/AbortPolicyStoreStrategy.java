@@ -8,6 +8,7 @@ import io.growing.sdk.java.sender.MessageSender;
 import io.growing.sdk.java.store.StoreStrategyAbstract;
 import io.growing.sdk.java.thread.GioThreadNamedFactory;
 import io.growing.sdk.java.utils.ConfigUtils;
+import io.growing.sdk.java.utils.ExecutorServiceUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,6 +29,7 @@ public class AbortPolicyStoreStrategy extends StoreStrategyAbstract {
     private static final int LIMIT = ConfigUtils.getIntValue("msg.store.queue.size", 500);
     private static double loadfactor = ConfigUtils.getDoubleValue("msg.store.queue.load_factor", 0.5);
     private static final int SEND_INTERVAL = ConfigUtils.getIntValue("send.msg.interval", 100);
+    protected static final int SPEED_THREAD_POOL_TIMEOUT = ConfigUtils.getIntValue("speed.thread_pool.timeout", 1000);
     private static final int SEND_MSG_BATCH_SIZE = 100;
 
     private static final AtomicBoolean queueWillFull = new AtomicBoolean(false);
@@ -70,6 +72,32 @@ public class AbortPolicyStoreStrategy extends StoreStrategyAbstract {
         } else {
             throw new GIOSendBeRejectedException("push was rejected, because msg queue is full, suggest greater size for [msg.store.queue.size] or shorten the interval of [send.msg.interval]");
         }
+    }
+
+    @Override
+    public void awaitTerminationAfterShutdown() {
+        ExecutorServiceUtils.awaitTerminationAfterShutdown(pushMsgThreadPool, PUSH_THREAD_POOL_TIMEOUT);
+
+        if (!messageBlockingQueue.isEmpty()) {
+            GioLogger.error("awaitTerminationAfterShutdown was executed, msg queue size: " + messageBlockingQueue.size() + " is not empty, will wait it " + AWAIT + "s");
+            try {
+                TimeUnit.SECONDS.sleep(AWAIT);
+            } catch (InterruptedException e) {
+                GioLogger.error(e.getLocalizedMessage());
+            }
+        }
+
+        ExecutorServiceUtils.awaitTerminationAfterShutdown(sendMsgSchedule, SEND_THREAD_POOL_TIMEOUT);
+        ExecutorServiceUtils.awaitTerminationAfterShutdown(speedSendScheduler, SPEED_THREAD_POOL_TIMEOUT);
+        SENDER.awaitTermination(SENDER_THREAD_POOL_TIMEOUT);
+    }
+
+    @Override
+    public void shutDownNow() {
+        pushMsgThreadPool.shutdownNow();
+        sendMsgSchedule.shutdownNow();
+        speedSendScheduler.shutdownNow();
+        SENDER.shutdownNow();
     }
 
     static class SendRunnable implements Runnable {

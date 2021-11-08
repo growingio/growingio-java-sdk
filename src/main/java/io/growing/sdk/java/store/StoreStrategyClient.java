@@ -29,7 +29,7 @@ public class StoreStrategyClient {
         } else {
             storeStrategy = DefaultStoreInstance.defaultStoreStrategy;
         }
-        storeStrategy.shutdownAwait();
+        storeStrategy.registerShutdownHook();
         return storeStrategy;
     }
 

@@ -11,6 +11,10 @@ public interface StoreStrategy {
 
     void push(GIOMessage msgList);
 
-    void shutdownAwait();
+    void registerShutdownHook();
+
+    void awaitTerminationAfterShutdown();
+
+    void shutDownNow();
 
 }

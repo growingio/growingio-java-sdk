@@ -26,6 +26,7 @@ public class Demo {
         sendCdpItem();
         sendCdpCustomEvent();
         sendCdpUser();
+        GrowingAPI.shutdown();
     }
 
     /**
