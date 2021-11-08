@@ -13,4 +13,8 @@ public interface MessageSender {
 
     void sendMsg(final String projectKey, final List<GIOMessage> msg);
 
+    void shutdownNow();
+
+    void awaitTermination(long timeout);
+
 }

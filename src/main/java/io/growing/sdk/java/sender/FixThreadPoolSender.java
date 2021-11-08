@@ -7,6 +7,7 @@ import io.growing.sdk.java.sender.net.HttpUrlProvider;
 import io.growing.sdk.java.sender.net.NetProviderAbstract;
 import io.growing.sdk.java.thread.GioThreadNamedFactory;
 import io.growing.sdk.java.utils.ConfigUtils;
+import io.growing.sdk.java.utils.ExecutorServiceUtils;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -56,4 +57,13 @@ public class FixThreadPoolSender implements MessageSender {
         }
     }
 
+    @Override
+    public void shutdownNow() {
+        sendThread.shutdownNow();
+    }
+
+    @Override
+    public void awaitTermination(long timeout) {
+        ExecutorServiceUtils.awaitTerminationAfterShutdown(sendThread, timeout);
+    }
 }

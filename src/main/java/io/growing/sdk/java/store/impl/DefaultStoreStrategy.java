@@ -7,6 +7,7 @@ import io.growing.sdk.java.sender.MessageSender;
 import io.growing.sdk.java.store.StoreStrategyAbstract;
 import io.growing.sdk.java.thread.GioThreadNamedFactory;
 import io.growing.sdk.java.utils.ConfigUtils;
+import io.growing.sdk.java.utils.ExecutorServiceUtils;
 
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -78,5 +79,29 @@ public class DefaultStoreStrategy extends StoreStrategyAbstract {
         if (!messageBlockingQueue.offer(msg)) {
             GioLogger.error("msg queue is full, suggest greater size for [msg.store.queue.size] or shorten the interval of [send.msg.interval]");
         }
+    }
+
+    @Override
+    public void awaitTerminationAfterShutdown() {
+        ExecutorServiceUtils.awaitTerminationAfterShutdown(pushMsgThreadPool, PUSH_THREAD_POOL_TIMEOUT);
+
+        if (!messageBlockingQueue.isEmpty()) {
+            GioLogger.error("awaitTerminationAfterShutdown was executed, msg queue size: " + messageBlockingQueue.size() + " is not empty, will wait it " + AWAIT + "s");
+            try {
+                TimeUnit.SECONDS.sleep(AWAIT);
+            } catch (InterruptedException e) {
+                GioLogger.error(e.getLocalizedMessage());
+            }
+        }
+
+        ExecutorServiceUtils.awaitTerminationAfterShutdown(sendMsgSchedule, SEND_THREAD_POOL_TIMEOUT);
+        sender.awaitTermination(SENDER_THREAD_POOL_TIMEOUT);
+    }
+
+    @Override
+    public void shutDownNow() {
+        pushMsgThreadPool.shutdownNow();
+        sendMsgSchedule.shutdownNow();
+        sender.shutdownNow();
     }
 }

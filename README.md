@@ -69,8 +69,8 @@ project.send(eventMessage);
 ```
 
 ## 配置文件信息
-
-gio.properties
+配置在资源目录
+resources/gio.properties
 
 ```properties
 #项目采集端地址, https://api.growingio.com 需要填写完整的url地址, 如不清楚请联系您的专属项目经理
@@ -90,18 +90,18 @@ logger.implemention=io.growing.sdk.java.logger.GioLoggerImpl
 #运行模式，test:仅输出消息体，不发送消息，production: 发送消息
 run.mode=test
 # 设置代理, 如果不设置，默认为不使用代理
-proxy.host=127.0.0.1
-proxy.port=3128
+#proxy.host=127.0.0.1
+#proxy.port=3128
 # 设置代理认证用户密码, 如果不设置，默认为不使用用户验证 [认证加密方式为 Basic base64]
-proxy.user=demo
-proxy.password=demo
+#proxy.user=demo
+#proxy.password=demo
 #http 连接超时时间,默认2秒
 #connection.timeout=2000
 #http 连接读取时间,默认2秒
 #read.timeout=2000
 # 带拒绝策略的发送策略，默认不采用，此策略在队列快满时打印出debug日志，并且会使用新的线程（个数同send.msg.thread）加速消费队列元素
 # 但可能仍然消费速度不够，导致抛出GIOSendBeRejectedException异常，为了保险起见，使用者应当捕获该异常。
-# 并且此策略新增了shutdownAwait方法关联了队列状态和JVM关闭钩子，此举旨在防止主线程关闭时，内存队列未消费的元素丢失。
+# 策略新增了registerShutdownHook方法关联了队列状态和JVM关闭钩子，此举旨在防止主线程关闭时，内存队列未消费的元素丢失。
 # msg.store.strategy=abortPolicy
 # 队列负载率，当为0.5时，表明，队列中元素达到一半时，会出现debug日志，并会使用新线程加速消费队列。队列负载降低到0.5以下后，恢复
 # 此值越大，队列越接近满状态，加速线程执行的时间越提前。"加速"可能对接口接收服务造成压力，谨慎使用！
@@ -144,6 +144,7 @@ private static GrowingAPI project = new GrowingAPI.Builder().setProjectKey("your
 |addItem|(string, string)|否|物品模型ID, 物品模型KEY。|
 
 **代码示例**
+
 ```java
 GioCdpEventMessage msg = new GioCdpEventMessage.Builder()
                     .eventTime(System.currentTimeMillis())            // 默认为系统当前时间 (选填)
@@ -168,8 +169,7 @@ GioCdpEventMessage msg = new GioCdpEventMessage.Builder()
 |addUserVariable|(string, string\|double\|int)|否|用户变量。|
 |addUserVariables|map<string,object>|否|用户变量集合。|
 
-
-示例代码：
+**代码示例**
 
 ```java
 GioCdpUserMessage msg = new GioCdpUserMessage.Builder()
@@ -190,6 +190,8 @@ GioCdpUserMessage msg = new GioCdpUserMessage.Builder()
 |key|string|是|物品模型KEY。|
 |addItemVariable|map<string,string>|否|物品模型变量。|
 
+**代码示例**
+
 ```java
 GioCdpItemMessage msg = new GioCdpItemMessage.Builder()
                 .id("1001")                        // 物品模型ID (必填)
@@ -205,8 +207,7 @@ GioCdpItemMessage msg = new GioCdpItemMessage.Builder()
 |addUserVariable|(string, string)|否|用户KEY, 用户ID。|
 |addUserVariables|map<string,string>|否|(用户KEY, 用户ID)集合。|
 
-
-示例代码：
+**代码示例**
 
 ```java
 GioCdpUserMappingMessage msg = new GioCdpUserMappingMessage.Builder()

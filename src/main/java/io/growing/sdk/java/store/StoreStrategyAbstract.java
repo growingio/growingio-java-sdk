@@ -17,8 +17,11 @@ import java.util.concurrent.*;
  */
 public abstract class StoreStrategyAbstract implements StoreStrategy {
 
-    private static ExecutorService pushMsgThreadPool = Executors.newSingleThreadExecutor(new GioThreadNamedFactory("gio-push-msg"));
-    private static final int AWAIT = ConfigUtils.getIntValue("shutdown.await", 3);
+    protected static ExecutorService pushMsgThreadPool = Executors.newSingleThreadExecutor(new GioThreadNamedFactory("gio-push-msg"));
+    protected static final int AWAIT = ConfigUtils.getIntValue("shutdown.await", 3);
+    protected static final int PUSH_THREAD_POOL_TIMEOUT = ConfigUtils.getIntValue("push.thread_pool.timeout", 1000);
+    protected static final int SEND_THREAD_POOL_TIMEOUT = ConfigUtils.getIntValue("send.thread_pool.timeout", 1000);
+    protected static final int SENDER_THREAD_POOL_TIMEOUT = ConfigUtils.getIntValue("sender.thread_pool.timeout", 1000);
 
     protected static BlockingQueue<GIOMessage> messageBlockingQueue;
 
@@ -55,18 +58,11 @@ public abstract class StoreStrategyAbstract implements StoreStrategy {
     /**
      * 最后在调用此方法，以避免关闭时，queue没有被消费完.
      */
-    public void shutdownAwait() {
+    public void registerShutdownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
             public void run() {
-                if (!messageBlockingQueue.isEmpty()) {
-                    GioLogger.error("JVM hook was executed, msg queue size: " + messageBlockingQueue.size() + " is not empty, will wait it " + AWAIT + "s");
-                    try {
-                        TimeUnit.SECONDS.sleep(AWAIT);
-                    } catch (InterruptedException e) {
-                        GioLogger.error(e.getLocalizedMessage());
-                    }
-                }
+                awaitTerminationAfterShutdown();
             }
         }));
     }

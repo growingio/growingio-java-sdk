@@ -132,4 +132,18 @@ public class GrowingAPI {
     public static void initConfig(Properties properties) {
         ConfigUtils.init(properties);
     }
+
+    /**
+     * showdownNow 将会直接调用sdk中线程池的shutdownNow.
+     */
+    public static void shutdownNow() {
+        strategy.shutDownNow();
+    }
+
+    /**
+     * shutdown 将会依照配置信息，允许执行之前提交的任务直到完成或超时.
+     */
+    public static void shutdown() {
+        strategy.awaitTerminationAfterShutdown();
+    }
 }
