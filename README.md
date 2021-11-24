@@ -204,8 +204,8 @@ GioCdpItemMessage msg = new GioCdpItemMessage.Builder()
 
 |参数名称|类型|是否必填|说明|
 | --- | --- | --- | --- |
-|addUserVariable|(string, string)|否|用户KEY, 用户ID。|
-|addUserVariables|map<string,string>|否|(用户KEY, 用户ID)集合。|
+|addIdentities|(string, string)|否|用户KEY, 用户ID。|
+|addIdentities|map<string,string>|否|(用户KEY, 用户ID)集合。|
 
 **代码示例**
 
