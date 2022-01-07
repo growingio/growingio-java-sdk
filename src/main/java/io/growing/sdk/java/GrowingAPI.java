@@ -21,17 +21,17 @@ import java.util.Properties;
  */
 public class GrowingAPI {
 
-    private static final boolean validDefaultConfig;
+    private final boolean validDefaultConfig;
     private final String projectKey;
     private final String dataSourceId;
     private static final StoreStrategy strategy = StoreStrategyClient.getStoreInstance(StoreStrategyClient.CURRENT_STRATEGY);
 
     static {
         ConfigUtils.initDefault();
-        validDefaultConfig = validDefaultConfig();
     }
 
     private GrowingAPI(Builder builder) {
+        this.validDefaultConfig = validDefaultConfig();
         this.dataSourceId = builder.dataSourceId;
         this.projectKey = builder.projectKey;
     }
