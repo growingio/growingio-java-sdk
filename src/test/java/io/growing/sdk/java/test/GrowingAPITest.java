@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.util.HashMap;
+import java.util.Properties;
 
 
 /**
@@ -24,6 +25,9 @@ public class GrowingAPITest {
 
     @BeforeClass
     public static void before() {
+        Properties properties = new Properties();
+        properties.setProperty("run.mode", "test");
+        GrowingAPI.initConfig(properties);
         sender = new GrowingAPI.Builder().setDataSourceId("a390a68c7b25638c").setProjectKey("91eaf9b283361032").build();
     }
 
