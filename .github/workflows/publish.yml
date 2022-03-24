@@ -1,0 +1,101 @@
+name: Publish Maven
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish-saas-release:
+    if: ${{!contains(github.event.release.tag_name, 'SNAPSHOT') && !contains(github.event.release.tag_name, 'cdp')}}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8 - SaaS Release
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt-hotspot'
+          java-version: '8'
+          server-id: release
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_CENTRAL_TOKEN
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+
+      - name: Publish to Sonatype Maven Central - SaaS Release
+        run: mvn clean install deploy -Prelease
+        env:
+          MAVEN_USERNAME: ${{secrets.MAVEN_USERNAME}}
+          MAVEN_CENTRAL_TOKEN: ${{secrets.MAVEN_CENTRAL_TOKEN}}
+          MAVEN_GPG_PASSPHRASE: ${{secrets.MAVEN_GPG_PASSPHRASE}}
+
+
+  publish-saas-snapshot:
+    if: ${{contains(github.event.release.tag_name, 'SNAPSHOT') && !contains(github.event.release.tag_name, 'cdp')}}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8 - SaaS Snapshot
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt-hotspot'
+          java-version: '8'
+          server-id: snapshot
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_CENTRAL_TOKEN
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+
+      - name: Publish to Sonatype Maven Central - SaaS Snapshot
+        run: mvn clean install deploy -Dmaven.test.skip=true -Dgpg.skip=true
+        env:
+          MAVEN_USERNAME: ${{secrets.MAVEN_USERNAME}}
+          MAVEN_CENTRAL_TOKEN: ${{secrets.MAVEN_CENTRAL_TOKEN}}
+          MAVEN_GPG_PASSPHRASE: ${{secrets.MAVEN_GPG_PASSPHRASE}}
+
+
+  publish-cdp-release:
+    if: ${{!contains(github.event.release.tag_name, 'SNAPSHOT') && contains(github.event.release.tag_name, 'cdp')}}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8 - CDP Release
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt-hotspot'
+          java-version: '8'
+          server-id: release
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_CENTRAL_TOKEN
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+      - name: Publish to Sonatype Maven Central - CDP Release
+        run: mvn clean install deploy -Pcdp-release
+        env:
+          MAVEN_USERNAME: ${{secrets.MAVEN_USERNAME}}
+          MAVEN_CENTRAL_TOKEN: ${{secrets.MAVEN_CENTRAL_TOKEN}}
+          MAVEN_GPG_PASSPHRASE: ${{secrets.MAVEN_GPG_PASSPHRASE}}
+
+  publish-cdp-snapshot:
+    if: ${{contains(github.event.release.tag_name, 'SNAPSHOT') && contains(github.event.release.tag_name, 'cdp')}}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8 - CDP Release
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt-hotspot'
+          java-version: '8'
+          server-id: snapshot
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_CENTRAL_TOKEN
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+      - name: Publish to Sonatype Maven Central - CDP Release
+        run: mvn clean install deploy -Pcdp -Dmaven.test.skip=true -Dgpg.skip=true
+        env:
+          MAVEN_USERNAME: ${{secrets.MAVEN_USERNAME}}
+          MAVEN_CENTRAL_TOKEN: ${{secrets.MAVEN_CENTRAL_TOKEN}}
+          MAVEN_GPG_PASSPHRASE: ${{secrets.MAVEN_GPG_PASSPHRASE}}
