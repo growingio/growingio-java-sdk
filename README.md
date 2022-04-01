@@ -134,7 +134,7 @@ private static GrowingAPI project = new GrowingAPI.Builder().setProjectKey("your
 
 |参数名称|类型|是否必填|说明|
 | --- | --- | --- | --- |
-|eventTime|long|否|事件发生时间。|
+|eventTime|long|否|事件发生时间。需要开启“自定义event_time上报”功能方可生效，请联系技术支持确认|
 |eventKey|string|是|埋点事件的KEY。|
 |anonymousId|string|否|匿名用户ID。|
 |loginUserKey|string|否|登录用户KEY。|

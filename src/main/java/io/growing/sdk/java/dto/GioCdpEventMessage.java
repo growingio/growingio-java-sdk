@@ -59,6 +59,7 @@ public class GioCdpEventMessage extends GioCDPMessage<EventV3Dto> implements Ser
 
         public Builder eventTime(long eventTime) {
             builder.setTimestamp(eventTime);
+            builder.setSendTime(eventTime);
             return this;
         }
 

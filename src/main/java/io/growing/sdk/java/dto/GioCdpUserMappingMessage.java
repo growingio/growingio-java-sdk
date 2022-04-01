@@ -53,14 +53,19 @@ public class GioCdpUserMappingMessage extends GioCDPMessage<UserMappingDto> impl
             return new GioCdpUserMappingMessage(builder);
         }
 
-        public GioCdpUserMappingMessage.Builder addIdentities(String userKey, String userId) {
+        public Builder eventTime(long eventTime) {
+            builder.setSendTime(eventTime);
+            return this;
+        }
+
+        public Builder addIdentities(String userKey, String userId) {
             if (userKey != null && userId != null) {
                 builder.putIdentifies(userKey, userId);
             }
             return this;
         }
 
-        public GioCdpUserMappingMessage.Builder addIdentities(Map<String, String> identifies) {
+        public Builder addIdentities(Map<String, String> identifies) {
             if (identifies != null && !identifies.isEmpty()) {
                 builder.putAllIdentifies(identifies);
             }
