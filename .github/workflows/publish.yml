@@ -93,7 +93,7 @@ jobs:
           server-password: MAVEN_CENTRAL_TOKEN
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
-      - name: Publish to Sonatype Maven Central - CDP Release
+      - name: Publish to Sonatype Maven Central - CDP Snapshot
         run: mvn clean install deploy -Pcdp -Dmaven.test.skip=true -Dgpg.skip=true
         env:
           MAVEN_USERNAME: ${{secrets.MAVEN_USERNAME}}
