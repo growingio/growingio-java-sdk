@@ -21,6 +21,9 @@ jobs:
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
 
+      - name: set version
+        run: mvn versions:set -DnewVersion=${{ github.event.release.tag_name }} -DgenerateBackupPoms=false
+
       - name: Publish to Sonatype Maven Central - SaaS Release
         run: mvn clean install deploy -Prelease
         env:
@@ -46,6 +49,9 @@ jobs:
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
 
+      - name: set version
+        run: mvn versions:set -DnewVersion=${{ github.event.release.tag_name }} -DgenerateBackupPoms=false
+
       - name: Publish to Sonatype Maven Central - SaaS Snapshot
         run: mvn clean install deploy -Dmaven.test.skip=true -Dgpg.skip=true
         env:
@@ -70,6 +76,10 @@ jobs:
           server-password: MAVEN_CENTRAL_TOKEN
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+
+      - name: set version
+        run: mvn versions:set -DnewVersion=${{ github.event.release.tag_name }} -DgenerateBackupPoms=false
+
       - name: Publish to Sonatype Maven Central - CDP Release
         run: mvn clean install deploy -Pcdp-release
         env:
@@ -93,6 +103,10 @@ jobs:
           server-password: MAVEN_CENTRAL_TOKEN
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+
+      - name: set version
+        run: mvn versions:set -DnewVersion=${{ github.event.release.tag_name }} -DgenerateBackupPoms=false
+
       - name: Publish to Sonatype Maven Central - CDP Snapshot
         run: mvn clean install deploy -Pcdp -Dmaven.test.skip=true -Dgpg.skip=true
         env:
