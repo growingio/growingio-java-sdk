@@ -268,7 +268,7 @@
             <!-- replace ${} referenced from https://stackoverflow.com/questions/40308600/replace-properties-with-its-values-in-pom-xml-before-putting-the-pom-file-into -->
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.0.1</version>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <id>copy-resources</id>
@@ -294,6 +294,13 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-install-plugin</artifactId>
+                <configuration>
+                    <pomFile>target/pom.xml</pomFile>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
                 <configuration>
                     <pomFile>target/pom.xml</pomFile>
                 </configuration>
