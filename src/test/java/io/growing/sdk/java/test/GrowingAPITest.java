@@ -42,7 +42,7 @@ public class GrowingAPITest {
         resourceAttributes.put("resource_attribute_key", "resource_attribute_value");
 
         sender.send(new GioCdpEventMessage.Builder()
-                        .eventTime(System.currentTimeMillis())
+                        .eventTime(System.currentTimeMillis() - 24 * 60 * 60 * 1000)
                         .loginUserKey("login_user_key")
                         .loginUserId("login_user_id")
                         .anonymousId("anonymous_id")
@@ -68,7 +68,7 @@ public class GrowingAPITest {
         attributes.put("string_attribute_key", "string_attribute_value");
 
         sender.send(new GioCdpUserMessage.Builder()
-                .time(System.currentTimeMillis())
+                .time(System.currentTimeMillis() - 24 * 60 * 60 * 1000)
                 .loginUserKey("login_user_key")
                 .loginUserId("login_user_id")
                 .anonymousId("anonymous_id")
@@ -105,6 +105,7 @@ public class GrowingAPITest {
         identities.put("email", "unit-test@growingio.com");
         identities.put("qq", "26******20");
         sender.send(new GioCdpUserMappingMessage.Builder()
+                .eventTime(System.currentTimeMillis() - 24 * 60 * 60 * 1000)
                 .addIdentities("phone", "1**********1")
                 .addIdentities("login_user_key", "login_user_id")
                 .addIdentities(identities)

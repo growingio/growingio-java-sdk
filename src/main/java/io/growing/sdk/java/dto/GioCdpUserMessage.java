@@ -58,6 +58,7 @@ public class GioCdpUserMessage extends GioCDPMessage<EventV3Dto> implements Seri
 
         public Builder time(long timestamp) {
             builder.setTimestamp(timestamp);
+            builder.setSendTime(timestamp);
             return this;
         }
 
