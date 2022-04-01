@@ -8,4 +8,4 @@
 mvn -s ~/.m2/settings-gio-sdk.xml clean install deploy -Pcdp -Dmaven.test.skip=true -Dgpg.skip=true
 
 # Apple m1 上增加-Papple-silicon 执行相关命令进行打包
-mvn clean install -Papple-silicon,cdp-release -Dmaven.test.skip=true -Dgpg.skip=true
+# mvn -s ~/.m2/settings-gio-sdk.xml clean install deploy -Papple-silicon,cdp -Dmaven.test.skip=true -Dgpg.skip=true
