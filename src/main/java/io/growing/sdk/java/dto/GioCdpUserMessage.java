@@ -5,6 +5,8 @@ import io.growing.collector.tunnel.protocol.EventV3Dto;
 import io.growing.sdk.java.logger.GioLogger;
 
 import java.io.Serializable;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -51,6 +53,7 @@ public class GioCdpUserMessage extends GioCDPMessage<EventV3Dto> implements Seri
 
     public static final class Builder {
         private EventV3Dto.Builder builder = EventV3Dto.newBuilder();
+        private static final String LIST_SPLIT = "||";
 
         public GioCdpUserMessage build() {
             return new GioCdpUserMessage(builder);
@@ -97,6 +100,31 @@ public class GioCdpUserMessage extends GioCDPMessage<EventV3Dto> implements Seri
         public Builder addUserVariable(String key, double value) {
             this.addVariableObject(key, value);
             return this;
+        }
+
+        public <T> Builder addUserVariable(String key, List<T> value) {
+            if (key != null && value != null && !value.isEmpty()) {
+                StringBuilder valueBuilder = new StringBuilder();
+                Iterator<T> iterator = value.iterator();
+                if (iterator.hasNext()) {
+                    valueBuilder.append(toString(iterator.next()));
+                    while (iterator.hasNext()) {
+                        valueBuilder.append(LIST_SPLIT);
+                        valueBuilder.append(toString(iterator.next()));
+                    }
+                }
+                builder.putAttributes(key, valueBuilder.toString());
+            }
+
+            return this;
+        }
+
+        private String toString(Object value) {
+            if (value == null) {
+                return "";
+            } else {
+                return String.valueOf(value);
+            }
         }
 
         private Builder addVariableObject(String key, Object value) {

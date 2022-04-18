@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -40,7 +41,6 @@ public class GrowingAPITest {
 
         HashMap<String, String> resourceAttributes = new HashMap<String, String>();
         resourceAttributes.put("resource_attribute_key", "resource_attribute_value");
-
         sender.send(new GioCdpEventMessage.Builder()
                         .eventTime(System.currentTimeMillis() - 24 * 60 * 60 * 1000)
                         .loginUserKey("login_user_key")
@@ -49,6 +49,8 @@ public class GrowingAPITest {
                         .eventKey("event_name")
                         .addItem("resource_item_id", "resource_item_key", resourceAttributes)
                         .addEventVariable("attribute_key", "attribute_value")
+                        .addEventVariable("attribute_list_key", Arrays.asList("", "1", null))
+                        .addEventVariable("empty_list_key", Arrays.asList())
                         .addEventVariables(attributes)
                         .build());
     }
@@ -73,6 +75,8 @@ public class GrowingAPITest {
                 .loginUserId("login_user_id")
                 .anonymousId("anonymous_id")
                 .addUserVariable("attribute_key", "attribute_value")
+                .addUserVariable("attribute_list_key", Arrays.asList("", "1", null))
+                .addUserVariable("empty_list_key", Arrays.asList())
                 .addUserVariables(attributes)
                 .build());
     }
