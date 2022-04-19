@@ -18,40 +18,58 @@ public class EventMessageTest {
                 .eventKey("event_name")
                 .loginUserId("user_id")
                 .build();
-        Assert.assertFalse("legal data: event_name and user_id ", eventMessage.isIllegal());
+        Assert.assertFalse(eventMessage.isIllegal());
 
         eventMessage = new GioCdpEventMessage.Builder()
                 .eventKey("event_name")
                 .anonymousId("device_id")
                 .build();
-        Assert.assertFalse("legal data: event_name and anonymousId ", eventMessage.isIllegal());
+        Assert.assertFalse(eventMessage.isIllegal());
 
         eventMessage = new GioCdpEventMessage.Builder()
                 .eventKey("event_name")
                 .build();
-        Assert.assertTrue("illegal data: event_name", eventMessage.isIllegal());
+        Assert.assertTrue(eventMessage.isIllegal());
 
         eventMessage = new GioCdpEventMessage.Builder()
                 .loginUserId("user_id")
                 .build();
-        Assert.assertTrue("illegal data: user_id", eventMessage.isIllegal());
+        Assert.assertTrue(eventMessage.isIllegal());
 
         eventMessage = new GioCdpEventMessage.Builder()
                 .anonymousId("device_id")
                 .build();
-        Assert.assertTrue("illegal data: device_id", eventMessage.isIllegal());
+        Assert.assertTrue(eventMessage.isIllegal());
     }
 
     @Test
     public void checkUserMessage() {
         GioCdpUserMessage userMessage = new GioCdpUserMessage.Builder()
                 .loginUserId("user_id")
+                .addUserVariable("attr_key", "attr_value")
                 .build();
-        Assert.assertFalse("legal data: user_id", userMessage.isIllegal());
+        Assert.assertFalse(userMessage.isIllegal());
 
         userMessage = new GioCdpUserMessage.Builder()
+                .anonymousId("anonymous_id")
+                .addUserVariable("attr_key", "attr_value")
                 .build();
-        Assert.assertTrue("illegal data: empty", userMessage.isIllegal());
+        Assert.assertFalse(userMessage.isIllegal());
+
+        userMessage = new GioCdpUserMessage.Builder()
+                .anonymousId("anonymous_id")
+                .build();
+        Assert.assertTrue(userMessage.isIllegal());
+
+        userMessage = new GioCdpUserMessage.Builder()
+                .loginUserId("user_id")
+                .build();
+        Assert.assertTrue(userMessage.isIllegal());
+
+        userMessage = new GioCdpUserMessage.Builder()
+                .addUserVariable("attr_key", "attr_value")
+                .build();
+        Assert.assertTrue(userMessage.isIllegal());
     }
 
     @Test
@@ -59,11 +77,11 @@ public class EventMessageTest {
         GioCdpUserMappingMessage userMappingMessage = new GioCdpUserMappingMessage.Builder()
                 .addIdentities("user_key", "user_id")
                 .build();
-        Assert.assertFalse("legal data: identity", userMappingMessage.isIllegal());
+        Assert.assertFalse(userMappingMessage.isIllegal());
 
         userMappingMessage = new GioCdpUserMappingMessage.Builder()
                 .build();
-        Assert.assertTrue("illegal data: empty", userMappingMessage.isIllegal());
+        Assert.assertTrue(userMappingMessage.isIllegal());
     }
 
     @Test
@@ -72,16 +90,16 @@ public class EventMessageTest {
                 .id("item_id")
                 .key("item_key")
                 .build();
-        Assert.assertFalse("legal data: item_id and item_key", itemMessage.isIllegal());
+        Assert.assertFalse(itemMessage.isIllegal());
 
         itemMessage = new GioCdpItemMessage.Builder()
                 .id("item_id")
                 .build();
-        Assert.assertTrue("illegal data: item_id", itemMessage.isIllegal());
+        Assert.assertTrue(itemMessage.isIllegal());
 
         itemMessage = new GioCdpItemMessage.Builder()
                 .key("item_key")
                 .build();
-        Assert.assertTrue("illegal data: item_key", itemMessage.isIllegal());
+        Assert.assertTrue(itemMessage.isIllegal());
     }
 }
