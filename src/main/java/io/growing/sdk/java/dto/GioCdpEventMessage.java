@@ -4,6 +4,7 @@ import io.growing.collector.tunnel.protocol.EventType;
 import io.growing.collector.tunnel.protocol.EventV3Dto;
 import io.growing.collector.tunnel.protocol.ResourceItem;
 import io.growing.sdk.java.logger.GioLogger;
+import io.growing.sdk.java.utils.StringUtils;
 
 import java.io.Serializable;
 import java.util.Iterator;
@@ -44,8 +45,13 @@ public class GioCdpEventMessage extends GioCDPMessage<EventV3Dto> implements Ser
 
     @Override
     public boolean isIllegal() {
-        if (event.getEventName().isEmpty()) {
+        if (StringUtils.isBlank(event.getEventName())) {
             GioLogger.error("GioCdpEventMessage: eventName is empty");
+            return true;
+        }
+
+        if (StringUtils.isBlank(event.getUserId()) && StringUtils.isBlank(event.getDeviceId())) {
+            GioLogger.error("GioCdpEventMessage: userId and anonymousId are empty");
             return true;
         }
 
