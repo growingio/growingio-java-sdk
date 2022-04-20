@@ -188,7 +188,7 @@ GioCdpEventMessage msg=new GioCdpEventMessage.Builder()
 
 ```java
 GioCdpUserMessage msg=new GioCdpUserMessage.Builder()
-        .loginUserId("loginUserId")            // 登录用户ID的 (必填)
+        .loginUserId("loginUserId")            // 登录用户ID的 (选填)
         .anonymousId("device_id")              // 访问用户ID (选填)
         .addUserVariable("gender","man")      // 用户变量 (选填)
         .addUserVariables(map)                 // 用户变量集合 (选填)
