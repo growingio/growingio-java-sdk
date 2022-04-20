@@ -1,18 +1,23 @@
 package io.growing.sdk.java.test;
 
 import io.growing.sdk.java.GrowingAPI;
+import io.growing.sdk.java.constants.RunMode;
 import io.growing.sdk.java.dto.GioCdpEventMessage;
 import io.growing.sdk.java.dto.GioCdpItemMessage;
 import io.growing.sdk.java.dto.GioCdpUserMappingMessage;
 import io.growing.sdk.java.dto.GioCdpUserMessage;
+import io.growing.sdk.java.utils.ConfigUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 /**
@@ -21,15 +26,29 @@ import java.util.Properties;
  * @since : 11/21/18 3:35 PM
  */
 @RunWith(JUnit4.class)
-public class GrowingAPITest {
+public class Case2GrowingAPITest {
     private static GrowingAPI sender;
 
     @BeforeClass
     public static void before() {
+        setStaticField(ConfigUtils.class, "inited", new AtomicBoolean(false));
+        setStaticField(RunMode.class, "currentMode", null);
         Properties properties = new Properties();
         properties.setProperty("run.mode", "test");
         GrowingAPI.initConfig(properties);
         sender = new GrowingAPI.Builder().setDataSourceId("a390a68c7b25638c").setProjectKey("91eaf9b283361032").build();
+    }
+
+    private static void setStaticField(Class clazz, String fieldName, Object value) {
+        try {
+            Field field = clazz.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            Field modifiersField = Field.class.getDeclaredField("modifiers");
+            modifiersField.setAccessible(true);
+            modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+            field.set(null, value);
+        } catch (Exception ignored) {
+        }
     }
 
     @Test
