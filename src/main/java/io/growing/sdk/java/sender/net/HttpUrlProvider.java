@@ -25,6 +25,7 @@ public class HttpUrlProvider extends NetProviderAbstract {
         try {
             return doSend(requestDto);
         } catch (Exception e) {
+            GioLogger.debug("failed to send request, cause " + e.getLocalizedMessage());
             if (e instanceof IOException) {
                 return retry(requestDto);
             } else {
@@ -113,8 +114,8 @@ public class HttpUrlProvider extends NetProviderAbstract {
                 TimeUnit.SECONDS.sleep(1);
                 responseCode = doSend(requestDto);
                 break;
-            } catch (Exception ignore) {
-
+            } catch (Exception e) {
+                GioLogger.debug("retry failed, cause " + e.getLocalizedMessage());
             }
         }
         return responseCode;
