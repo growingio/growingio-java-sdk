@@ -29,7 +29,7 @@ public class Case0PropertiesTest {
         setStaticField(RunMode.class, "currentMode", null);
 
         // set properties
-        final String MAGINC_NUMBER = "666";
+        final String magicNumber = "666";
 
         Properties properties = new Properties();
 
@@ -39,9 +39,9 @@ public class Case0PropertiesTest {
         properties.setProperty("run.mode", "production");
         properties.setProperty("logger.level", "error");
 
-        properties.setProperty("send.msg.thread", MAGINC_NUMBER);
-        properties.setProperty("send.msg.interval", MAGINC_NUMBER + 1);
-        properties.setProperty("msg.store.queue.size", MAGINC_NUMBER + 2);
+        properties.setProperty("send.msg.thread", magicNumber);
+        properties.setProperty("send.msg.interval", magicNumber + 1);
+        properties.setProperty("msg.store.queue.size", magicNumber + 2);
 
         // init properties
         GrowingAPI.initConfig(properties);
@@ -54,9 +54,9 @@ public class Case0PropertiesTest {
         Assert.assertTrue(RunMode.isProductionMode());
         Assert.assertEquals(getStaticField(GioLogger.class, "loggerLevel"), "error");
 
-        Assert.assertEquals(getStaticField(AbortPolicyStoreStrategy.class, "THREADS"), Integer.parseInt(MAGINC_NUMBER));
-        Assert.assertEquals(getStaticField(AbortPolicyStoreStrategy.class, "SEND_INTERVAL"), Integer.parseInt(MAGINC_NUMBER + 1));
-        Assert.assertEquals(getStaticField(AbortPolicyStoreStrategy.class, "LIMIT"), Integer.parseInt(MAGINC_NUMBER + 2));
+        Assert.assertEquals(getStaticField(AbortPolicyStoreStrategy.class, "THREADS"), Integer.parseInt(magicNumber));
+        Assert.assertEquals(getStaticField(AbortPolicyStoreStrategy.class, "SEND_INTERVAL"), Integer.parseInt(magicNumber + 1));
+        Assert.assertEquals(getStaticField(AbortPolicyStoreStrategy.class, "LIMIT"), Integer.parseInt(magicNumber + 2));
     }
 
     private static void setStaticField(Class clazz, String fieldName, Object value) {
