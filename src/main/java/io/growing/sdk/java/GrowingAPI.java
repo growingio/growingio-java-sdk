@@ -24,7 +24,8 @@ public class GrowingAPI {
     private final boolean validDefaultConfig;
     private final String projectKey;
     private final String dataSourceId;
-    private static final StoreStrategy strategy = StoreStrategyClient.getStoreInstance(StoreStrategyClient.CURRENT_STRATEGY);
+
+    private static StoreStrategy strategy;
 
     static {
         ConfigUtils.initDefault();
@@ -32,6 +33,7 @@ public class GrowingAPI {
 
     private GrowingAPI(Builder builder) {
         this.validDefaultConfig = validDefaultConfig();
+        strategy = StoreStrategyClient.getStoreInstance(StoreStrategyClient.CURRENT_STRATEGY);
         this.dataSourceId = builder.dataSourceId;
         this.projectKey = builder.projectKey;
     }
@@ -137,13 +139,17 @@ public class GrowingAPI {
      * showdownNow 将会直接调用sdk中线程池的shutdownNow.
      */
     public static void shutdownNow() {
-        strategy.shutDownNow();
+        if (strategy != null) {
+            strategy.shutDownNow();
+        }
     }
 
     /**
      * shutdown 将会依照配置信息，允许执行之前提交的任务直到完成或超时.
      */
     public static void shutdown() {
-        strategy.awaitTerminationAfterShutdown();
+        if (strategy != null) {
+            strategy.awaitTerminationAfterShutdown();
+        }
     }
 }
