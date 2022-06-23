@@ -1,0 +1,30 @@
+<Configuration>
+    <Appenders>
+        <Console name="Console">
+            <PatternLayout pattern="%d %-5level [%logger] %msg%n%xThrowable" />
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Logger name="org.apache.hc.client5.http" level="DEBUG" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+<!--        <Logger name="org.apache.hc.client5.http.wire" level="DEBUG">-->
+<!--            <AppenderRef ref="Console"/>-->
+<!--        </Logger>-->
+<!--        <Logger name="org.apache.hc.client5.http.impl.io" level="DEBUG">-->
+<!--            <AppenderRef ref="Console"/>-->
+<!--        </Logger>-->
+<!--        <Logger name="org.apache.hc.client5.http.impl.nio" level="DEBUG">-->
+<!--            <AppenderRef ref="Console"/>-->
+<!--        </Logger>-->
+<!--        <Logger name="org.apache.hc.client5.http.impl" level="DEBUG">-->
+<!--            <AppenderRef ref="Console"/>-->
+<!--        </Logger>-->
+<!--        <Logger name="org.apache.hc.client5.http.headers" level="DEBUG" additivity="false">-->
+<!--            <AppenderRef ref="Console"/>-->
+<!--        </Logger>-->
+        <Root level="INFO">
+            <AppenderRef ref="Console" />
+        </Root>
+    </Loggers>
+</Configuration>
