@@ -62,9 +62,10 @@ public class HttpUtils {
                         .setConnectionRequestTimeout(Timeout.ofMilliseconds(10000))
                         .setConnectTimeout(Timeout.ofMilliseconds(10000))
                         .setResponseTimeout(Timeout.ofMilliseconds(10000))
-                        .setConnectionKeepAlive(TimeValue.ofSeconds(300))
+                        .setConnectionKeepAlive(TimeValue.ofSeconds(60))
                         .setCookieSpec(StandardCookieSpec.IGNORE)
                         .build())
+                .evictIdleConnections(TimeValue.ofSeconds(30))
                 // 本地抓包
 //                .setRoutePlanner(new SystemDefaultRoutePlanner(
 //                        ProxySelector.getDefault()))
