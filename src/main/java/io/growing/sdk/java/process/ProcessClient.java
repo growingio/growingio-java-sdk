@@ -27,15 +27,4 @@ public class ProcessClient {
 
         return serialized;
     }
-
-    public static String getOrigianlMsgJsonArray(byte[] bytes) {
-        byte[] original = bytes;
-
-        if (NetProviderAbstract.needCompress()) {
-            original = compress.uncompress(bytes);
-        }
-        
-        return serialize.deserialize(original);
-
-    }
 }

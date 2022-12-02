@@ -57,6 +57,8 @@ public abstract class NetProviderAbstract {
 
     protected abstract void sendGet(String url) throws IOException;
 
+    public abstract boolean isConnectedToGrowingAPIHost();
+
     protected static class ProxyInfo {
         private static Proxy proxy;
 
@@ -93,6 +95,4 @@ public abstract class NetProviderAbstract {
             return proxy;
         }
     }
-
-    public abstract boolean isConnectedToGrowingAPIHost();
 }

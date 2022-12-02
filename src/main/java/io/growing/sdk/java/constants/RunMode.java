@@ -16,7 +16,7 @@ public enum RunMode {
     }
 
     public static RunMode getByValue(String value) {
-        for (RunMode mode: RunMode.values()) {
+        for (RunMode mode : RunMode.values()) {
             if (mode.value.equals(value)) {
                 return mode;
             }

@@ -12,5 +12,15 @@ public abstract class GIOMessage implements Serializable {
 
     private static final long serialVersionUID = -5789315589035420840L;
 
+    private String projectId;
+
+    public String getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
+    }
+
     public abstract Map<String, Object> getMapResult();
 }

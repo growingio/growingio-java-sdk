@@ -3,11 +3,9 @@ package io.growing.sdk.java.validate;
 import io.growing.sdk.java.dto.GIOEventMessage;
 import io.growing.sdk.java.dto.GIOMessage;
 import io.growing.sdk.java.logger.GioLogger;
-import io.growing.sdk.java.process.serialize.JsonSerialize;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author : tong.wang
@@ -22,6 +20,7 @@ public class MsgValidate {
     /**
      * validate return msg
      * invalidate return null
+     *
      * @param msg the event to validate
      * @return if event is valid return event else return null
      */

@@ -7,5 +7,4 @@ package io.growing.sdk.java.process.compression;
  */
 public interface CompressionTool {
     byte[] compress(byte[] bytes);
-    byte[] uncompress(byte[] bytes);
 }
