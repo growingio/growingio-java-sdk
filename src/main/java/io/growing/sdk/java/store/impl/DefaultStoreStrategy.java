@@ -8,13 +8,11 @@ import io.growing.sdk.java.store.StoreStrategyAbstract;
 import io.growing.sdk.java.thread.GioThreadNamedFactory;
 import io.growing.sdk.java.utils.ConfigUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author : tong.wang
@@ -30,30 +28,50 @@ public class DefaultStoreStrategy extends StoreStrategyAbstract {
     private static final int sendInterval = ConfigUtils.getIntValue("send.msg.interval", 100);
     private static final MessageSender sender = new FixThreadPoolSender();
     private static final int sendMsgBatchSize = 100;
-    private static AtomicInteger offered = new AtomicInteger(0);
+    private static final Map<String, List<GIOMessage>> batchMsgMap = new HashMap<String, List<GIOMessage>>();
 
     static {
         sendMsgSchedule.scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
-                List<GIOMessage> msg = new ArrayList<GIOMessage>(sendMsgBatchSize);
                 while (!queue.isEmpty()) {
-                    if (msg.size() < sendMsgBatchSize) {
+                    if (currentBatchMsgSize() < sendMsgBatchSize) {
                         GIOMessage gioMessage = queue.poll();
                         if (gioMessage != null) {
-                            msg.add(gioMessage);
+                            String projectId = gioMessage.getProjectId();
+                            if (batchMsgMap.containsKey(projectId)) {
+                                List<GIOMessage> list = batchMsgMap.get(projectId);
+                                list.add(gioMessage);
+                            } else {
+                                List<GIOMessage> list = new ArrayList<GIOMessage>();
+                                list.add(gioMessage);
+                                batchMsgMap.put(projectId, list);
+                            }
                         }
                     } else {
                         break;
                     }
                 }
 
-                if (!msg.isEmpty()) {
-                    sender.sendMsg(msg);
+                for (Map.Entry<String, List<GIOMessage>> entry : batchMsgMap.entrySet()) {
+                    if (entry.getValue() != null && !entry.getValue().isEmpty()) {
+                        sender.sendMsg(entry.getKey(), entry.getValue());
+                    }
                 }
+
+                batchMsgMap.clear();
 
             }
         }, sendInterval, sendInterval, TimeUnit.MILLISECONDS);
+    }
+
+    private static int currentBatchMsgSize() {
+        int size = 0;
+        Collection<List<GIOMessage>> values = batchMsgMap.values();
+        for (List<GIOMessage> msgList : values) {
+            size += msgList.size();
+        }
+        return size;
     }
 
     @Override

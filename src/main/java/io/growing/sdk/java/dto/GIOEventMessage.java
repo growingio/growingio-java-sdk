@@ -31,12 +31,35 @@ public class GIOEventMessage extends GIOMessage implements Serializable {
         this.mapResult = builder.builderMap;
         this.mapResult.put(t, "cstm");
         if (this.mapResult.get(tm) == null) {
-             this.mapResult.put(tm, System.currentTimeMillis());
+            this.mapResult.put(tm, System.currentTimeMillis());
         }
     }
 
     public static Builder newMessage() {
         return new Builder();
+    }
+
+    public String getN() {
+        Object nValue = this.mapResult.get(n);
+        if (nValue instanceof String) {
+            return nValue.toString();
+        } else {
+            return null;
+        }
+    }
+
+    public String getCs1() {
+        Object cs1Value = this.mapResult.get(cs1);
+        if (cs1Value instanceof String) {
+            return cs1Value.toString();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Map<String, Object> getMapResult() {
+        return this.mapResult;
     }
 
     public static final class Builder {
@@ -110,28 +133,5 @@ public class GIOEventMessage extends GIOMessage implements Serializable {
             return this;
         }
 
-    }
-
-    public String getN() {
-        Object nValue = this.mapResult.get(n);
-        if (nValue instanceof String) {
-            return nValue.toString();
-        } else {
-            return null;
-        }
-    }
-
-    public String getCs1() {
-        Object cs1Value = this.mapResult.get(cs1);
-        if (cs1Value instanceof String) {
-            return cs1Value.toString();
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public Map<String, Object> getMapResult() {
-        return this.mapResult;
     }
 }

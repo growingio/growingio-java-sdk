@@ -46,7 +46,7 @@ public class HttpUrlProvider extends NetProviderAbstract {
             httpConn.connect();
             int responseCode = httpConn.getResponseCode();
             inputStream = httpConn.getInputStream();
-            if (responseCode != 200) {
+            if (responseCode < 200 || responseCode > 300) {
                 throw new GIOMessageException("growingio server return error " + responseCode);
             }
         } finally {
@@ -88,7 +88,7 @@ public class HttpUrlProvider extends NetProviderAbstract {
             int responseCode = httpConn.getResponseCode();
 
             inputStream = httpConn.getInputStream();
-            if (responseCode != 200) {
+            if (responseCode < 200 || responseCode > 300) {
                 GioLogger.error("growingio server return error " + responseCode);
             }
         } finally {

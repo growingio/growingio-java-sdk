@@ -10,10 +10,6 @@ import io.growing.sdk.java.utils.ConfigUtils;
  */
 public class StoreStrategyClient {
 
-    private static class StoreInstance {
-        static StoreStrategy defaultStoreStrategy = new DefaultStoreStrategy();
-    }
-
     public static StoreStrategy getStoreInstance() {
         String strategy = ConfigUtils.getStringValue("msg.store.strategy", "default");
 
@@ -23,5 +19,9 @@ public class StoreStrategyClient {
         }
 
         return StoreInstance.defaultStoreStrategy;
+    }
+
+    private static class StoreInstance {
+        static StoreStrategy defaultStoreStrategy = new DefaultStoreStrategy();
     }
 }

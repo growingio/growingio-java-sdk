@@ -1,7 +1,5 @@
 package io.growing.sdk.java.logger;
 
-import io.growing.sdk.java.GrowingAPI;
-import io.growing.sdk.java.constants.RunMode;
 import io.growing.sdk.java.utils.ConfigUtils;
 
 /**

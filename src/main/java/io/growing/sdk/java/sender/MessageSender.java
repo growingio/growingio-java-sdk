@@ -1,10 +1,8 @@
 package io.growing.sdk.java.sender;
 
-import io.growing.sdk.java.dto.GIOEventMessage;
 import io.growing.sdk.java.dto.GIOMessage;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 /**
  * @author : tong.wang
@@ -13,6 +11,6 @@ import java.util.concurrent.ExecutorService;
  */
 public interface MessageSender {
 
-    void sendMsg(final List<GIOMessage> msg);
+    void sendMsg(final String projectId, final List<GIOMessage> msg);
 
 }

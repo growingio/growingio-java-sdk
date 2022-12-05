@@ -5,6 +5,7 @@ import io.growing.sdk.java.dto.GIOEventMessage;
 import io.growing.sdk.java.dto.GIOMessage;
 import io.growing.sdk.java.sender.FixThreadPoolSender;
 import io.growing.sdk.java.sender.MessageSender;
+import io.growing.sdk.java.utils.ConfigUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +22,7 @@ import java.util.concurrent.TimeUnit;
  */
 @RunWith(JUnit4.class)
 public class GrowingAPITest {
+    private final static String projectId = ConfigUtils.getStringValue("project.id", "");
 
     @BeforeClass
     public static void before() {
@@ -68,7 +70,7 @@ public class GrowingAPITest {
                     .build();
 
             list.add(msg);
-            sender.sendMsg(list);
+            sender.sendMsg(projectId, list);
         }
         TimeUnit.SECONDS.sleep(10);
     }
@@ -88,7 +90,7 @@ public class GrowingAPITest {
         List list = new ArrayList();
         list.add(msg);
 
-        sender.sendMsg(list);
+        sender.sendMsg(projectId, list);
 
         TimeUnit.SECONDS.sleep(15);
     }
