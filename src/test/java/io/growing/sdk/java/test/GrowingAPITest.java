@@ -2,18 +2,15 @@ package io.growing.sdk.java.test;
 
 import io.growing.sdk.java.GrowingAPI;
 import io.growing.sdk.java.dto.GIOEventMessage;
-import io.growing.sdk.java.dto.GIOMessage;
-import io.growing.sdk.java.sender.FixThreadPoolSender;
-import io.growing.sdk.java.sender.MessageSender;
-import io.growing.sdk.java.utils.ConfigUtils;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import io.growing.sdk.java.test.stub.StubStreamHandlerFactory;
+import org.json.JSONArray;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.xerial.snappy.Snappy;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.net.URL;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * @author : tong.wang
@@ -22,77 +19,63 @@ import java.util.concurrent.TimeUnit;
  */
 @RunWith(JUnit4.class)
 public class GrowingAPITest {
-    private final static String projectId = ConfigUtils.getStringValue("project.id", "");
+    private static StubStreamHandlerFactory factory;
+    private volatile Exception mException;
 
     @BeforeClass
     public static void before() {
-        System.setProperty("java.util.logging.config.file","src/test/resources/logging.properties");
+        factory = StubStreamHandlerFactory.get();
+        try {
+            URL.setURLStreamHandlerFactory(factory);
+        } catch (Error ignored) {
+        }
+
+        System.setProperty("java.util.logging.config.file", "src/test/resources/logging.properties");
+    }
+
+    @Before
+    public void beforeTest() {
+        mException = null;
+    }
+
+    @After
+    public void afterTest() {
+        if (mException != null) {
+            Assert.fail(mException.getMessage());
+        }
     }
 
     @Test
-    public void apiSendEventTest() {
+    public void apiSendEventTest() throws InterruptedException {
+        final CountDownLatch countDownLatch = new CountDownLatch(498);
+        factory.setStubHttpURLConnectionListener(new StubStreamHandlerFactory.StubHttpURLConnectionListener() {
+            @Override
+            public void onSend(URL url, byte[] msg) {
+                try {
+                    String originMessage = new String(Snappy.uncompress(msg));
+                    JSONArray jsonArray = new JSONArray(originMessage);
+                    int length = jsonArray.length();
+                    while (length-- != 0) {
+                        countDownLatch.countDown();
+                    }
+                } catch (Exception e) {
+                    mException = e;
+                }
+            }
+        });
         for (int i = 0; i < 500; i++) {
             GIOEventMessage msg = new GIOEventMessage.Builder()
-                    .eventKey(""+i)
+                    .eventKey("" + i)
                     .eventNumValue(i)
-                    .loginUserId(i+"")
+                    .loginUserId(i + "")
                     .addEventVariable("product_name", "苹果")
                     .addEventVariable("product_classify", "水果")
                     .addEventVariable("product_classify", "水果")
                     .addEventVariable("product_price", 14)
                     .build();
             GrowingAPI.send(msg);
-            try {
-                TimeUnit.MILLISECONDS.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
-
-        try {
-            TimeUnit.SECONDS.sleep(10);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void senderTest() throws InterruptedException {
-        MessageSender sender = new FixThreadPoolSender();
-        for (int i = 0; i < 200; i++){
-            List<GIOMessage> list = new ArrayList<GIOMessage>();
-            GIOMessage msg = new GIOEventMessage.Builder()
-                    .eventKey("3")
-                    .eventNumValue(3)
-                    .addEventVariable("product_name", "苹果")
-                    .addEventVariable("product_classify", "水果")
-                    .addEventVariable("product_price", 14)
-                    .build();
-
-            list.add(msg);
-            sender.sendMsg(projectId, list);
-        }
-        TimeUnit.SECONDS.sleep(10);
-    }
-
-    @Test
-    public void sendWithProxy() throws InterruptedException {
-        MessageSender sender = new FixThreadPoolSender();
-
-        GIOMessage msg = new GIOEventMessage.Builder()
-                .eventKey("3")
-                .eventNumValue(3)
-                .addEventVariable("product_name", "苹果")
-                .addEventVariable("product_classify", "水果")
-                .addEventVariable("product_price", 14)
-                .build();
-
-        List list = new ArrayList();
-        list.add(msg);
-
-        sender.sendMsg(projectId, list);
-
-        TimeUnit.SECONDS.sleep(15);
+        countDownLatch.await();
     }
 
 }

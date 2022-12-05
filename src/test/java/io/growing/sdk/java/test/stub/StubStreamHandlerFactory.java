@@ -6,6 +6,14 @@ import java.net.*;
 public class StubStreamHandlerFactory implements URLStreamHandlerFactory {
     private StubHttpURLConnectionListener mStubHttpURLConnectionListener;
 
+    private StubStreamHandlerFactory() {
+        super();
+    }
+
+    public static StubStreamHandlerFactory get() {
+        return StubStreamHandlerFactory.SingleInstance.INSTANCE;
+    }
+
     @Override
     public URLStreamHandler createURLStreamHandler(String protocol) {
         return new StubHttpURLStreamHandler();
@@ -13,6 +21,14 @@ public class StubStreamHandlerFactory implements URLStreamHandlerFactory {
 
     public void setStubHttpURLConnectionListener(StubHttpURLConnectionListener httpURLConnectionListener) {
         this.mStubHttpURLConnectionListener = httpURLConnectionListener;
+    }
+
+    public interface StubHttpURLConnectionListener {
+        void onSend(URL url, byte[] msg);
+    }
+
+    private static class SingleInstance {
+        private static final StubStreamHandlerFactory INSTANCE = new StubStreamHandlerFactory();
     }
 
     private class StubHttpURLStreamHandler extends URLStreamHandler {
@@ -65,9 +81,5 @@ public class StubStreamHandlerFactory implements URLStreamHandlerFactory {
         public int getResponseCode() throws IOException {
             return 204;
         }
-    }
-
-    public interface StubHttpURLConnectionListener {
-        void onSend(URL url, byte[] msg);
     }
 }

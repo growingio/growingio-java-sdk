@@ -23,8 +23,11 @@ public class MultiProjectIdTest {
 
     @BeforeClass
     public static void before() {
-        factory = new StubStreamHandlerFactory();
-        URL.setURLStreamHandlerFactory(factory);
+        factory = StubStreamHandlerFactory.get();
+        try {
+            URL.setURLStreamHandlerFactory(factory);
+        } catch (Error ignored) {
+        }
 
         Properties properties = new Properties();
         properties.setProperty("run.mode", "production");
