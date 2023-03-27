@@ -33,6 +33,7 @@ public class Case1MockHttpTest {
         setStaticField(RunMode.class, "currentMode", null);
         Properties properties = new Properties();
         properties.setProperty("run.mode", "production");
+        properties.setProperty("api.host", "http://117.50.105.254:8080");
         GrowingAPI.initConfig(properties);
         sender = new GrowingAPI.Builder().setDataSourceId(DATASOURCE_ID).setProjectKey(PROJECT_KEY).build();
         factory = new StubStreamHandlerFactory();
