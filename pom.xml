@@ -44,14 +44,14 @@
         <jdk.version>1.6</jdk.version>
         <downloadSources>true</downloadSources>
         <!-- 低版本 release 之后，此 version 需要升级，避免 低版本 snapshot 重复 deploy -->
-        <gio-java-sdk-version>1.0.12</gio-java-sdk-version>
+        <gio-java-sdk-version>1.0.13</gio-java-sdk-version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
-            <version>3.11.1</version>
+            <version>3.21.7</version>
         </dependency>
 
         <dependency>

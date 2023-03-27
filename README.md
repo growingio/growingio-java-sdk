@@ -5,7 +5,7 @@ GrowingIO提供在Server端部署的SDK，从而可以方便的进行事件上�
 ## Support Java Version
 
 ```java
-java 6+
+java 7+
 ```
 
 ## 依赖
@@ -19,7 +19,7 @@ pom.xml
     <dependency>
         <groupId>io.growing.sdk.java</groupId>
         <artifactId>growingio-java-sdk</artifactId>
-        <version>1.0.12-cdp</version>
+        <version>1.0.13-cdp</version>
     </dependency>
 </dependencies>
 ```
@@ -30,7 +30,7 @@ pom.xml
 <dependency>
     <groupId>io.growing.sdk.java</groupId>
     <artifactId>growingio-java-sdk</artifactId>
-    <version>1.0.12-cdp</version>
+    <version>1.0.13-cdp</version>
     <classifier>standalone</classifier>
     <exclusions>
         <exclusion>
@@ -44,13 +44,13 @@ pom.xml
 如果使用gradle依赖，可以使用如下集成方式
 
 ```gradle
-implementation 'io.growing.sdk.java:growingio-java-sdk:1.0.12-cdp'
+implementation 'io.growing.sdk.java:growingio-java-sdk:1.0.13-cdp'
 ```
 
 若出现依赖冲突的问题（例如运行时找不到类），可以选择使用 standalone
 
 ```gradle
-implementation('io.growing.sdk.java:growingio-java-sdk:1.0.12-cdp:standalone') {
+implementation('io.growing.sdk.java:growingio-java-sdk:1.0.13-cdp:standalone') {
     exclude module: 'protobuf-java'
 }
 ```
