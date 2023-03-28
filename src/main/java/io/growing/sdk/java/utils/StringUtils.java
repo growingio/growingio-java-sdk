@@ -20,13 +20,13 @@ public class StringUtils {
 
     public static <T> String list2Str(List<T> value) {
         if (value != null && !value.isEmpty()) {
-            final String LIST_SPLIT = "||";
+            final String listSplit = "||";
             StringBuilder valueBuilder = new StringBuilder();
             Iterator<T> iterator = value.iterator();
             if (iterator.hasNext()) {
                 valueBuilder.append(toString(iterator.next()));
                 while (iterator.hasNext()) {
-                    valueBuilder.append(LIST_SPLIT);
+                    valueBuilder.append(listSplit);
                     valueBuilder.append(toString(iterator.next()));
                 }
             }
