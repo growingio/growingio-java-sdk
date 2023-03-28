@@ -17,7 +17,7 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 
     // supply protocol
-    implementation 'io.growing.sdk.java:growingio-java-sdk:1.0.12-cdp'
+    implementation 'io.growing.sdk.java:growingio-java-sdk:1.0.13-cdp'
 
     implementation 'org.apache.httpcomponents.client5:httpclient5:5.1.3'
 

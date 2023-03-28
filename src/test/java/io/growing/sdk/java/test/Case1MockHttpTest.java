@@ -2,9 +2,12 @@ package io.growing.sdk.java.test;
 
 import io.growing.collector.tunnel.protocol.EventV3Dto;
 import io.growing.collector.tunnel.protocol.EventV3List;
+import io.growing.collector.tunnel.protocol.ItemDto;
+import io.growing.collector.tunnel.protocol.ItemDtoList;
 import io.growing.sdk.java.GrowingAPI;
 import io.growing.sdk.java.constants.RunMode;
 import io.growing.sdk.java.dto.GioCdpEventMessage;
+import io.growing.sdk.java.dto.GioCdpItemMessage;
 import io.growing.sdk.java.dto.GioCdpUserMessage;
 import io.growing.sdk.java.test.stub.StubStreamHandlerFactory;
 import io.growing.sdk.java.utils.ConfigUtils;
@@ -157,6 +160,56 @@ public class Case1MockHttpTest {
                 .addUserVariable("", Arrays.asList(""))
                 .addUserVariable("列表属性中文", Arrays.asList("中文", "English", "にほんご"))
                 .addUserVariable("list_attribute_length", makeSequence(0, 100))
+                .build());
+
+        countDownLatch.await();
+    }
+
+    @Test
+    public void sendItemEvent() throws InterruptedException {
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+
+        factory.setStubHttpURLConnectionListener(new StubStreamHandlerFactory.StubHttpURLConnectionListener() {
+            @Override
+            public void onSend(URL url, byte[] msg) {
+                try {
+                    ItemDtoList eventList = ItemDtoList.parseFrom(msg);
+                    ItemDto itemEvent = eventList.getValues(0);
+                    Assert.assertEquals(DATASOURCE_ID, itemEvent.getDataSourceId());
+                    Assert.assertEquals(PROJECT_KEY, itemEvent.getProjectKey());
+
+                    Assert.assertEquals("0001", itemEvent.getId());
+                    Assert.assertEquals("product_rule", itemEvent.getKey());
+
+                    Map<String, String> attributes = itemEvent.getAttributesMap();
+                    Assert.assertEquals("1||2||3", attributes.get("list_attribute_normal"));
+                    Assert.assertEquals("||1||", attributes.get("list_attribute_contains_null"));
+                    Assert.assertNull(attributes.get("list_attribute_empty"));
+                    Assert.assertEquals("", attributes.get("list_attribute_empty_string"));
+                    Assert.assertEquals("||||", attributes.get("list_attribute_empty_string_list"));
+                    Assert.assertEquals("", attributes.get(""));
+                    Assert.assertEquals("中文||English||にほんご", attributes.get("列表属性中文"));
+                    Assert.assertEquals(101, attributes.get("list_attribute_length").split("\\|\\|").length);
+
+                } catch (Exception e) {
+                    mException = e;
+                }
+
+                countDownLatch.countDown();
+            }
+        });
+
+        sender.send(new GioCdpItemMessage.Builder()
+                .id("0001")
+                .key("product_rule")
+                .addItemVariable("list_attribute_normal", Arrays.asList("1", "2", "3"))
+                .addItemVariable("list_attribute_contains_null", Arrays.asList("", "1", null))
+                .addItemVariable("list_attribute_empty", Arrays.asList())
+                .addItemVariable("list_attribute_empty_string", Arrays.asList(""))
+                .addItemVariable("list_attribute_empty_string_list", Arrays.asList("", "", ""))
+                .addItemVariable("", Arrays.asList(""))
+                .addItemVariable("列表属性中文", Arrays.asList("中文", "English", "にほんご"))
+                .addItemVariable("list_attribute_length", makeSequence(0, 100))
                 .build());
 
         countDownLatch.await();

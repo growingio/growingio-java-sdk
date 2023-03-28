@@ -2,8 +2,10 @@ package io.growing.sdk.java.dto;
 
 import io.growing.collector.tunnel.protocol.ItemDto;
 import io.growing.sdk.java.logger.GioLogger;
+import io.growing.sdk.java.utils.StringUtils;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author : tong.wang
@@ -63,6 +65,14 @@ public class GioCdpItemMessage extends GioCDPMessage<ItemDto> implements Seriali
             if (key != null) {
                 builder.setKey(key);
             }
+            return this;
+        }
+
+        public <T> Builder addItemVariable(String key, List<T> value) {
+            if (key != null && value != null && !value.isEmpty()) {
+                builder.putAttributes(key, StringUtils.list2Str(value));
+            }
+
             return this;
         }
 

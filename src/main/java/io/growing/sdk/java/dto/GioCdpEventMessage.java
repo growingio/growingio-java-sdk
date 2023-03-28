@@ -7,7 +7,6 @@ import io.growing.sdk.java.logger.GioLogger;
 import io.growing.sdk.java.utils.StringUtils;
 
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -60,7 +59,6 @@ public class GioCdpEventMessage extends GioCDPMessage<EventV3Dto> implements Ser
 
     public static final class Builder {
         private final EventV3Dto.Builder builder = EventV3Dto.newBuilder();
-        private static final String LIST_SPLIT = "||";
 
         public GioCdpEventMessage build() {
             return new GioCdpEventMessage(builder);
@@ -133,27 +131,10 @@ public class GioCdpEventMessage extends GioCDPMessage<EventV3Dto> implements Ser
 
         public <T> Builder addEventVariable(String key, List<T> value) {
             if (key != null && value != null && !value.isEmpty()) {
-                StringBuilder valueBuilder = new StringBuilder();
-                Iterator<T> iterator = value.iterator();
-                if (iterator.hasNext()) {
-                    valueBuilder.append(toString(iterator.next()));
-                    while (iterator.hasNext()) {
-                        valueBuilder.append(LIST_SPLIT);
-                        valueBuilder.append(toString(iterator.next()));
-                    }
-                }
-                builder.putAttributes(key, valueBuilder.toString());
+                builder.putAttributes(key, StringUtils.list2Str(value));
             }
 
             return this;
-        }
-
-        private String toString(Object value) {
-            if (value == null) {
-                return "";
-            } else {
-                return String.valueOf(value);
-            }
         }
 
         public Builder addItem(String id, String key) {
