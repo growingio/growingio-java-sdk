@@ -99,6 +99,62 @@ public class GioCdpEventMessage extends GioCDPMessage<EventV3Dto> implements Ser
             return this;
         }
 
+        public Builder domain(String domain) {
+            if (domain != null) {
+                builder.setDomain(domain);
+            }
+            return this;
+        }
+
+        public Builder urlScheme(String urlScheme) {
+            if (urlScheme != null) {
+                builder.setUrlScheme(urlScheme);
+            }
+            return this;
+        }
+
+        public Builder deviceBrand(String deviceBrand) {
+            if (deviceBrand != null) {
+                builder.setDeviceBrand(deviceBrand);
+            }
+            return this;
+        }
+
+        public Builder deviceModel(String deviceModel) {
+            if (deviceModel != null) {
+                builder.setDeviceModel(deviceModel);
+            }
+            return this;
+        }
+
+        public Builder deviceType(String deviceType) {
+            if (deviceType != null) {
+                builder.setDeviceType(deviceType);
+            }
+            return this;
+        }
+
+        public Builder appVersion(String appVersion) {
+            if (appVersion != null) {
+                builder.setAppVersion(appVersion);
+            }
+            return this;
+        }
+
+        public Builder appName(String appName) {
+            if (appName != null) {
+                builder.setAppName(appName);
+            }
+            return this;
+        }
+
+        public Builder language(String language) {
+            if (language != null) {
+                builder.setLanguage(language);
+            }
+            return this;
+        }
+
         @Deprecated
         public Builder eventNumValue(Number numValue) {
             // DO NOTHING
