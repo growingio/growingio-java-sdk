@@ -19,6 +19,8 @@ public class GioCdpEventMessage extends GioCDPMessage<EventV3Dto> implements Ser
 
     private static final long serialVersionUID = -2414503426226355459L;
 
+    public static final String XEI_USER_KEY = "$notuser";
+
     private final EventV3Dto event;
 
     private GioCdpEventMessage(EventV3Dto.Builder builder) {
@@ -49,9 +51,11 @@ public class GioCdpEventMessage extends GioCDPMessage<EventV3Dto> implements Ser
             return true;
         }
 
-        if (StringUtils.isBlank(event.getUserId()) && StringUtils.isBlank(event.getDeviceId())) {
-            GioLogger.error("GioCdpEventMessage: userId and anonymousId are empty");
-            return true;
+        if (!XEI_USER_KEY.equals(event.getUserKey())) {
+            if (StringUtils.isBlank(event.getUserId()) && StringUtils.isBlank(event.getDeviceId())) {
+                GioLogger.error("GioCdpEventMessage: userId and anonymousId are empty");
+                return true;
+            }
         }
 
         return false;
