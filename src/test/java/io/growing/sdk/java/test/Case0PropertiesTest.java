@@ -33,7 +33,7 @@ public class Case0PropertiesTest {
 
         Properties properties = new Properties();
 
-        properties.setProperty("api.host", "http://localhost:8080");
+        properties.setProperty("api.host", "https://www.growingio.com");
         properties.setProperty("project.id", "123456654321");
         properties.setProperty("msg.store.strategy", "abortPolicy");
         properties.setProperty("run.mode", "production");

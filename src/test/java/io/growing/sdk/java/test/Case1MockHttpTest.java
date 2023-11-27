@@ -36,7 +36,7 @@ public class Case1MockHttpTest {
         setStaticField(RunMode.class, "currentMode", null);
         Properties properties = new Properties();
         properties.setProperty("run.mode", "production");
-        properties.setProperty("api.host", "http://117.50.105.254:8080");
+        properties.setProperty("api.host", "https://www.growingio.com");
         GrowingAPI.initConfig(properties);
         sender = new GrowingAPI.Builder().setDataSourceId(DATASOURCE_ID).setProjectKey(PROJECT_KEY).build();
         factory = new StubStreamHandlerFactory();
@@ -66,6 +66,45 @@ public class Case1MockHttpTest {
         if (mException != null) {
             Assert.fail(mException.getMessage());
         }
+    }
+
+    @Test
+    public void sendXEIEvent() throws InterruptedException {
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+
+        factory.setStubHttpURLConnectionListener(new StubStreamHandlerFactory.StubHttpURLConnectionListener() {
+            @Override
+            public void onSend(URL url, byte[] msg) {
+                try {
+                    EventV3List eventList = EventV3List.parseFrom(msg);
+                    EventV3Dto customEvent = eventList.getValues(0);
+                    Assert.assertEquals(DATASOURCE_ID, customEvent.getDataSourceId());
+                    Assert.assertEquals(PROJECT_KEY, customEvent.getProjectKey());
+
+                    Assert.assertEquals("CUSTOM", customEvent.getEventType().name());
+                    Assert.assertEquals("payOrder", customEvent.getEventName());
+
+                    Assert.assertEquals(GioCdpEventMessage.XEI_USER_KEY, customEvent.getUserKey());
+                    Map<String, String> attributes = customEvent.getAttributesMap();
+                    Assert.assertEquals("0001", attributes.get("prod_id"));
+                    Assert.assertEquals("15.52", attributes.get("money"));
+
+                } catch (Exception e) {
+                    mException = e;
+                }
+
+                countDownLatch.countDown();
+            }
+        });
+
+        sender.send(new GioCdpEventMessage.Builder()
+                .eventKey("payOrder")
+                .loginUserKey(GioCdpEventMessage.XEI_USER_KEY)
+                .addEventVariable("prod_id", "0001")
+                .addEventVariable("money", "15.52")
+                .build());
+
+        countDownLatch.await();
     }
 
     @Test

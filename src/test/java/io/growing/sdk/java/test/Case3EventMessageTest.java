@@ -1,9 +1,6 @@
 package io.growing.sdk.java.test;
 
-import io.growing.sdk.java.dto.GioCdpEventMessage;
-import io.growing.sdk.java.dto.GioCdpItemMessage;
-import io.growing.sdk.java.dto.GioCdpUserMappingMessage;
-import io.growing.sdk.java.dto.GioCdpUserMessage;
+import io.growing.sdk.java.dto.*;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +20,12 @@ public class Case3EventMessageTest {
         eventMessage = new GioCdpEventMessage.Builder()
                 .eventKey("event_name")
                 .anonymousId("device_id")
+                .build();
+        Assert.assertFalse(eventMessage.isIllegal());
+
+        eventMessage = new GioCdpEventMessage.Builder()
+                .eventKey("event_name")
+                .loginUserKey(GioCdpEventMessage.XEI_USER_KEY)
                 .build();
         Assert.assertFalse(eventMessage.isIllegal());
 
