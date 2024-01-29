@@ -8,7 +8,7 @@ package io.growing.sdk.java.utils;
 public class VersionInfo {
     private static String version = null;
 
-    private static final String defaultVersion = "1.0.13-cdp";
+    private static final String defaultVersion = "1.0.15-cdp";
 
     public static String getVersion() {
         if (version == null) {

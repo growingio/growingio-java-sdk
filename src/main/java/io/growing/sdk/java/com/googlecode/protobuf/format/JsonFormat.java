@@ -38,8 +38,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
-import java.text.CharacterIterator;
-import java.text.StringCharacterIterator;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -54,6 +52,7 @@ import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 
+import static io.growing.sdk.java.com.googlecode.protobuf.format.util.JsonUtils.*;
 import static io.growing.sdk.java.com.googlecode.protobuf.format.util.TextUtils.*;
 
 /**
@@ -1297,76 +1296,7 @@ public class JsonFormat {
     }
 
     /**
-     * Implements JSON string escaping as specified <a href="http://www.ietf.org/rfc/rfc4627.txt">here</a>.
-     * <ul>
-     *  <li>The following characters are escaped by prefixing them with a '\' : \b,\f,\n,\r,\t,\,"</li>
-     *  <li>Other control characters in the range 0x0000-0x001F are escaped using the \\uXXXX notation</li>
-     *  <li>UTF-16 surrogate pairs are encoded using the \\uXXXX\\uXXXX notation</li>
-     *  <li>any other character is printed as-is</li>
-     * </ul>
-     */
-    static String escapeText(String input) {
-        StringBuilder builder = new StringBuilder(input.length());
-        CharacterIterator iter = new StringCharacterIterator(input);
-        for (char c = iter.first(); c != CharacterIterator.DONE; c = iter.next()) {
-            switch (c) {
-                case '\b':
-                    builder.append("\\b");
-                    break;
-                case '\f':
-                    builder.append("\\f");
-                    break;
-                case '\n':
-                    builder.append("\\n");
-                    break;
-                case '\r':
-                    builder.append("\\r");
-                    break;
-                case '\t':
-                    builder.append("\\t");
-                    break;
-                case '\\':
-                    builder.append("\\\\");
-                    break;
-                case '"':
-                    builder.append("\\\"");
-                    break;
-                default:
-                    // Check for other control characters
-                    if (c >= 0x0000 && c <= 0x001F) {
-                        appendEscapedUnicode(builder, c);
-                    } else if (Character.isHighSurrogate(c)) {
-                        // Encode the surrogate pair using 2 six-character sequence (\\uXXXX\\uXXXX)
-                        appendEscapedUnicode(builder, c);
-                        c = iter.next();
-                        if (c == CharacterIterator.DONE) {
-                            throw new IllegalArgumentException("invalid unicode string: unexpected high surrogate pair value without corresponding low value.");
-                        }
-                        appendEscapedUnicode(builder, c);
-                    } else {
-                        // Anything else can be printed as-is
-                        builder.append(c);
-                    }
-                    break;
-            }
-        }
-        return builder.toString();
-    }
-
-    static void appendEscapedUnicode(StringBuilder builder, char ch) {
-        String prefix = "\\u";
-        if (ch < 0x10) {
-            prefix = "\\u000";
-        } else if (ch < 0x100) {
-            prefix = "\\u00";
-        } else if (ch < 0x1000) {
-            prefix = "\\u0";
-        }
-        builder.append(prefix).append(Integer.toHexString(ch));
-    }
-
-    /**
-     * Un-escape a text string as escaped using {@link #escapeText(String)}.
+     * Un-escape a text string as escaped using {@link io.growing.sdk.java.com.googlecode.protobuf.format.util.JsonUtils#escapeText(String)}.
      */
     static String unescapeText(String input) throws JsonFormat.InvalidEscapeSequence {
         StringBuilder builder = new StringBuilder();
