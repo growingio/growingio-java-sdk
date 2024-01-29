@@ -114,6 +114,14 @@ public class GioCdpUserMessage extends GioCDPMessage<EventV3Dto> implements Seri
             return this;
         }
 
+        public <T> Builder addUserVariable(String key, Map<String, String> value) {
+            if (key != null && value != null && !value.isEmpty()) {
+                builder.putAttributes(key, StringUtils.map2Str(value));
+            }
+
+            return this;
+        }
+
         private Builder addVariableObject(String key, Object value) {
             if (key != null && value != null) {
                 key = key.trim();

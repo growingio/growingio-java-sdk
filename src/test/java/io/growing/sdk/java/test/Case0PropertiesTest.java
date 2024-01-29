@@ -48,15 +48,15 @@ public class Case0PropertiesTest {
         sender = new GrowingAPI.Builder().setDataSourceId(DATASOURCE_ID).setProjectKey(PROJECT_KEY).build();
 
         // check properties
-        Assert.assertEquals(ConfigUtils.getStringValue("api.host", ""), "http://localhost:8080");
-        Assert.assertEquals(ConfigUtils.getStringValue("project.id", ""), "123456654321");
-        Assert.assertEquals(StoreStrategyClient.CURRENT_STRATEGY.name(), "ABORT_POLICY");
+        Assert.assertEquals("https://www.growingio.com", ConfigUtils.getStringValue("api.host", ""));
+        Assert.assertEquals("123456654321", ConfigUtils.getStringValue("project.id", ""));
+        Assert.assertEquals("ABORT_POLICY", StoreStrategyClient.CURRENT_STRATEGY.name());
         Assert.assertTrue(RunMode.isProductionMode());
-        Assert.assertEquals(getStaticField(GioLogger.class, "loggerLevel"), "error");
+        Assert.assertEquals("error", getStaticField(GioLogger.class, "loggerLevel"));
 
-        Assert.assertEquals(getStaticField(AbortPolicyStoreStrategy.class, "THREADS"), Integer.parseInt(magicNumber));
-        Assert.assertEquals(getStaticField(AbortPolicyStoreStrategy.class, "SEND_INTERVAL"), Integer.parseInt(magicNumber + 1));
-        Assert.assertEquals(getStaticField(AbortPolicyStoreStrategy.class, "LIMIT"), Integer.parseInt(magicNumber + 2));
+        Assert.assertEquals(Integer.parseInt(magicNumber), getStaticField(AbortPolicyStoreStrategy.class, "THREADS"));
+        Assert.assertEquals(Integer.parseInt(magicNumber + 1), getStaticField(AbortPolicyStoreStrategy.class, "SEND_INTERVAL"));
+        Assert.assertEquals(Integer.parseInt(magicNumber + 2), getStaticField(AbortPolicyStoreStrategy.class, "LIMIT"));
     }
 
     private static void setStaticField(Class clazz, String fieldName, Object value) {

@@ -6,6 +6,7 @@ import io.growing.sdk.java.utils.StringUtils;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author : tong.wang
@@ -71,6 +72,14 @@ public class GioCdpItemMessage extends GioCDPMessage<ItemDto> implements Seriali
         public <T> Builder addItemVariable(String key, List<T> value) {
             if (key != null && value != null && !value.isEmpty()) {
                 builder.putAttributes(key, StringUtils.list2Str(value));
+            }
+
+            return this;
+        }
+
+        public <T> Builder addItemVariable(String key, Map<String, String> value) {
+            if (key != null && value != null && !value.isEmpty()) {
+                builder.putAttributes(key, StringUtils.map2Str(value));
             }
 
             return this;

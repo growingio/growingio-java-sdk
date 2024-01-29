@@ -1,5 +1,6 @@
 package io.growing.sdk.java.test;
 
+import com.google.gson.Gson;
 import io.growing.collector.tunnel.protocol.EventV3Dto;
 import io.growing.collector.tunnel.protocol.EventV3List;
 import io.growing.collector.tunnel.protocol.ItemDto;
@@ -160,6 +161,14 @@ public class Case1MockHttpTest {
     public void sendUserEvent() throws InterruptedException {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
+        final HashMap<String, String> map = new HashMap<String, String>();
+        map.put("key1", "value1");
+        map.put("a\\b", "b\\c");
+        map.put("\b", "\t");
+        map.put("", "");
+        map.put(null, null);
+        map.put("中文key", "中文value");
+
         factory.setStubHttpURLConnectionListener(new StubStreamHandlerFactory.StubHttpURLConnectionListener() {
             @Override
             public void onSend(URL url, byte[] msg) {
@@ -181,6 +190,9 @@ public class Case1MockHttpTest {
                     Assert.assertEquals("中文||English||にほんご", attributes.get("列表属性中文"));
                     Assert.assertEquals(101, attributes.get("list_attribute_length").split("\\|\\|").length);
 
+                    String jsonValue = new Gson().toJson(map);
+                    Assert.assertEquals(jsonValue, attributes.get("map_attribute"));
+
                 } catch (Exception e) {
                     mException = e;
                 }
@@ -199,6 +211,7 @@ public class Case1MockHttpTest {
                 .addUserVariable("", Arrays.asList(""))
                 .addUserVariable("列表属性中文", Arrays.asList("中文", "English", "にほんご"))
                 .addUserVariable("list_attribute_length", makeSequence(0, 100))
+                .addUserVariable("map_attribute", map)
                 .build());
 
         countDownLatch.await();
@@ -207,6 +220,14 @@ public class Case1MockHttpTest {
     @Test
     public void sendItemEvent() throws InterruptedException {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
+
+        final HashMap<String, String> map = new HashMap<String, String>();
+        map.put("key1", "value1");
+        map.put("a\\b", "b\\c");
+        map.put("\b", "\t");
+        map.put("", "");
+        map.put(null, null);
+        map.put("中文key", "中文value");
 
         factory.setStubHttpURLConnectionListener(new StubStreamHandlerFactory.StubHttpURLConnectionListener() {
             @Override
@@ -230,6 +251,9 @@ public class Case1MockHttpTest {
                     Assert.assertEquals("中文||English||にほんご", attributes.get("列表属性中文"));
                     Assert.assertEquals(101, attributes.get("list_attribute_length").split("\\|\\|").length);
 
+                    String jsonValue = new Gson().toJson(map);
+                    Assert.assertEquals(jsonValue, attributes.get("map_attribute"));
+
                 } catch (Exception e) {
                     mException = e;
                 }
@@ -249,6 +273,7 @@ public class Case1MockHttpTest {
                 .addItemVariable("", Arrays.asList(""))
                 .addItemVariable("列表属性中文", Arrays.asList("中文", "English", "にほんご"))
                 .addItemVariable("list_attribute_length", makeSequence(0, 100))
+                .addItemVariable("map_attribute", map)
                 .build());
 
         countDownLatch.await();
