@@ -73,22 +73,17 @@ public class HttpUrlProvider extends NetProviderAbstract {
         httpConn.setDoOutput(true);
 
         DataOutputStream outputStream = null;
-        InputStream inputStream = null;
         try {
             httpConn.connect();
             outputStream = new DataOutputStream(httpConn.getOutputStream());
             outputStream.write(requestDto.getBytes());
             outputStream.flush();
             int responseCode = httpConn.getResponseCode();
-            inputStream = httpConn.getInputStream();
 
             return responseOk(responseCode);
         } finally {
             if (outputStream != null) {
                 outputStream.close();
-            }
-            if (inputStream != null) {
-                inputStream.close();
             }
         }
     }

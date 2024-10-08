@@ -1,5 +1,6 @@
 package io.growing.sdk.java.utils;
 
+import io.growing.sdk.java.GrowingAPI;
 import io.growing.sdk.java.exception.GIOMessageException;
 import io.growing.sdk.java.logger.GioLogger;
 
@@ -24,7 +25,15 @@ public class ConfigUtils {
         try {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             InputStream gioDefaultProps = classLoader.getResourceAsStream("gio_default.properties");
-            prop.load(gioDefaultProps);
+            if (gioDefaultProps != null) {
+                prop.load(gioDefaultProps);
+            } else {
+                // 通过加载GrowingAPI的ClassLoader来加载默认配置文件，IDE Plugin开发模式下，会使用自定义ClassLoader加载对应的plugin jar及dependencies
+                // 建议用户根据使用环境将对应properties配置文件加载到内存中直接通过init方法传入
+                ClassLoader defaultClassLoader = GrowingAPI.class.getClassLoader();
+                gioDefaultProps = defaultClassLoader.getResourceAsStream("gio_default.properties");
+                prop.load(gioDefaultProps);
+            }
 
             InputStream gioProps = classLoader.getResourceAsStream("gio.properties");
             if (gioProps != null) {
