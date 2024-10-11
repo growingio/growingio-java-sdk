@@ -6,6 +6,8 @@ import io.growing.sdk.java.dto.GioCDPMessage;
 import io.growing.sdk.java.exception.GIOSendBeRejectedException;
 import io.growing.sdk.java.logger.GioLogger;
 import io.growing.sdk.java.sender.FixThreadPoolSender;
+import io.growing.sdk.java.sender.SendResult;
+import io.growing.sdk.java.sender.SyncSender;
 import io.growing.sdk.java.store.StoreStrategy;
 import io.growing.sdk.java.store.StoreStrategyClient;
 import io.growing.sdk.java.utils.ConfigUtils;
@@ -57,6 +59,19 @@ public class GrowingAPI {
         } catch (Exception e) {
             GioLogger.error("failed to send msg, " + e.toString());
         }
+    }
+
+    private static final SyncSender SYNC_SENDER = new SyncSender();
+
+    public SendResult sendSync(GIOMessage msg) {
+        try {
+            if (validDefaultConfig && businessVerification(msg)) {
+                return SYNC_SENDER.sendMsg(msg);
+            }
+        } catch (Exception e) {
+            GioLogger.error("failed to send msg, " + e.toString());
+        }
+        return new SendResult(SendResult.State.UNKNOWN_ERROR, "unknown error");
     }
 
     /**

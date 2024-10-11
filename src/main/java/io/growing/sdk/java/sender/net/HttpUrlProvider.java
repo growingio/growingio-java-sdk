@@ -2,6 +2,7 @@ package io.growing.sdk.java.sender.net;
 
 import io.growing.sdk.java.logger.GioLogger;
 import io.growing.sdk.java.sender.RequestDto;
+import io.growing.sdk.java.sender.SendResult;
 import io.growing.sdk.java.utils.ConfigUtils;
 
 import java.io.DataOutputStream;
@@ -20,6 +21,17 @@ import java.util.concurrent.TimeUnit;
  */
 public class HttpUrlProvider extends NetProviderAbstract {
 
+    private HttpUrlProvider() {
+    }
+
+    private static class SingleInstance {
+        private static final HttpUrlProvider INSTANCE = new HttpUrlProvider();
+    }
+
+    public static HttpUrlProvider getInstance() {
+        return SingleInstance.INSTANCE;
+    }
+
     @Override
     protected int sendPost(RequestDto requestDto) {
         try {
@@ -31,6 +43,20 @@ public class HttpUrlProvider extends NetProviderAbstract {
             } else {
                 return HttpURLConnection.HTTP_BAD_REQUEST;
             }
+        }
+    }
+
+    @Override
+    protected SendResult sendPostSync(RequestDto requestDto) {
+        try {
+            int responseCode = doSend(requestDto, true);
+            if (responseCode >= 200 && responseCode < 300) {
+                return new SendResult(SendResult.State.SUCCESS, "response code: " + responseCode);
+            }
+            return new SendResult(SendResult.State.NETWORK_FAILURE, "response code: " + responseCode);
+        } catch (Exception e) {
+            GioLogger.debug("failed to send request, cause " + e.getLocalizedMessage());
+            return new SendResult(SendResult.State.EXCEPTION_FAILURE, e.getLocalizedMessage());
         }
     }
 
@@ -62,13 +88,22 @@ public class HttpUrlProvider extends NetProviderAbstract {
     }
 
     private int doSend(RequestDto requestDto) throws Exception {
+        return doSend(requestDto, false);
+    }
+
+    private int doSend(RequestDto requestDto, boolean isSync) throws Exception {
         HttpURLConnection httpConn = getConnection(requestDto.getUrl());
         setHttpConnHeaders(httpConn, requestDto.getHeaders());
         httpConn.setRequestProperty("Content-Type", requestDto.getContentType().toString());
         httpConn.setUseCaches(false);
         httpConn.setRequestMethod("POST");
-        httpConn.setConnectTimeout(getConnectionTimeout());
-        httpConn.setReadTimeout(getReadTimeout());
+        if (isSync) {
+            httpConn.setConnectTimeout(getSyncConnectionTimeout());
+            httpConn.setReadTimeout(getSyncReadTimeout());
+        } else {
+            httpConn.setConnectTimeout(getConnectionTimeout());
+            httpConn.setReadTimeout(getReadTimeout());
+        }
         httpConn.setRequestProperty("Content-Length", String.valueOf(requestDto.getBytes().length));
         httpConn.setDoOutput(true);
 

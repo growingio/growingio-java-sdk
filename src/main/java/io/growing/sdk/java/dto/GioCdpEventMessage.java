@@ -45,6 +45,11 @@ public class GioCdpEventMessage extends GioCDPMessage<EventV3Dto> implements Ser
     }
 
     @Override
+    public Class<?> getMessageClass() {
+        return GioCdpEventMessage.class;
+    }
+
+    @Override
     public boolean isIllegal() {
         if (StringUtils.isBlank(event.getEventName())) {
             GioLogger.error("GioCdpEventMessage: eventName is empty");

@@ -39,6 +39,11 @@ public class GioCdpItemMessage extends GioCDPMessage<ItemDto> implements Seriali
     }
 
     @Override
+    public Class<?> getMessageClass() {
+        return GioCdpItemMessage.class;
+    }
+
+    @Override
     public boolean isIllegal() {
         if (event.getId().isEmpty() || event.getKey().isEmpty()) {
             GioLogger.error("GioCdpItemMessage: id or key is empty");
