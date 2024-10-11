@@ -37,6 +37,11 @@ public class GioCdpUserMappingMessage extends GioCDPMessage<UserMappingDto> impl
     }
 
     @Override
+    public Class<?> getMessageClass() {
+        return GioCdpUserMappingMessage.class;
+    }
+
+    @Override
     public boolean isIllegal() {
         if (event.getIdentifiesMap().isEmpty()) {
             GioLogger.error("GioCdpUserMappingMessage: identifies is empty");

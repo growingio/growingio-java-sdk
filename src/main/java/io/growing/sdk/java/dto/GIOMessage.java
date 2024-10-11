@@ -22,4 +22,6 @@ public abstract class GIOMessage implements Serializable {
     public boolean isIllegal() {
         return false;
     }
+
+    public abstract Class<?> getMessageClass();
 }

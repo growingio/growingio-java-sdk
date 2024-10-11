@@ -3,6 +3,7 @@ package io.growing.sdk.java.sender.net;
 import io.growing.sdk.java.constants.RunMode;
 import io.growing.sdk.java.logger.GioLogger;
 import io.growing.sdk.java.sender.RequestDto;
+import io.growing.sdk.java.sender.SendResult;
 import io.growing.sdk.java.utils.ConfigUtils;
 
 import java.net.Authenticator;
@@ -30,14 +31,32 @@ public abstract class NetProviderAbstract {
         return ConfigUtils.getIntValue("read.timeout", 2000);
     }
 
+    protected static int getSyncConnectionTimeout() {
+        return ConfigUtils.getIntValue("sync.connection.timeout", 1000);
+    }
+
+    protected static int getSyncReadTimeout() {
+        return ConfigUtils.getIntValue("sync.read.timeout", 1000);
+    }
+
     public void toSend(RequestDto requestDto) {
+        GioLogger.debug(System.currentTimeMillis() + " message sent. " + requestDto.toString());
         if (RunMode.isProductionMode()) {
             sendPost(requestDto);
         }
+    }
+
+    public SendResult toSendSync(RequestDto requestDto) {
         GioLogger.debug(System.currentTimeMillis() + " message sent. " + requestDto.toString());
+        if (RunMode.isProductionMode()) {
+            return sendPostSync(requestDto);
+        }
+        return new SendResult(SendResult.State.SUCCESS, "running int mode: Test");
     }
 
     protected abstract int sendPost(RequestDto requestDto);
+
+    protected abstract SendResult sendPostSync(RequestDto requestDto);
 
     protected static class ProxyInfo {
         private static final Proxy proxy;

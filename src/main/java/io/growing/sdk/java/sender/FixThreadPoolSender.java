@@ -21,15 +21,13 @@ import java.util.concurrent.Executors;
 public class FixThreadPoolSender implements MessageSender {
     private static final ExecutorService sendThread = Executors.newFixedThreadPool(ConfigUtils.getIntValue("send.msg.thread", 3), new GioThreadNamedFactory("gio-sender"));
 
-    private static final NetProviderAbstract netProvider = new HttpUrlProvider();
-
     @Override
     public void sendMsg(final String projectKey, final List<GIOMessage> msg) {
         doSend(projectKey, msg);
     }
 
     public static NetProviderAbstract getNetProvider() {
-        return netProvider;
+        return HttpUrlProvider.getInstance();
     }
 
     public void doSend(final String projectKey, final List<GIOMessage> msgList) {

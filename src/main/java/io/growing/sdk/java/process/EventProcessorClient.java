@@ -27,6 +27,10 @@ public class EventProcessorClient {
         return processors.values();
     }
 
+    public static MessageProcessor getProcessor(Class<?> clazz){
+        return processors.get(clazz);
+    }
+
     public static MessageProcessor getApiInstance(GIOMessage msg) {
         return processors.get(msg.getClass());
     }

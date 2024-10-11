@@ -42,6 +42,11 @@ public class GioCdpUserMessage extends GioCDPMessage<EventV3Dto> implements Seri
     }
 
     @Override
+    public Class<?> getMessageClass() {
+        return GioCdpUserMessage.class;
+    }
+
+    @Override
     public boolean isIllegal() {
         if (user.getAttributesMap().isEmpty()) {
             GioLogger.error("GioCdpUserMessage: attributes is empty");

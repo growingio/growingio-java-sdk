@@ -10,10 +10,12 @@ import io.growing.sdk.java.utils.ConfigUtils;
 public class GioLogger {
     private static GioLoggerInterface logger;
     private static final String loggerLevel;
+    private static final Boolean loggerFileEnabled;
 
     static {
         String loggerImplName = ConfigUtils.getStringValue("logger.implementation", "io.growing.sdk.java.logger.GioLoggerImpl");
 
+        loggerFileEnabled = ConfigUtils.getBooleanValue("logger.file.enabled", false);
         loggerLevel = ConfigUtils.getStringValue("logger.level", "error");
 
         try {
@@ -43,5 +45,11 @@ public class GioLogger {
 
     public static void error(String msg) {
         logger.error(msg);
+    }
+
+    public static void file(String msg) {
+        if (loggerFileEnabled) {
+            FileWriter.getInstance().log(msg);
+        }
     }
 }
