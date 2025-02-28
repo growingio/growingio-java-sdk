@@ -18,31 +18,21 @@ Java SDK 源码托管在 [growingio/growingio-java-sdk](https://github.com/growi
 GrowingIO提供在Server端部署的SDK，从而可以方便的进行事件上报等操作。
 > 支持 java 7+, 如需支持java 6参见 [支持 Java 6 版本环境](#支持-java-6-版本环境)
 
-:::info
+
 Java SDK从1.0.10-cdp版本开始使用v3协议进行事件上报, 使用前确认平台版本支持v3协议
 
 支持的平台版本为 OP-13.6、OP-14.x、OP-2.x 版本
-:::
+
 
 ### 集成准备
 
 #### 获取SDK初始化必传参数：AccountID、DataSourceID、Host
 
-:::info
 AccountID：项目ID，代表一个项目<br/>
 DataSourceID：数据源ID，代表一个数据源<br/>
 Host：采集数据上报的服务器地址，非平台地址<br/>
 
 AccountID、DataSourceID 需要在CDP增长平台上新建数据源，或从已创建的数据源中获取, 如不清楚或无权限请联系您的专属项目经理或技术支持
-:::
-
-##### 创建
-
-<ImageLoader path="img/common/createapplication" />
-
-##### 查看
-
-<ImageLoader path="img/common/showServerDataSourceID" />
 
 ### 依赖
 
@@ -141,11 +131,9 @@ ab.connection.timeout=5000
 ab.read.timeout=5000
 ```
 
-:::info 注意
 请按照您的项目情况修改`api.host` 和 `project.id`。<br/>
 run.mode 表示运行模式。当值为 test 时，仅输出消息体，不发送采集数据；当值为 production 时， 才向发送采集数据。
 
-:::
 
 #### 事件消息
 
@@ -202,9 +190,7 @@ private static GrowingAPI project = new GrowingAPI.Builder().setProjectKey("your
 
 发送一个埋点事件。在添加发送的埋点事件代码之前，需在CDP平台事件管理界面创建埋点事件以及关联事件属性。
 
-:::info
 * 当需要标记用户ID类型时，请先进行规划，并在平台的数据中心，添加新的用户身份类型，再设置userkey，误设会影响数据质量。
-  :::
 
 **参数说明**
 
@@ -262,20 +248,12 @@ GioCdpEventMessage msg = new GioCdpEventMessage.Builder()
                 .build()
 ```
 
-:::info
-
-详细使用示例:[埋点事件示例](/knowledge/basicknowledge/trackEventUse#埋点事件示例)
-
-:::
-
 ### 登录用户属性事件
 
 以登录用户的身份定义登录用户属性，比如年龄、性别、会员等级等，用于用户信息相关分析。<br/>
 在添加登录用户属性代码之前，需要在CDP平台用户管理界面中创建用户属性
 
-:::info
 * 当需要标记用户ID类型时，请先进行规划，并在平台的数据中心，添加新的用户身份类型，再设置userkey，误设会影响数据质量。
-  :::
 
 **参数说明**
 
@@ -304,13 +282,6 @@ GioCdpUserMessage msg = new GioCdpUserMessage.Builder()
                 .addUserVariables('certificates', map)        // 登录用户属性, 支持单层map类型
                 .build();
 ```
-
-:::info
-
-详细使用示例:[用户属性事件示例](/knowledge/basicknowledge/trackEventUse#用户属性事件示例)
-
-:::
-
 
 ### 维度表
 
