@@ -7,7 +7,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class Case3EventMessageTest {
+public class Case4EventMessageTest {
 
     @Test
     public void checkCustomMessage() {

@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @since : 11/21/18 3:35 PM
  */
 @RunWith(JUnit4.class)
-public class Case2GrowingAPITest {
+public class Case3GrowingAPITest {
     private static GrowingAPI sender;
 
     @BeforeClass

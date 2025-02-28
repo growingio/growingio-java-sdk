@@ -1,15 +1,16 @@
 package io.growing.sdk.java;
 
+import io.growing.sdk.java.ab.ABTaskController;
+import io.growing.sdk.java.ab.ABTestCallback;
 import io.growing.sdk.java.constants.RunMode;
 import io.growing.sdk.java.dto.GIOMessage;
-import io.growing.sdk.java.dto.GioCDPMessage;
 import io.growing.sdk.java.exception.GIOSendBeRejectedException;
 import io.growing.sdk.java.logger.GioLogger;
 import io.growing.sdk.java.sender.FixThreadPoolSender;
 import io.growing.sdk.java.store.StoreStrategy;
 import io.growing.sdk.java.store.StoreStrategyClient;
 import io.growing.sdk.java.utils.ConfigUtils;
-import io.growing.sdk.java.utils.StringUtils;
+import io.growing.sdk.java.utils.MessageUtils;
 import io.growing.sdk.java.utils.VersionInfo;
 
 import java.util.Properties;
@@ -26,6 +27,8 @@ public class GrowingAPI {
     private final String dataSourceId;
 
     private static StoreStrategy strategy;
+    private static ABTaskController abTaskController;
+    private static boolean abEnabled = false;
 
     static {
         ConfigUtils.initDefault();
@@ -34,6 +37,10 @@ public class GrowingAPI {
     private GrowingAPI(Builder builder) {
         this.validDefaultConfig = validDefaultConfig();
         strategy = StoreStrategyClient.getStoreInstance(StoreStrategyClient.CURRENT_STRATEGY);
+        abEnabled = ConfigUtils.getBooleanValue("ab.enabled", false);
+        if (abEnabled) {
+            abTaskController = new ABTaskController(strategy);
+        }
         this.dataSourceId = builder.dataSourceId;
         this.projectKey = builder.projectKey;
     }
@@ -76,23 +83,30 @@ public class GrowingAPI {
         }
     }
 
-    private boolean businessVerification(GIOMessage msg) {
-        if (StringUtils.nonBlank(this.projectKey)) {
-            msg.setProjectKey(this.projectKey);
-        } else {
-            GioLogger.error("projectKey cant be null or empty string");
-            return false;
+    public void getABTest(String layerId, String dataSourceId, String distinctId, ABTestCallback callback) {
+        if (!abEnabled) {
+            return;
         }
+        try {
+            abTaskController.submitABTaskAsync(this.projectKey, dataSourceId, layerId, distinctId, callback);
+        } catch (Exception e) {
+            GioLogger.error("getABTest failed: " + e.getLocalizedMessage());
+        }
+    }
 
-        if (msg instanceof GioCDPMessage) {
-            if (StringUtils.nonBlank(this.dataSourceId)) {
-                ((GioCDPMessage<?>) msg).setDataSourceId(this.dataSourceId);
-            } else {
-                GioLogger.error("cdp message datasourceId cant be null or empty string");
-                return false;
-            }
+    public void getABTestSync(String layerId, String dataSourceId, String distinctId, ABTestCallback callback) {
+        if (!abEnabled) {
+            return;
         }
-        return true;
+        try {
+            abTaskController.submitABTaskSync(this.projectKey, dataSourceId, layerId, distinctId, callback);
+        } catch (Exception e) {
+            GioLogger.error("getABTest failed: " + e.getLocalizedMessage());
+        }
+    }
+
+    private boolean businessVerification(GIOMessage msg) {
+        return MessageUtils.businessVerification(msg, this.projectKey, this.dataSourceId);
     }
 
     public static class Builder {
