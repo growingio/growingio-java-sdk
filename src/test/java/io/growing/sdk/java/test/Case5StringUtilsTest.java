@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import java.util.HashMap;
 
-public class Case4StringUtilsTest {
+public class Case5StringUtilsTest {
 
     @Test
     public void checkMap2Str() {

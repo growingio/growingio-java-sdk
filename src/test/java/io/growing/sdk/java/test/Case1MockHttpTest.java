@@ -40,8 +40,7 @@ public class Case1MockHttpTest {
         properties.setProperty("api.host", "https://www.growingio.com");
         GrowingAPI.initConfig(properties);
         sender = new GrowingAPI.Builder().setDataSourceId(DATASOURCE_ID).setProjectKey(PROJECT_KEY).build();
-        factory = new StubStreamHandlerFactory();
-        URL.setURLStreamHandlerFactory(factory);
+        factory = StubStreamHandlerFactory.getInstance();
     }
 
     private static void setStaticField(Class clazz, String fieldName, Object value) {
