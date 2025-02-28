@@ -84,22 +84,30 @@ public class GrowingAPI {
     }
 
     public void getABTest(String layerId, String dataSourceId, String distinctId, ABTestCallback callback) {
+        getABTest(layerId, dataSourceId, distinctId, callback, false);
+    }
+
+    public void getABTest(String layerId, String dataSourceId, String distinctId, ABTestCallback callback, boolean isNewDevice) {
         if (!abEnabled) {
             return;
         }
         try {
-            abTaskController.submitABTaskAsync(this.projectKey, dataSourceId, layerId, distinctId, callback);
+            abTaskController.submitABTaskAsync(this.projectKey, dataSourceId, layerId, distinctId, callback, isNewDevice);
         } catch (Exception e) {
             GioLogger.error("getABTest failed: " + e.getLocalizedMessage());
         }
     }
 
     public void getABTestSync(String layerId, String dataSourceId, String distinctId, ABTestCallback callback) {
+        getABTestSync(layerId, dataSourceId, distinctId, callback, false);
+    }
+
+    public void getABTestSync(String layerId, String dataSourceId, String distinctId, ABTestCallback callback, boolean isNewDevice) {
         if (!abEnabled) {
             return;
         }
         try {
-            abTaskController.submitABTaskSync(this.projectKey, dataSourceId, layerId, distinctId, callback);
+            abTaskController.submitABTaskSync(this.projectKey, dataSourceId, layerId, distinctId, callback, isNewDevice);
         } catch (Exception e) {
             GioLogger.error("getABTest failed: " + e.getLocalizedMessage());
         }

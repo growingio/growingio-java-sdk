@@ -19,14 +19,14 @@ public class ABTaskController {
         this.strategy = strategy;
     }
 
-    public void submitABTask(final String projectId, final String dataSourceId, final String layerId, final String distinctId, final ABTestCallback callback) {
+    public void submitABTask(final String projectId, final String dataSourceId, final String layerId, final String distinctId, final ABTestCallback callback, boolean isNewDevice) {
         if (StringUtils.isBlank(projectId) || StringUtils.isBlank(dataSourceId) || StringUtils.isBlank(distinctId) || callback == null) {
             GioLogger.error("submitABTask:params is illegal");
             return;
         }
 
         try {
-            ABTestResponse response = netProvider.requestABTestExperimentData(projectId, dataSourceId, layerId, distinctId);
+            ABTestResponse response = netProvider.requestABTestExperimentData(projectId, dataSourceId, layerId, distinctId, isNewDevice);
             if (response.isSucceed()) {
                 callback.onABExperimentReceived(response.abExperiment);
                 sendAbTestTrackEvent(response.abExperiment, projectId, dataSourceId, distinctId);
@@ -38,15 +38,15 @@ public class ABTaskController {
         }
     }
 
-    public void submitABTaskSync(final String projectId, final String dataSourceId, final String layerId, final String distinctId, final ABTestCallback callback) {
-        submitABTask(projectId, dataSourceId, layerId, distinctId, callback);
+    public void submitABTaskSync(final String projectId, final String dataSourceId, final String layerId, final String distinctId, final ABTestCallback callback, boolean isNewDevice) {
+        submitABTask(projectId, dataSourceId, layerId, distinctId, callback, isNewDevice);
     }
 
-    public void submitABTaskAsync(final String projectId, final String dataSourceId, final String layerId, final String distinctId, final ABTestCallback callback) {
+    public void submitABTaskAsync(final String projectId, final String dataSourceId, final String layerId, final String distinctId, final ABTestCallback callback, final boolean isNewDevice) {
         abTaskThreadPool.submit(new Runnable() {
             @Override
             public void run() {
-                submitABTask(projectId, dataSourceId, layerId, distinctId, callback);
+                submitABTask(projectId, dataSourceId, layerId, distinctId, callback, isNewDevice);
             }
         });
     }

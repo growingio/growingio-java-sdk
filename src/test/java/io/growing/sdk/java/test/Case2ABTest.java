@@ -63,7 +63,7 @@ public class Case2ABTest {
 
     @Test
     public void getAbTestSuccess() throws InterruptedException {
-        final CountDownLatch countDownLatch = new CountDownLatch(2);
+        final CountDownLatch countDownLatch = new CountDownLatch(3);
         factory.setResponseHandler(new StubStreamHandlerFactory.ResponseHandler() {
             @Override
             public String getResponse(URL url) {
@@ -112,6 +112,10 @@ public class Case2ABTest {
                         mException = e;
                     }
                     countDownLatch.countDown();
+                } else if (url.getPath().contains("/diversion")) {
+                    String body = "accountId=91eaf9b283361032&datasourceId=ab90a68c7b25638c&distinctId=deviceId-187********&layerId=JmjoD6pL&newDevice=true";
+                    Assert.assertEquals(body, new String(msg));
+                    countDownLatch.countDown();
                 }
             }
         });
@@ -137,9 +141,8 @@ public class Case2ABTest {
 
             @Override
             public void onABExperimentFailed(Exception error) {
-
             }
-        });
+        }, true);
 
         countDownLatch.await();
     }
@@ -171,6 +174,7 @@ public class Case2ABTest {
         sender.getABTestSync(LAYER_ID, AB_DATASOURCE_ID, DISTINCT_ID, new ABTestCallback() {
             @Override
             public void onABExperimentReceived(ABExperiment experiment) {
+                System.out.println(experiment);
             }
 
             @Override
@@ -182,7 +186,7 @@ public class Case2ABTest {
                 }
                 countDownLatch.countDown();
             }
-        });
+        }, true);
 
         countDownLatch.await();
     }
