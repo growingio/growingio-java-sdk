@@ -20,7 +20,7 @@ public class ABTestHttpUrlProvider extends BaseNetProvider {
         return ConfigUtils.getIntValue("ab.read.timeout", 5000);
     }
 
-    public ABTestResponse requestABTestExperimentData(String projectId, String dataSourceId, String layerId, String distinctId) {
+    public ABTestResponse requestABTestExperimentData(String projectId, String dataSourceId, String layerId, String distinctId, boolean isNewDevice) {
         ABTestResponse outABTestResponse = new ABTestResponse();
         DataOutputStream os = null;
         BufferedReader br = null;
@@ -29,6 +29,9 @@ public class ABTestHttpUrlProvider extends BaseNetProvider {
                     "&datasourceId=" + URLEncoder.encode(dataSourceId, Charset.forName("UTF-8").toString()) +
                     "&distinctId=" + URLEncoder.encode(distinctId, Charset.forName("UTF-8").toString()) +
                     "&layerId=" + URLEncoder.encode(layerId, Charset.forName("UTF-8").toString());
+            if (isNewDevice) {
+                body += "&newDevice=true";
+            }
 
             HttpURLConnection httpConn = getConnection(apiHost());
             httpConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
